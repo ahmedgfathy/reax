@@ -1,0 +1,4 @@
+This will be a binary Excel file. You'll need to create this manually or generate it using a library like PhpSpreadsheet.
+
+The template should include these columns:
+first_name,last_name,email,phone,status,source,property,budget,notes,assigned_to_email
