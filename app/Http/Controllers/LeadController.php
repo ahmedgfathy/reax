@@ -87,13 +87,24 @@ class LeadController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
+            'mobile' => 'nullable|string|max:20',
             'status' => 'required|string',
+            'lead_status' => 'nullable|string',
             'source' => 'nullable|string|max:255',
+            'lead_source' => 'nullable|string|max:255',
             'property_interest' => 'nullable|exists:properties,id',
             'budget' => 'nullable|numeric',
             'notes' => 'nullable|string',
+            'description' => 'nullable|string',
             'assigned_to' => 'nullable|exists:users,id',
+            'last_follow_up' => 'nullable|date',
+            'agent_follow_up' => 'nullable|boolean',
+            'lead_class' => 'nullable|string|max:50',
+            'type_of_request' => 'nullable|string|max:100',
         ]);
+
+        // Set the last_modified_by to the current user
+        $validatedData['last_modified_by'] = auth()->id();
 
         $lead = Lead::create($validatedData);
         
@@ -143,13 +154,24 @@ class LeadController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
+            'mobile' => 'nullable|string|max:20',
             'status' => 'required|string',
+            'lead_status' => 'nullable|string',
             'source' => 'nullable|string|max:255',
+            'lead_source' => 'nullable|string|max:255',
             'property_interest' => 'nullable|exists:properties,id',
             'budget' => 'nullable|numeric',
             'notes' => 'nullable|string',
+            'description' => 'nullable|string',
             'assigned_to' => 'nullable|exists:users,id',
+            'last_follow_up' => 'nullable|date',
+            'agent_follow_up' => 'nullable|boolean',
+            'lead_class' => 'nullable|string|max:50',
+            'type_of_request' => 'nullable|string|max:100',
         ]);
+        
+        // Set the last_modified_by to the current user
+        $validatedData['last_modified_by'] = auth()->id();
         
         // Track changes for activity log with more detailed information
         $changes = [];
@@ -325,75 +347,410 @@ class LeadController extends Controller
      */
     public function bulkAction(Request $request)
     {
-        $validated = $request->validate([
-            'action' => 'required|in:transfer,delete',
-            'selected_leads' => 'required|array',
-            'selected_leads.*' => 'exists:leads,id',
-            'assigned_to' => 'nullable|exists:users,id',
+        // Add extensive logging for debugging
+        \Log::debug('Bulk action request received', [
+            'all_data' => $request->all(),
+            'action' => $request->input('action'),
+            'selected_leads' => $request->input('selected_leads')
         ]);
+        
+        try {
+            $validated = $request->validate([
+                'action' => 'required|in:transfer,delete',
+                'selected_leads' => 'required|array',
+                'selected_leads.*' => 'exists:leads,id',
+                'assigned_to' => 'nullable|exists:users,id',
+            ]);
 
-        $selectedLeads = $validated['selected_leads'];
-        $count = count($selectedLeads);
-        
-        if ($validated['action'] === 'transfer') {
-            // Make sure we have a user to transfer to
-            if (empty($validated['assigned_to'])) {
-                return back()->with('error', 'Please select a user to transfer leads to.');
-            }
+            $selectedLeads = $validated['selected_leads'];
+            $count = count($selectedLeads);
             
-            $user = User::find($validated['assigned_to']);
-            
-            // Update all selected leads
-            Lead::whereIn('id', $selectedLeads)->update(['assigned_to' => $validated['assigned_to']]);
-            
-            // Log each transfer
-            foreach ($selectedLeads as $leadId) {
-                $lead = Lead::find($leadId);
-                
-                if ($lead) {
-                    ActivityLog::log(
-                        $leadId,
-                        'transferred_lead',
-                        "Lead transferred to {$user->name}",
-                        [
-                            'transferred_to' => $validated['assigned_to'],
-                            'transferred_by' => auth()->id(),
-                            'user_name' => $user->name
-                        ]
-                    );
-                }
-            }
-            
-            return redirect()->route('leads.index')->with('success', $count . ' ' . __('leads transferred successfully to') . ' ' . $user->name);
-        }
-        
-        if ($validated['action'] === 'delete') {
-            // Save lead info before deletion for logging
-            $deletedLeads = [];
-            foreach ($selectedLeads as $leadId) {
-                $lead = Lead::find($leadId);
-                if ($lead) {
-                    $deletedLeads[] = [
-                        'id' => $lead->id,
-                        'name' => $lead->first_name . ' ' . $lead->last_name
-                    ];
-                }
-            }
-            
-            // Delete the leads
-            Lead::destroy($selectedLeads);
-            
-            // Log the bulk deletion (in a single log entry to save database space)
-            ActivityLog::create([
-                'user_id' => auth()->id(),
-                'action' => 'bulk_deleted_leads',
-                'description' => 'Bulk deleted ' . $count . ' leads',
-                'details' => ['deleted_leads' => $deletedLeads]
+            \Log::info('Bulk action validated', [
+                'action' => $validated['action'],
+                'count' => $count
             ]);
             
-            return redirect()->route('leads.index')->with('success', $count . ' ' . __('leads deleted successfully'));
+            if ($validated['action'] === 'transfer') {
+                // Make sure we have a user to transfer to
+                if (empty($validated['assigned_to'])) {
+                    return back()->with('error', 'Please select a user to transfer leads to.');
+                }
+                
+                $user = User::find($validated['assigned_to']);
+                
+                // Update all selected leads
+                Lead::whereIn('id', $selectedLeads)->update(['assigned_to' => $validated['assigned_to']]);
+                
+                // Log each transfer
+                foreach ($selectedLeads as $leadId) {
+                    $lead = Lead::find($leadId);
+                    
+                    if ($lead) {
+                        ActivityLog::log(
+                            $leadId,
+                            'transferred_lead',
+                            "Lead transferred to {$user->name}",
+                            [
+                                'transferred_to' => $validated['assigned_to'],
+                                'transferred_by' => auth()->id(),
+                                'user_name' => $user->name
+                            ]
+                        );
+                    }
+                }
+                
+                return redirect()->route('leads.index')->with('success', $count . ' ' . __('leads transferred successfully to') . ' ' . $user->name);
+            }
+            
+            if ($validated['action'] === 'delete') {
+                try {
+                    // Use DB transaction for data integrity
+                    \DB::beginTransaction();
+                    
+                    // Delete leads in chunks for better performance
+                    foreach (array_chunk($selectedLeads, 100) as $chunk) {
+                        Lead::whereIn('id', $chunk)->delete();
+                    }
+                    
+                    \DB::commit();
+                    
+                    // Log the action
+                    ActivityLog::create([
+                        'user_id' => auth()->id(),
+                        'action' => 'bulk_deleted_leads',
+                        'description' => "Bulk deleted {$count} leads",
+                    ]);
+                    
+                    return redirect()->route('leads.index')
+                        ->with('success', __(':count leads deleted successfully', ['count' => $count]));
+                        
+                } catch (\Exception $e) {
+                    \DB::rollBack();
+                    \Log::error('Bulk delete error', ['error' => $e->getMessage()]);
+                    
+                    return redirect()->route('leads.index')
+                        ->with('error', __('Error deleting leads: :message', ['message' => $e->getMessage()]));
+                }
+            }
+            
+            return redirect()->route('leads.index')
+                ->with('error', __('Invalid action specified'));
+            
+        } catch (\Exception $e) {
+            // Log the exception for debugging
+            \Log::error('Error in bulk action', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all()
+            ]);
+            
+            return redirect()->route('leads.index')->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Step 1: Upload and analyze the CSV file
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt,xlsx,xls|max:10240', // 10MB limit
+        ]);
+        
+        try {
+            $file = $request->file('file');
+            
+            // Store the file temporarily
+            $tempPath = $file->storeAs('temp/imports', 'leads_import_' . time() . '.csv');
+            
+            // Analyze the file and show mapping interface
+            return $this->analyzeImportFile($tempPath);
+            
+        } catch (\Exception $e) {
+            return redirect()->route('leads.index')
+                ->with('error', __('Error analyzing import file: ') . $e->getMessage());
+        }
+    }
+
+    /**
+     * Analyze import file and show mapping interface
+     */
+    private function analyzeImportFile($tempFile)
+    {
+        try {
+            $fullPath = storage_path('app/' . $tempFile);
+            
+            // Read the first few lines of the CSV file
+            $handle = fopen($fullPath, 'r');
+            if (!$handle) {
+                throw new \Exception('Could not open file: ' . $tempFile);
+            }
+            
+            // Detect delimiter
+            $sampleContent = file_get_contents($fullPath, false, null, 0, 1024);
+            $delimiters = [',', ';', "\t", '|'];
+            $delimiterCounts = [];
+            
+            foreach ($delimiters as $delimiter) {
+                $delimiterCounts[$delimiter] = substr_count($sampleContent, $delimiter);
+            }
+            
+            $delimiter = array_keys($delimiterCounts, max($delimiterCounts))[0];
+            
+            // Get headers
+            $headers = fgetcsv($handle, 0, $delimiter);
+            if (!$headers) {
+                throw new \Exception('Could not read headers from CSV file');
+            }
+            
+            // Get sample data (first row after header)
+            $sampleData = fgetcsv($handle, 0, $delimiter);
+            fclose($handle);
+            
+            // Suggest mappings based on header names
+            $suggestedMapping = $this->suggestFieldMappings($headers);
+            
+            // Debug log
+            \Log::debug('CSV Analysis', [
+                'file' => $tempFile,
+                'delimiter' => $delimiter,
+                'headers' => $headers,
+                'sample_data' => $sampleData,
+                'suggested_mapping' => $suggestedMapping
+            ]);
+            
+            return view('leads.map-import-fields', [
+                'tempFile' => $tempFile,
+                'headers' => $headers,
+                'sampleData' => $sampleData,
+                'suggestedMapping' => $suggestedMapping,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error analyzing import file', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->route('leads.index')
+                ->with('error', __('Error analyzing file: ') . $e->getMessage());
+        }
+    }
+
+    /**
+     * Suggest field mappings based on header names
+     */
+    private function suggestFieldMappings($headers)
+    {
+        $fieldPatterns = [
+            'first_name' => ['first_name', 'firstname', 'fname', 'first', 'name_first', 'first name'],
+            'last_name' => ['last_name', 'lastname', 'lname', 'last', 'name_last', 'surname', 'last name'],
+            'email' => ['email', 'email_address', 'e_mail', 'mail', 'email_id', 'e-mail', 'email address'],
+            'phone' => ['phone', 'mobile', 'telephone', 'tel', 'contact', 'contact_number', 'phone_number', 'mobile_number'],
+            'status' => ['status', 'lead_status', 'state', 'stage', 'lead state'],
+            'source' => ['source', 'lead_source', 'referral', 'channel', 'platform', 'lead source'],
+            'budget' => ['budget', 'price', 'max_budget', 'price_range', 'amount', 'value'],
+            'notes' => ['notes', 'comments', 'description', 'additional_info', 'additional_information', 'remarks', 'comment'],
+            'property_interest' => ['property', 'property_interest', 'property_id', 'property interest', 'interested in']
+        ];
+        
+        $mappings = [];
+        
+        foreach ($headers as $index => $header) {
+            $normalized = strtolower(trim(str_replace([' ', '_', '-'], '', $header)));
+            $mapping = '';
+            
+            foreach ($fieldPatterns as $field => $patterns) {
+                foreach ($patterns as $pattern) {
+                    $normalizedPattern = strtolower(str_replace([' ', '_', '-'], '', $pattern));
+                    if ($normalized === $normalizedPattern || strpos($normalized, $normalizedPattern) !== false) {
+                        $mapping = $field;
+                        break 2;
+                    }
+                }
+            }
+            
+            // Special case for full name
+            if (!$mapping && preg_match('/(full)?name/', $normalized)) {
+                $mapping = 'first_name'; // We'll split it later
+            }
+            
+            $mappings[$index] = $mapping;
         }
         
-        return back()->with('error', __('Invalid action specified'));
+        return $mappings;
+    }
+
+    /**
+     * Step 2: Process the import with mapped fields
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function processImport(Request $request)
+    {
+        $request->validate([
+            'temp_file' => 'required|string',
+            'field_mapping' => 'required|array',
+        ]);
+        
+        try {
+            $tempFile = $request->input('temp_file');
+            $fieldMapping = $request->input('field_mapping');
+            
+            $fullPath = storage_path('app/' . $tempFile);
+            if (!file_exists($fullPath)) {
+                throw new \Exception('Import file not found');
+            }
+            
+            // Process the import with the user-defined field mapping
+            $results = $this->processImportWithMapping($fullPath, $fieldMapping);
+            
+            // Delete the temporary file
+            unlink($fullPath);
+            
+            // Redirect with results
+            return redirect()->route('leads.index')
+                ->with('success', __(':success_count leads imported successfully!', [
+                    'success_count' => $results['success_count'],
+                ]));
+            
+        } catch (\Exception $e) {
+            return redirect()->route('leads.index')
+                ->with('error', __('Error importing leads: ') . $e->getMessage());
+        }
+    }
+
+    /**
+     * Process import with the field mapping provided by the user
+     */
+    private function processImportWithMapping($filePath, $fieldMapping)
+    {
+        // Detect delimiter
+        $sampleContent = file_get_contents($filePath, false, null, 0, 1024);
+        $delimiters = [',', ';', "\t", '|'];
+        $delimiterCounts = [];
+        
+        foreach ($delimiters as $delimiter) {
+            $delimiterCounts[$delimiter] = substr_count($sampleContent, $delimiter);
+        }
+        
+        $delimiter = array_keys($delimiterCounts, max($delimiterCounts))[0];
+        
+        // Open file
+        $handle = fopen($filePath, 'r');
+        if (!$handle) {
+            throw new \Exception('Could not open file');
+        }
+        
+        // Skip header row
+        fgetcsv($handle, 0, $delimiter);
+        
+        $results = [
+            'success_count' => 0,
+            'error_count' => 0,
+            'errors' => [],
+        ];
+        
+        // Begin transaction
+        \DB::beginTransaction();
+        
+        try {
+            $rowNumber = 1;
+            while (($data = fgetcsv($handle, 0, $delimiter)) !== false) {
+                $rowNumber++;
+                
+                // Skip empty rows
+                if (empty(array_filter($data))) {
+                    continue;
+                }
+                
+                try {
+                    $leadData = [];
+                    
+                    // Map the data according to user-defined mapping
+                    foreach ($fieldMapping as $index => $field) {
+                        if (!empty($field) && isset($data[$index])) {
+                            // Special case for full name field marked as first_name
+                            if ($field === 'first_name' && strpos($data[$index], ' ') !== false) {
+                                $nameParts = explode(' ', $data[$index], 2);
+                                $leadData['first_name'] = $nameParts[0] ?? '';
+                                $leadData['last_name'] = $nameParts[1] ?? '';
+                            } else {
+                                $leadData[$field] = $data[$index];
+                            }
+                        }
+                    }
+                    
+                    // IMPORTANT FIX: Handle cases where only last_name is provided
+                    if (empty($leadData['first_name']) && !empty($leadData['last_name'])) {
+                        // Extract first name from last name if it contains spaces
+                        if (strpos($leadData['last_name'], ' ') !== false) {
+                            $nameParts = explode(' ', $leadData['last_name'], 2);
+                            $leadData['first_name'] = $nameParts[0];
+                            $leadData['last_name'] = $nameParts[1];
+                        } else {
+                            // If last_name has no spaces, use it as first_name too
+                            $leadData['first_name'] = $leadData['last_name'];
+                        }
+                    }
+                    
+                    // If we still don't have a first_name, set a default one
+                    if (empty($leadData['first_name'])) {
+                        $leadData['first_name'] = 'Imported';
+                    }
+                    
+                    // If we don't have a last_name, set a default one
+                    if (empty($leadData['last_name'])) {
+                        $leadData['last_name'] = 'Lead';
+                    }
+                    
+                    // Apply transformations and validations for other fields
+                    if (isset($leadData['budget'])) {
+                        $leadData['budget'] = preg_replace('/[^0-9.]/', '', $leadData['budget']);
+                        $leadData['budget'] = !empty($leadData['budget']) ? (float)$leadData['budget'] : null;
+                    }
+                    
+                    if (isset($leadData['email'])) {
+                        $leadData['email'] = strtolower(trim($leadData['email']));
+                        if (!filter_var($leadData['email'], FILTER_VALIDATE_EMAIL)) {
+                            $leadData['email'] = null;
+                        }
+                    }
+                    
+                    // Ensure required fields have defaults
+                    if (empty($leadData['status'])) {
+                        $leadData['status'] = 'new';
+                    }
+                    
+                    // Create the lead
+                    \App\Models\Lead::create($leadData);
+                    $results['success_count']++;
+                    
+                } catch (\Exception $e) {
+                    $results['error_count']++;
+                    $results['errors'][] = "Row {$rowNumber}: " . $e->getMessage();
+                    // Log the exact data that caused the error
+                    \Log::error("Import error at row {$rowNumber}", [
+                        'error' => $e->getMessage(),
+                        'data' => $data,
+                        'mapped_data' => $leadData ?? [],
+                        'mapping' => $fieldMapping
+                    ]);
+                }
+            }
+            
+            fclose($handle);
+            \DB::commit();
+            
+            return $results;
+            
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            fclose($handle);
+            throw $e;
+        }
     }
 }

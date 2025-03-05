@@ -493,5 +493,36 @@
             document.getElementById('complete-event-modal').classList.remove('hidden');
         }
     </script>
+
+    @include('components.layouts.alert-scripts')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add modern confirmation for delete
+            document.querySelector('form[action$="{{ $lead->id }}"]').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                window.confirmDelete({
+                    title: '{{ __("Delete Lead") }}',
+                    text: '{{ __("Are you sure you want to delete") }} {{ $lead->first_name }} {{ $lead->last_name }}? {{ __("This action cannot be undone.") }}',
+                    icon: 'error',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading state
+                        Swal.fire({
+                            title: '{{ __("Deleting...") }}',
+                            html: '{{ __("Please wait") }}',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        this.submit();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

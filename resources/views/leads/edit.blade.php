@@ -146,6 +146,60 @@
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <!-- New fields -->
+                        <div class="mb-4">
+                            <label for="mobile" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Mobile') }}</label>
+                            <input type="text" name="mobile" id="mobile" value="{{ old('mobile', $lead->mobile) }}" class="w-full p-2 border rounded-md">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="lead_source" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Lead Source Detail') }}</label>
+                            <input type="text" name="lead_source" id="lead_source" value="{{ old('lead_source', $lead->lead_source) }}" class="w-full p-2 border rounded-md">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="lead_status" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Lead Status Detail') }}</label>
+                            <input type="text" name="lead_status" id="lead_status" value="{{ old('lead_status', $lead->lead_status) }}" class="w-full p-2 border rounded-md">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="last_follow_up" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Last Follow-up Date') }}</label>
+                            <input type="date" name="last_follow_up" id="last_follow_up" value="{{ old('last_follow_up', $lead->last_follow_up ? $lead->last_follow_up->format('Y-m-d') : '') }}" class="w-full p-2 border rounded-md">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="agent_follow_up" class="flex items-center">
+                                <input type="checkbox" name="agent_follow_up" id="agent_follow_up" value="1" {{ old('agent_follow_up', $lead->agent_follow_up) ? 'checked' : '' }} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <span class="ml-2 text-sm text-gray-700">{{ __('Requires Agent Follow-up') }}</span>
+                            </label>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="lead_class" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Lead Class') }}</label>
+                            <select name="lead_class" id="lead_class" class="w-full p-2 border rounded-md">
+                                <option value="">{{ __('Select a class') }}</option>
+                                <option value="A" {{ old('lead_class', $lead->lead_class) == 'A' ? 'selected' : '' }}>A - {{ __('Hot Lead') }}</option>
+                                <option value="B" {{ old('lead_class', $lead->lead_class) == 'B' ? 'selected' : '' }}>B - {{ __('Warm Lead') }}</option>
+                                <option value="C" {{ old('lead_class', $lead->lead_class) == 'C' ? 'selected' : '' }}>C - {{ __('Cold Lead') }}</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="type_of_request" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Type of Request') }}</label>
+                            <select name="type_of_request" id="type_of_request" class="w-full p-2 border rounded-md">
+                                <option value="">{{ __('Select request type') }}</option>
+                                <option value="information" {{ old('type_of_request', $lead->type_of_request) == 'information' ? 'selected' : '' }}>{{ __('Information') }}</option>
+                                <option value="viewing" {{ old('type_of_request', $lead->type_of_request) == 'viewing' ? 'selected' : '' }}>{{ __('Property Viewing') }}</option>
+                                <option value="quotation" {{ old('type_of_request', $lead->type_of_request) == 'quotation' ? 'selected' : '' }}>{{ __('Quotation') }}</option>
+                                <option value="contract" {{ old('type_of_request', $lead->type_of_request) == 'contract' ? 'selected' : '' }}>{{ __('Contract') }}</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Description') }}</label>
+                            <textarea name="description" id="description" rows="3" class="w-full p-2 border rounded-md">{{ old('description', $lead->description) }}</textarea>
+                        </div>
                     </div>
                 </div>
                 

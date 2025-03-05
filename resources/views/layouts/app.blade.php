@@ -10,7 +10,12 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome - Added with defer=false to ensure icons load before page renders -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Tailwind CSS via CDN as fallback -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,7 +27,7 @@
     <style>
         [x-cloak] { display: none !important; }
         html {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
         html.rtl {
             direction: rtl;
@@ -31,16 +36,17 @@
     </style>
     
     <!-- Scripts -->
-    @if(file_exists(public_path('build/manifest.json')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @stack('styles')
 </head>
-<body class="antialiased bg-gray-100 min-h-screen flex flex-col">
+<body class="font-sans antialiased bg-gray-50">
     <div class="min-h-screen bg-gray-100 flex flex-col">
         <!-- Header -->
         <x-header-menu />
+
+        <!-- Page Heading -->
+        @yield('header')
 
         <!-- Page Content -->
         <main class="flex-grow">
@@ -58,5 +64,6 @@
     </div>
     
     @stack('scripts')
+    @include('components.layouts.alert-scripts')
 </body>
 </html>

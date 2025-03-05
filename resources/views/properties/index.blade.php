@@ -1,33 +1,53 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto py-8 px-4">
-    <!-- Properties Header -->
-    <div class="mb-6">
+<!-- Properties Header - Styled exactly like Leads Header -->
+<div class="bg-white shadow-sm border-b">
+    <div class="container mx-auto py-4 px-6">
         <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-gray-800">{{ __('Properties') }}</h1>
+            <h1 class="text-2xl font-bold text-gray-800">{{ __('Properties Management') }}</h1>
             <div class="flex space-x-2">
-                <!-- Import Button - EXACTLY like Leads page -->
+                <!-- Import Button - With inline SVG icon as backup -->
                 <button onclick="document.getElementById('importModal').classList.remove('hidden')" 
                         class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md flex items-center">
-                    <i class="fas fa-file-import mr-2"></i> {{ __('Import') }}
+                    <span class="import-icon-container mr-2">
+                        <i class="fas fa-file-import"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden fallback-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    {{ __('Import') }}
                 </button>
                 
-                <!-- Export Button - EXACTLY like Leads page -->
+                <!-- Export Button - With inline SVG icon as backup -->
                 <button onclick="document.getElementById('exportModal').classList.remove('hidden')"
                         class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md flex items-center">
-                    <i class="fas fa-file-export mr-2"></i> {{ __('Export') }}
+                    <span class="export-icon-container mr-2">
+                        <i class="fas fa-file-export"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden fallback-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    {{ __('Export') }}
                 </button>
                 
-                <!-- Add Property Button - EXACTLY like Leads page -->
+                <!-- Add Property Button - With inline SVG icon as backup -->
                 <a href="{{ route('properties.create') }}" 
                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md flex items-center">
-                    <i class="fas fa-plus mr-2"></i> {{ __('Add Property') }}
+                    <span class="add-icon-container mr-2">
+                        <i class="fas fa-plus"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden fallback-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    {{ __('Add Property') }}
                 </a>
             </div>
         </div>
     </div>
+</div>
 
+<div class="container mx-auto p-6">
     <!-- Property Filters -->
     <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
         <form action="{{ route('properties.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -97,108 +117,132 @@
     </div>
 
     <!-- Properties Grid View -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         @forelse($properties as $property)
-        <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
-            <div class="relative">
-                <!-- Property Image -->
-                @php
-                    $imageUrl = null;
-                    // Try to find a featured media file
-                    if ($property->mediaFiles && $property->mediaFiles->count() > 0) {
-                        $featuredMedia = $property->mediaFiles->where('is_featured', true)->first();
-                        if ($featuredMedia) {
-                            $imageUrl = asset('storage/' . $featuredMedia->file_path);
-                        } else {
-                            // If no featured image, use the first one
-                            $imageUrl = asset('storage/' . $property->mediaFiles->first()->file_path);
+        <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow relative group">
+            <!-- Card Container - Made clickable with relative and group classes -->
+            <a href="{{ route('properties.show', $property->id) }}" class="block">
+                <div class="relative">
+                    <!-- Property Image -->
+                    @php
+                        $imageUrl = null;
+                        // Try to find a featured media file
+                        if ($property->mediaFiles && $property->mediaFiles->count() > 0) {
+                            $featuredMedia = $property->mediaFiles->where('is_featured', true)->first();
+                            if ($featuredMedia) {
+                                $imageUrl = asset('storage/' . $featuredMedia->file_path);
+                            } else {
+                                // If no featured image, use the first one
+                                $imageUrl = asset('storage/' . $property->mediaFiles->first()->file_path);
+                            }
                         }
-                    }
 
-                    // If no media files, use a default image based on property type
-                    if (!$imageUrl) {
-                        $type = strtolower($property->type ?? 'default');
-                        if ($type == 'apartment') {
-                            $imageUrl = 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
-                        } elseif ($type == 'villa') {
-                            $imageUrl = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
-                        } elseif ($type == 'office') {
-                            $imageUrl = 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
-                        } else {
-                            // Default fallback
-                            $imageUrl = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                        // If no media files, use a default image based on property type
+                        if (!$imageUrl) {
+                            $type = strtolower($property->type ?? 'default');
+                            if ($type == 'apartment') {
+                                $imageUrl = 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                            } elseif ($type == 'villa') {
+                                $imageUrl = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                            } elseif ($type == 'office') {
+                                $imageUrl = 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                            } else {
+                                // Default fallback
+                                $imageUrl = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                            }
                         }
-                    }
-                @endphp
-                <img src="{{ $imageUrl }}" alt="{{ $property->name }}" class="w-full h-56 object-cover">
-                
-                <!-- Featured Heart Icon - Modern Styling -->
-                <button 
-                    data-property-id="{{ $property->id }}" 
-                    class="featured-toggle absolute top-4 left-4 transition-transform hover:scale-110"
-                >
-                    @if($property->is_featured)
-                        <i class="fas fa-heart text-xl text-red-500 drop-shadow-md"></i>
-                    @else
-                        <i class="far fa-heart text-xl text-white drop-shadow-md"></i>
-                    @endif
-                </button>
-                
-                <!-- Property Status Badge -->
-                <div class="absolute top-4 right-4">
-                    <span class="bg-{{ $property->unit_for == 'sale' ? 'blue' : 'green' }}-600 text-white px-3 py-1 rounded-full text-sm">
-                        {{ $property->unit_for == 'sale' ? __('For Sale') : __('For Rent') }}
-                    </span>
+                    @endphp
+                    <img src="{{ $imageUrl }}" alt="{{ $property->name }}" class="w-full h-56 object-cover">
+                    
+                    <!-- Featured Heart Icon - Positioned outside the main link for independent clicking -->
+                    <button 
+                        data-property-id="{{ $property->id }}" 
+                        class="featured-toggle absolute top-4 left-4 transition-transform hover:scale-110 z-10"
+                        onclick="event.preventDefault();"
+                    >
+                        @if($property->is_featured)
+                            <i class="fas fa-heart text-xl text-red-500 drop-shadow-md"></i>
+                        @else
+                            <i class="far fa-heart text-xl text-white drop-shadow-md"></i>
+                        @endif
+                    </button>
+                    
+                    <!-- Property Status Badge -->
+                    <div class="absolute top-4 right-4">
+                        <span class="bg-{{ $property->unit_for == 'sale' ? 'blue' : 'green' }}-600 text-white px-3 py-1 rounded-full text-sm">
+                            {{ $property->unit_for == 'sale' ? __('For Sale') : __('For Rent') }}
+                        </span>
+                    </div>
+                    
+                    <!-- Property Price -->
+                    <div class="absolute bottom-4 right-4">
+                        <span class="bg-white/80 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-semibold">
+                            {{ number_format($property->price) }} {{ $property->currency ?? 'USD' }}
+                        </span>
+                    </div>
                 </div>
                 
-                <!-- Property Price -->
-                <div class="absolute bottom-4 right-4">
-                    <span class="bg-white/80 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-semibold">
-                        {{ number_format($property->price) }} {{ $property->currency ?? 'USD' }}
-                    </span>
+                <div class="p-5">
+                    <!-- Property Name - Consistent Height & Clickable -->
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 h-14">
+                        <a href="{{ route('properties.show', $property->id) }}" class="hover:text-blue-600 line-clamp-2 block">
+                            {{ $property->name }}
+                        </a>
+                    </h3>
+                    
+                    <!-- Location -->
+                    <p class="text-gray-600 mb-3 flex items-center h-6 overflow-hidden">
+                        <i class="fas fa-map-marker-alt mr-2 text-blue-600 flex-shrink-0"></i>
+                        <span class="truncate">{{ $property->area ?? $property->location ?? __('Location not specified') }}</span>
+                    </p>
+                    
+                    <!-- Owner Information - Added -->
+                    <div class="mb-3 bg-gray-50 p-2 rounded-lg text-sm">
+                        <p class="flex items-center text-gray-700 mb-1">
+                            <i class="fas fa-user mr-2 text-gray-500 w-5"></i>
+                            <span class="truncate">{{ $property->owner_name ?? __('Owner not specified') }}</span>
+                        </p>
+                        @if($property->owner_mobile)
+                        <p class="flex items-center text-gray-700">
+                            <i class="fas fa-phone mr-2 text-gray-500 w-5"></i>
+                            <span>{{ $property->owner_mobile }}</span>
+                        </p>
+                        @endif
+                    </div>
+                    
+                    <!-- Property Specs - Consistently Aligned -->
+                    <div class="grid grid-cols-3 gap-2 text-gray-600 border-t pt-3 mb-2 text-center">
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-bed mb-1"></i>
+                            <span class="text-sm">{{ $property->rooms ?? $property->bedrooms ?? 0 }}</span>
+                            <span class="text-xs text-gray-500">{{ __('Beds') }}</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-bath mb-1"></i>
+                            <span class="text-sm">{{ $property->bathrooms ?? 0 }}</span>
+                            <span class="text-xs text-gray-500">{{ __('Baths') }}</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-ruler-combined mb-1"></i>
+                            <span class="text-sm">{{ $property->unit_area ?? $property->area_size ?? 0 }}</span>
+                            <span class="text-xs text-gray-500">{{ __('m²') }}</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </a>
             
-            <div class="p-6">
-                <h3 class="text-xl font-bold text-gray-900 mb-2">
-                    <a href="{{ route('properties.show', $property->id) }}" class="hover:text-blue-600">
-                        {{ $property->name }}
-                    </a>
-                </h3>
-                <p class="text-gray-600 mb-4 flex items-center">
-                    <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
-                    {{ $property->area ?? $property->location ?? __('Location not specified') }}
-                </p>
-                <div class="flex justify-between text-gray-600 border-t pt-4">
-                    <div class="flex items-center">
-                        <i class="fas fa-bed mr-1"></i>
-                        <span>{{ $property->rooms ?? $property->bedrooms ?? 0 }} {{ __('Beds') }}</span>
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fas fa-bath mr-1"></i>
-                        <span>{{ $property->bathrooms ?? 0 }} {{ __('Baths') }}</span>
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fas fa-ruler-combined mr-1"></i>
-                        <span>{{ $property->unit_area ?? $property->area_size ?? 0 }} {{ __('m²') }}</span>
-                    </div>
-                </div>
-                
-                <div class="flex justify-between mt-4">
-                    <a href="{{ route('properties.show', $property->id) }}" class="text-blue-600 hover:text-blue-800">
-                        <i class="fas fa-eye mr-1"></i> {{ __('View') }}
-                    </a>
-                    <a href="{{ route('properties.edit', $property->id) }}" class="text-yellow-600 hover:text-yellow-800">
-                        <i class="fas fa-edit mr-1"></i> {{ __('Edit') }}
-                    </a>
-                    <form action="{{ route('properties.destroy', $property->id) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to delete this property?') }}');" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash-alt mr-1"></i> {{ __('Delete') }}
-                        </button>
-                    </form>
-                </div>
+            <!-- Action Buttons - Appear on hover, positioned outside main link -->
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-center space-x-4">
+                <a href="{{ route('properties.edit', $property->id) }}" class="text-white bg-yellow-500 hover:bg-yellow-600 p-2 rounded-full" title="{{ __('Edit') }}">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this property?') }}');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-white bg-red-500 hover:bg-red-600 p-2 rounded-full" title="{{ __('Delete') }}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </form>
             </div>
         </div>
         @empty
@@ -339,6 +383,7 @@
 </div>
 
 @push('scripts')
+@include('components.layouts.alert-scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Add click event listeners to all featured toggle buttons
@@ -421,6 +466,34 @@
                 });
             });
         }
+
+        // Replace all delete form submissions with SweetAlert2
+        document.querySelectorAll('form[action^="{{ route("properties.destroy", "") }}"]').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const propertyName = this.closest('tr').querySelector('a[href^="{{ route("properties.show", "") }}"]').textContent.trim();
+                
+                window.confirmDelete({
+                    title: '{{ __("Delete Property") }}',
+                    text: `{{ __("Are you sure you want to delete") }} ${propertyName}? {{ __("This action cannot be undone.") }}`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading state
+                        Swal.fire({
+                            title: '{{ __("Deleting...") }}',
+                            html: '{{ __("Please wait") }}',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        this.submit();
+                    }
+                });
+            });
+        });
     });
 </script>
 @endpush

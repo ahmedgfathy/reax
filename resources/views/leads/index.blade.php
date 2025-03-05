@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body class="bg-gray-50 {{ app()->getLocale() == 'ar' ? 'rtl' : '' }} font-{{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}">
+    @include('components.layouts.alert-scripts')
     <!-- Header Menu -->
     @include('components.header-menu')
 
@@ -114,6 +115,27 @@
                 </div>
             @endif
 
+            @if(session('warning'))
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
+                    <p>{{ session('warning') }}</p>
+                    
+                    @if(session('import_errors'))
+                        <div class="mt-2">
+                            <button type="button" class="text-yellow-800 underline" 
+                                    onclick="document.getElementById('import-errors').classList.toggle('hidden')">
+                                {{ __('Show/Hide Errors') }}
+                            </button>
+                            
+                            <ul id="import-errors" class="list-disc list-inside mt-2 text-sm text-yellow-800 hidden">
+                                @foreach(session('import_errors') as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
             <!-- Bulk Action Controls -->
             <div id="bulk-actions-toolbar" class="bg-gray-100 p-3 mb-4 rounded-md hidden">
                 <div class="flex items-center gap-2">
@@ -146,7 +168,8 @@
                             <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Name') }}</th>
                             <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Contact') }}</th>
                             <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Status') }}</th>
-                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Property Interest') }}</th>
+                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Class') }}</th>
+                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Last Follow-up') }}</th>
                             <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Budget') }}</th>
                             <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Assigned To') }}</th>
                             <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Actions') }}</th>
@@ -160,12 +183,21 @@
                                         <input type="checkbox" name="selected_leads[]" value="{{ $lead->id }}" class="lead-checkbox rounded text-blue-600 focus:ring-blue-500">
                                     </td>
                                     <td class="py-3 px-4">
-                                        <div class="font-medium text-gray-800">{{ $lead->first_name }} {{ $lead->last_name }}</div>
-                                        <div class="text-xs text-gray-500">{{ $lead->source }}</div>
+                                        <div class="font-medium text-gray-800">
+                                            <a href="{{ route('leads.show', $lead->id) }}" class="hover:text-blue-600">
+                                                {{ $lead->first_name }} {{ $lead->last_name }}
+                                            </a>
+                                        </div>
+                                        <div class="text-xs text-gray-500">{{ $lead->source }} {{ $lead->lead_source ? "({$lead->lead_source})" : '' }}</div>
                                     </td>
                                     <td class="py-3 px-4">
                                         <div class="text-sm">{{ $lead->email }}</div>
-                                        <div class="text-xs text-gray-500">{{ $lead->phone }}</div>
+                                        <div class="text-xs text-gray-500">
+                                            {{ $lead->phone }}
+                                            @if($lead->mobile)
+                                                <span class="text-xs text-blue-600 ml-1">(M: {{ $lead->mobile }})</span>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="py-3 px-4">
                                         <span class="px-2 py-1 text-xs rounded-full 
@@ -179,9 +211,30 @@
                                         ">
                                             {{ ucfirst($lead->status) }}
                                         </span>
+                                        @if($lead->lead_status)
+                                            <div class="text-xs text-gray-500 mt-1">{{ $lead->lead_status }}</div>
+                                        @endif
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        @if($lead->lead_class)
+                                            @if($lead->lead_class === 'A')
+                                                <span class="text-green-600 font-medium">A</span>
+                                            @elseif($lead->lead_class === 'B')
+                                                <span class="text-yellow-600 font-medium">B</span>
+                                            @elseif($lead->lead_class === 'C')
+                                                <span class="text-red-600 font-medium">C</span>
+                                            @else
+                                                {{ $lead->lead_class }}
+                                            @endif
+                                        @else
+                                            -
+                                        @endif
+                                        @if($lead->agent_follow_up)
+                                            <span class="bg-red-100 text-red-800 text-xs px-1 rounded ml-1">{{ __('Follow Up') }}</span>
+                                        @endif
                                     </td>
                                     <td class="py-3 px-4 text-sm">
-                                        {{ $lead->interestedProperty ? $lead->interestedProperty->name : 'N/A' }}
+                                        {{ $lead->last_follow_up ? $lead->last_follow_up->format('Y-m-d') : '-' }}
                                     </td>
                                     <td class="py-3 px-4 text-sm">
                                         {{ $lead->budget ? number_format($lead->budget) : 'N/A' }}
@@ -417,149 +470,303 @@
                 });
             }
 
-            // Checkbox selection handling
+            // Checkbox handling
             const selectAll = document.getElementById('select-all');
             const leadCheckboxes = document.querySelectorAll('.lead-checkbox');
             const bulkActionsToolbar = document.getElementById('bulk-actions-toolbar');
             const selectedCountElement = document.getElementById('selected-count');
-
-            // Select all checkbox
+            
+            // Select all checkbox functionality
             if (selectAll) {
-                selectAll.addEventListener('change', function() {
+                selectAll.addEventListener('click', function() {
+                    const isChecked = this.checked;
+                    
                     leadCheckboxes.forEach(checkbox => {
-                        checkbox.checked = this.checked;
+                        checkbox.checked = isChecked;
                     });
-                    updateSelectedCount();
+                    
+                    updateBulkActionToolbar();
                 });
             }
-
-            // Individual lead checkboxes
+            
+            // Individual checkboxes
             leadCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    updateSelectedCount();
-                    
-                    // Update the "select all" checkbox state
-                    if (!this.checked) {
-                        selectAll.checked = false;
-                    } else if (areAllChecked()) {
-                        selectAll.checked = true;
-                    }
+                checkbox.addEventListener('click', function() {
+                    updateSelectAllCheckbox();
+                    updateBulkActionToolbar();
                 });
             });
-
-            // Helper function to check if all checkboxes are checked
-            function areAllChecked() {
-                return Array.from(leadCheckboxes).every(checkbox => checkbox.checked);
+            
+            // Function to update select all checkbox
+            function updateSelectAllCheckbox() {
+                if (leadCheckboxes.length > 0) {
+                    const allChecked = Array.from(leadCheckboxes).every(cb => cb.checked);
+                    const someChecked = Array.from(leadCheckboxes).some(cb => cb.checked);
+                    
+                    selectAll.checked = allChecked;
+                    selectAll.indeterminate = someChecked && !allChecked;
+                }
             }
-
-            // Update selected count and show/hide toolbar
-            function updateSelectedCount() {
+            
+            // Function to update the bulk actions toolbar
+            function updateBulkActionToolbar() {
                 const checkedCount = document.querySelectorAll('.lead-checkbox:checked').length;
-                selectedCountElement.textContent = checkedCount + ' ' + (checkedCount === 1 ? '{{ __("selected") }}' : '{{ __("selected") }}');
                 
+                // Update counter
+                selectedCountElement.textContent = checkedCount + ' ' + 
+                    (checkedCount === 1 ? '{{ __("selected") }}' : '{{ __("selected") }}');
+                
+                // Show/hide toolbar
                 if (checkedCount > 0) {
                     bulkActionsToolbar.classList.remove('hidden');
                 } else {
                     bulkActionsToolbar.classList.add('hidden');
                 }
+                
+                // Also update the count in the export modal
+                if (document.getElementById('selected-count-number')) {
+                    document.getElementById('selected-count-number').textContent = checkedCount;
+                }
+                
+                // Update hidden field with selected IDs for export
+                if (document.getElementById('selected_leads_export')) {
+                    const selectedIds = Array.from(document.querySelectorAll('.lead-checkbox:checked'))
+                        .map(cb => cb.value).join(',');
+                    document.getElementById('selected_leads_export').value = selectedIds;
+                }
             }
-
-            // Deselect all leads
-            function deselectAll() {
-                document.getElementById('select-all').checked = false;
-                document.querySelectorAll('.lead-checkbox').forEach(checkbox => {
+            
+            // Make functions accessible globally
+            window.deselectAll = function() {
+                selectAll.checked = false;
+                selectAll.indeterminate = false;
+                
+                leadCheckboxes.forEach(checkbox => {
                     checkbox.checked = false;
                 });
-                document.getElementById('bulk-actions-toolbar').classList.add('hidden');
-            }
-
-            // Show transfer modal
-            function showTransferModal() {
-                document.getElementById('transfer-modal').classList.remove('hidden');
-            }
-
-            // Process transfer action
-            function transferLeads() {
-                const userId = document.getElementById('transfer-to-user').value;
-                if (!userId) {
-                    alert('{{ __("Please select a user to transfer leads to.") }}');
+                
+                updateBulkActionToolbar();
+            };
+            
+            // Confirm delete function - Make sure this is being called correctly
+            window.confirmDelete = function() {
+                const checkboxes = document.querySelectorAll('.lead-checkbox:checked');
+                const count = checkboxes.length;
+                
+                if (count === 0) {
+                    // Use a nicer alert for the warning
+                    Swal.fire({
+                        title: '{{ __("No Leads Selected") }}',
+                        text: '{{ __("Please select at least one lead to delete.") }}',
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: '{{ __("Ok") }}'
+                    });
                     return;
                 }
-                document.getElementById('bulk-action-input').value = 'transfer';
-                document.getElementById('bulk-assign-input').value = userId;
-                document.getElementById('bulk-action-form').submit();
-            }
-
-            // Confirm and process delete action
-            function confirmDelete() {
-                if (confirm('{{ __("Are you sure you want to delete the selected leads?") }}')) {
-                    document.getElementById('bulk-action-input').value = 'delete';
-                    document.getElementById('bulk-action-form').submit();
-                }
-            }
-
-            // Additional JavaScript for import/export functionality
-            const fileInput = document.getElementById('file-upload');
-            const fileNameDisplay = document.getElementById('file-name');
-            if (fileInput) {
-                fileInput.addEventListener('change', function() {
-                    if (this.files && this.files[0]) {
-                        fileNameDisplay.textContent = this.files[0].name;
-                        fileNameDisplay.classList.remove('hidden');
-                    } else {
-                        fileNameDisplay.classList.add('hidden');
-                    }
-                });
-            }
-
-            // Handle format selection in export modal
-            const formatRadios = document.querySelectorAll('input[name="format"]');
-            if (formatRadios.length) {
-                formatRadios.forEach(radio => {
-                    radio.addEventListener('change', function() {
-                        // Remove highlight from all labels
-                        document.querySelectorAll('input[name="format"]').forEach(r => {
-                            r.closest('label').querySelector('div').classList.remove('bg-blue-600');
+                
+                // Use our sweet alert confirmation
+                window.confirmBulkDelete(count, {
+                    text: '{{ __("Are you sure you want to delete") }} ' + count + ' {{ __("selected leads? This action cannot be undone.") }}'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Create a temporary form for submission
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route("leads.bulk-action") }}';
+                        form.style.display = 'none';
+                        
+                        // Add CSRF token
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfToken);
+                        
+                        // Add action type
+                        const actionInput = document.createElement('input');
+                        actionInput.type = 'hidden';
+                        actionInput.name = 'action';
+                        actionInput.value = 'delete';
+                        form.appendChild(actionInput);
+                        
+                        // Add each selected lead ID
+                        checkboxes.forEach(function(checkbox) {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'selected_leads[]';
+                            input.value = checkbox.value;
+                            form.appendChild(input);
                         });
                         
-                        // Add highlight to selected label
-                        if (this.checked) {
-                            this.closest('label').querySelector('div').classList.add('bg-blue-600');
+                        // Show loading state
+                        Swal.fire({
+                            title: '{{ __("Deleting...") }}',
+                            html: '{{ __("Please wait while we delete the selected leads.") }}',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        // Append form to document and submit
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            };
+            
+            // Transfer leads functions
+            window.showTransferModal = function() {
+                const count = document.querySelectorAll('.lead-checkbox:checked').length;
+                
+                if (count === 0) {
+                    Swal.fire({
+                        title: '{{ __("No Leads Selected") }}',
+                        text: '{{ __("Please select at least one lead to transfer.") }}',
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: '{{ __("Ok") }}'
+                    });
+                    return;
+                }
+                
+                document.getElementById('transfer-modal').classList.remove('hidden');
+            };
+            
+            window.transferLeads = function() {
+                const checkboxes = document.querySelectorAll('.lead-checkbox:checked');
+                const count = checkboxes.length;
+                const userId = document.getElementById('transfer-to-user').value;
+                
+                if (count === 0) {
+                    Swal.fire({
+                        title: '{{ __("No Leads Selected") }}',
+                        text: '{{ __("Please select at least one lead to transfer.") }}',
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: '{{ __("Ok") }}'
+                    });
+                    return;
+                }
+                
+                if (!userId) {
+                    Swal.fire({
+                        title: '{{ __("No User Selected") }}',
+                        text: '{{ __("Please select a user to transfer leads to.") }}',
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: '{{ __("Ok") }}'
+                    });
+                    return;
+                }
+                
+                // Get user name from the select element
+                const userSelect = document.getElementById('transfer-to-user');
+                const userName = userSelect.options[userSelect.selectedIndex].text;
+                
+                // Confirm transfer
+                window.confirmDialog({
+                    title: '{{ __("Confirm Transfer") }}',
+                    text: `{{ __("Are you sure you want to transfer") }} ${count} {{ __("leads to") }} ${userName}?`,
+                    icon: 'question',
+                    confirmButtonText: '{{ __("Yes, transfer!") }}',
+                    confirmButtonColor: '#3085d6'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Create a temporary form for submission
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route("leads.bulk-action") }}';
+                        form.style.display = 'none';
+                        
+                        // Add CSRF token
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfToken);
+                        
+                        // Add action type
+                        const actionInput = document.createElement('input');
+                        actionInput.type = 'hidden';
+                        actionInput.name = 'action';
+                        actionInput.value = 'transfer';
+                        form.appendChild(actionInput);
+                        
+                        // Add user ID to transfer to
+                        const userInput = document.createElement('input');
+                        userInput.type = 'hidden';
+                        userInput.name = 'assigned_to';
+                        userInput.value = userId;
+                        form.appendChild(userInput);
+                        
+                        // Add each selected lead ID
+                        checkboxes.forEach(function(checkbox) {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'selected_leads[]';
+                            input.value = checkbox.value;
+                            form.appendChild(input);
+                        });
+                        
+                        // Show loading state
+                        Swal.fire({
+                            title: '{{ __("Transferring...") }}',
+                            html: '{{ __("Please wait while we transfer the selected leads.") }}',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        // Append form to document and submit
+                        document.body.appendChild(form);
+                        form.submit();
+                    } else {
+                        // Close the transfer modal if the user cancels
+                        document.getElementById('transfer-modal').classList.add('hidden');
+                    }
+                });
+            };
+            
+            // Initialize on page load
+            updateSelectAllCheckbox();
+            updateBulkActionToolbar();
+        });
+    </script>
+
+    <!-- Also update the delete buttons in the table rows -->
+    <script>
+        // Add this to your existing script section
+        document.addEventListener('DOMContentLoaded', function() {
+            // Replace all delete form submissions with SweetAlert2
+            document.querySelectorAll('form[action^="{{ route("leads.destroy", "") }}"]').forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    
+                    const leadName = this.closest('tr').querySelector('a[href^="{{ route("leads.show", "") }}"]').textContent.trim();
+                    
+                    window.confirmDelete({
+                        title: '{{ __("Delete Lead") }}',
+                        text: `{{ __("Are you sure you want to delete") }} ${leadName}? {{ __("This action cannot be undone.") }}`,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Show loading state
+                            Swal.fire({
+                                title: '{{ __("Deleting...") }}',
+                                html: '{{ __("Please wait") }}',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+                            
+                            this.submit();
                         }
                     });
                 });
-            }
-
-            // Update selected count in export modal
-            function updateSelectedExportCount() {
-                const selectedLeads = Array.from(document.querySelectorAll('.lead-checkbox:checked')).map(cb => cb.value);
-                document.getElementById('selected-count-number').textContent = selectedLeads.length;
-                document.getElementById('selected_leads_export').value = selectedLeads.join(',');
-                
-                // Disable selected option if no leads are selected
-                const exportSelectedRadio = document.getElementById('export_selected');
-                if (selectedLeads.length === 0) {
-                    exportSelectedRadio.disabled = true;
-                    exportSelectedRadio.checked = false;
-                    document.getElementById('export_all').checked = true;
-                } else {
-                    exportSelectedRadio.disabled = false;
-                }
-            }
-
-            // Update export count when checkboxes change
-            document.querySelectorAll('.lead-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', updateSelectedExportCount);
             });
-
-            // Update on "select all" changes too
-            const selectAll = document.getElementById('select-all');
-            if (selectAll) {
-                selectAll.addEventListener('change', updateSelectedExportCount);
-            }
-
-            // Initial update
-            updateSelectedExportCount();
         });
     </script>
 </body>
