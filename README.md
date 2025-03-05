@@ -1,66 +1,94 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/xinreal/reax/main/public/logo.png" alt="REAX CRM Logo" width="200">
+  <h1>REAX CRM</h1>
+  <p>🏢 Comprehensive Real Estate Customer Relationship Management System</p>
+  
+  <div>
+    <img src="https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
+    <img src="https://img.shields.io/badge/PHP-8.1-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP">
+    <img src="https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
+    <img src="https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white" alt="Alpine.js">
+  </div>
+</div>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<br>
 
-## About Laravel
+## 📋 Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+REAX CRM is a cutting-edge Customer Relationship Management system specifically designed for real estate professionals and agencies. This platform enables efficient management of properties, leads, and client relationships while providing comprehensive reporting and administrative tools.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Developed by [Ahmed Fathy](https://github.com/xinreal), REAX CRM incorporates best practices in software engineering, DevOps, and cybersecurity to deliver a secure, scalable, and maintainable solution.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✨ Features
 
-## Learning Laravel
+<div>
+  <table>
+    <tr>
+      <td width="50%">
+        <h3>🏠 Property Management</h3>
+        <ul>
+          <li>Comprehensive property listings</li>
+          <li>Media management with multiple photos</li>
+          <li>Featured property highlighting</li>
+          <li>Property search and filtering</li>
+          <li>Bulk import and export capabilities</li>
+        </ul>
+      </td>
+      <td width="50%">
+        <h3>👥 Lead Management</h3>
+        <ul>
+          <li>Lead capture and tracking</li>
+          <li>Lead assignment to agents</li>
+          <li>Status workflow pipeline</li>
+          <li>Communication history tracking</li>
+          <li>Lead source attribution</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h3>📊 Reporting & Analytics</h3>
+        <ul>
+          <li>Performance dashboards</li>
+          <li>Lead conversion metrics</li>
+          <li>Agent activity reports</li>
+          <li>Revenue forecasting</li>
+          <li>Custom report generation</li>
+        </ul>
+      </td>
+      <td>
+        <h3>⚙️ Administration</h3>
+        <ul>
+          <li>User management and roles</li>
+          <li>Multi-tenant architecture for agencies</li>
+          <li>System configuration</li>
+          <li>Data backup and restoration</li>
+          <li>API integrations</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+</div>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🚀 Technology Stack
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><img src="https://cdn.worldvectorlogo.com/logos/laravel-2.svg" width="40" height="40"/><br>Laravel</td>
+      <td align="center"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Laravel_LiveWire.png/240px-Laravel_LiveWire.png" width="40" height="40"/><br>Livewire</td>
+      <td align="center"><img src="https://cdn.worldvectorlogo.com/logos/tailwindcss.svg" width="40" height="40"/><br>TailwindCSS</td>
+      <td align="center"><img src="https://avatars.githubusercontent.com/u/59030169?s=200&v=4" width="40" height="40"/><br>AlpineJS</td>
+    </tr>
+    <tr>
+      <td align="center"><img src="https://cdn.worldvectorlogo.com/logos/mysql-6.svg" width="40" height="40"/><br>MySQL</td>
+      <td align="center"><img src="https://cdn.worldvectorlogo.com/logos/redis.svg" width="40" height="40"/><br>Redis</td>
+      <td align="center"><img src="https://cdn.worldvectorlogo.com/logos/docker.svg" width="40" height="40"/><br>Docker</td>
+      <td align="center"><img src="https://cdn.worldvectorlogo.com/logos/git-icon.svg" width="40" height="40"/><br>Git</td>
+    </tr>
+  </table>
+</div>
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🏗️ Architecture
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+REAX CRM is built following a modular architecture with clean separation of concerns:
