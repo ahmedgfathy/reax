@@ -425,4 +425,95 @@ class PropertyController extends Controller
         
         return view('featured-properties', compact('featuredProperties'));
     }
+
+    public function sale(Request $request)
+    {
+        $query = Property::where('unit_for', 'sale')
+            ->where('is_published', true)
+            ->when($request->search, function($q, $search) {
+                return $q->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('location', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->type, function($q, $type) {
+                return $q->where('type', $type);
+            })
+            ->when($request->min_price, function($q, $price) {
+                return $q->where('price', '>=', $price);
+            })
+            ->when($request->max_price, function($q, $price) {
+                return $q->where('price', '<=', $price);
+            });
+
+        // Handle sorting
+        $query->when($request->sort, function($q, $sort) {
+            switch($sort) {
+                case 'price_low':
+                    return $q->orderBy('price', 'asc');
+                case 'price_high':
+                    return $q->orderBy('price', 'desc');
+                default:
+                    return $q->latest();
+            }
+        }, function($q) {
+            return $q->latest();
+        });
+
+        $properties = $query->paginate(12)->withQueryString();
+        
+        return view('sale', compact('properties'));
+    }
+
+    public function rent(Request $request)
+    {
+        $query = Property::where('unit_for', 'rent')
+            ->where('is_published', true)
+            ->when($request->search, function($q, $search) {
+                return $q->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('location', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->type, function($q, $type) {
+                return $q->where('type', $type);
+            })
+            ->when($request->min_price, function($q, $price) {
+                return $q->where('price', '>=', $price);
+            })
+            ->when($request->max_price, function($q, $price) {
+                return $q->where('price', '<=', $price);
+            });
+
+        // Handle sorting
+        $query->when($request->sort, function($q, $sort) {
+            switch($sort) {
+                case 'price_low':
+                    return $q->orderBy('price', 'asc');
+                case 'price_high':
+                    return $q->orderBy('price', 'desc');
+                default:
+                    return $q->latest();
+            }
+        }, function($q) {
+            return $q->latest();
+        });
+
+        $properties = $query->paginate(12)->withQueryString();
+        
+        return view('rent', compact('properties'));
+    }
+
+    public function togglePublished(Property $property)
+    {
+        $property->is_published = !$property->is_published;
+        $property->save();
+
+        return response()->json([
+            'success' => true,
+            'is_published' => $property->is_published
+        ]);
+    }
 }

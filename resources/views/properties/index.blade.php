@@ -154,18 +154,28 @@
                     @endphp
                     <img src="{{ $imageUrl }}" alt="{{ $property->name }}" class="w-full h-56 object-cover">
                     
-                    <!-- Featured Heart Icon - Positioned outside the main link for independent clicking -->
-                    <button 
-                        data-property-id="{{ $property->id }}" 
-                        class="featured-toggle absolute top-4 left-4 transition-transform hover:scale-110 z-10"
-                        onclick="event.preventDefault();"
-                    >
-                        @if($property->is_featured)
-                            <i class="fas fa-heart text-xl text-red-500 drop-shadow-md"></i>
-                        @else
-                            <i class="far fa-heart text-xl text-white drop-shadow-md"></i>
-                        @endif
-                    </button>
+                    <!-- Toggle Icons -->
+                    <div class="absolute top-4 left-4 flex space-x-2 z-10">
+                        <!-- Featured Toggle (Red Heart) -->
+                        <button 
+                            data-property-id="{{ $property->id }}" 
+                            class="featured-toggle transition-transform hover:scale-110"
+                            onclick="event.preventDefault();"
+                            title="{{ __('Feature on Homepage') }}"
+                        >
+                            <i class="fa-heart text-xl {{ $property->is_featured ? 'fas text-red-500' : 'far text-white' }} drop-shadow-md"></i>
+                        </button>
+                        
+                        <!-- Publish Toggle (Blue Heart) -->
+                        <button 
+                            data-property-id="{{ $property->id }}" 
+                            class="publish-toggle transition-transform hover:scale-110"
+                            onclick="event.preventDefault();"
+                            title="{{ __('Publish to ') . ($property->unit_for == 'sale' ? 'Sale' : 'Rent') . ' Page' }}"
+                        >
+                            <i class="fa-heart text-xl {{ $property->is_published ? 'fas text-blue-500' : 'far text-white' }} drop-shadow-md"></i>
+                        </button>
+                    </div>
                     
                     <!-- Property Status Badge -->
                     <div class="absolute top-4 right-4">
@@ -432,6 +442,40 @@
                 });
             });
         });
+
+        // Handle Publish Toggle
+        document.querySelectorAll('.publish-toggle').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                togglePropertyStatus(this, 'published');
+            });
+        });
+
+        function togglePropertyStatus(button, type) {
+            const propertyId = button.dataset.propertyId;
+            const icon = button.querySelector('i');
+            const url = type === 'featured' ? 
+                `/properties/${propertyId}/toggle-featured` : 
+                `/properties/${propertyId}/toggle-published`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    icon.classList.toggle('fas');
+                    icon.classList.toggle('far');
+                    icon.classList.toggle(type === 'featured' ? 'text-red-500' : 'text-blue-500');
+                    icon.classList.toggle('text-white');
+                }
+            });
+        }
 
         // File upload handling for import
         const fileInput = document.getElementById('file-upload');

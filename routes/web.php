@@ -15,11 +15,11 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LeadImportExportController;
 use App\Http\Controllers\ProfileController;
 
-// Home route using HomeController
+// Public routes - place these before any auth routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Featured Properties route
-Route::get('/featured-properties', [App\Http\Controllers\PropertyController::class, 'featured'])->name('featured.properties');
+Route::get('/sale', [PropertyController::class, 'sale'])->name('sale');
+Route::get('/rent', [PropertyController::class, 'rent'])->name('rent');
+Route::get('/featured-properties', [HomeController::class, 'featuredProperties'])->name('featured.properties');
 
 // Auth routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -38,6 +38,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/properties/import', [PropertyController::class, 'import'])->name('properties.import');
     Route::post('/properties/export', [PropertyController::class, 'export'])->name('properties.export');
     Route::resource('properties', PropertyController::class);
+    
+    Route::post('/properties/{property}/toggle-published', [PropertyController::class, 'togglePublished'])
+        ->name('properties.toggle-published');
     
     // Lead routes - FIXED ORDER
     // The bulk action route must be defined BEFORE the resource route

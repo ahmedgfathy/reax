@@ -45,6 +45,7 @@
             
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-6 items-center">
+                <a href="/" class="text-white hover:text-blue-200 font-medium">{{ __('Home') }}</a>
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Sale') }}</a>
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Rent') }}</a>
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Primary') }}</a>
@@ -121,6 +122,7 @@
         <div id="mobile-menu" class="md:hidden bg-white shadow-lg hidden absolute w-full">
             <div class="container mx-auto px-4 py-3">
                 <nav class="flex flex-col space-y-3">
+                    <a href="/" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Home') }}</a>
                     <a href="#" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Sale') }}</a>
                     <a href="#" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Rent') }}</a>
                     <a href="#" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Primary') }}</a>
@@ -622,6 +624,18 @@
         </div>
     </section>
     
+    <!-- Google Maps Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Our Agencies Locations') }}</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">{{ __('Find our trusted real estate agencies across Cairo') }}</p>
+            </div>
+            
+            <div class="w-full h-[500px] rounded-lg overflow-hidden shadow-lg" id="map"></div>
+        </div>
+    </section>
+
     <!-- Features Section -->
     <section class="py-16 bg-gray-100">
         <div class="container mx-auto px-4">
@@ -780,5 +794,54 @@
             });
         });
     </script>
+    <script>
+        // Sample agencies data
+        const agencies = [
+            { name: 'Main Office', lat: 30.0444, lng: 31.2357, info: 'REAX Headquarters' }, // Downtown Cairo
+            { name: 'New Cairo Branch', lat: 30.0283, lng: 31.4454, info: 'New Cairo Office' },
+            { name: '6th October Branch', lat: 29.9285, lng: 30.9188, info: '6th October Office' },
+            { name: 'Maadi Branch', lat: 29.9602, lng: 31.2569, info: 'Maadi Office' }
+        ];
+
+        function initMap() {
+            // Create map centered on Cairo
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 11,
+                center: { lat: 30.0444, lng: 31.2357 }, // Cairo coordinates
+                styles: [
+                    {
+                        featureType: "poi",
+                        elementType: "labels",
+                        stylers: [{ visibility: "off" }]
+                    }
+                ]
+            });
+
+            // Add markers for each agency
+            agencies.forEach(agency => {
+                const marker = new google.maps.Marker({
+                    position: { lat: agency.lat, lng: agency.lng },
+                    map: map,
+                    title: agency.name,
+                    icon: {
+                        url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                    }
+                });
+
+                // Create info window for each marker
+                const infowindow = new google.maps.InfoWindow({
+                    content: `<div class="p-2">
+                        <h3 class="font-bold text-gray-900">${agency.name}</h3>
+                        <p class="text-gray-600">${agency.info}</p>
+                    </div>`
+                });
+
+                marker.addListener('click', () => {
+                    infowindow.open(map, marker);
+                });
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
 </body>
 </html>

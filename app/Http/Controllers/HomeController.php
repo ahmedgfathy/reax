@@ -17,23 +17,14 @@ class HomeController extends Controller
     {
         // Get featured properties for the home page - with error handling
         try {
-            // First check if the is_featured column exists
-            if (DB::getSchemaBuilder()->hasColumn('properties', 'is_featured')) {
-                $featuredProperties = Property::where('is_featured', true)
-                    ->orderBy('created_at', 'desc')
-                    ->take(3)
-                    ->get();
-            } else {
-                // Fallback if column doesn't exist
-                $featuredProperties = Property::orderBy('created_at', 'desc')
-                    ->take(3)
-                    ->get();
-            }
-        } catch (\Exception $e) {
-            // If there's any error, show recent properties
-            $featuredProperties = Property::orderBy('created_at', 'desc')
+            $featuredProperties = Property::where('is_published', true)
+                ->where('is_featured', true)
+                ->orderBy('created_at', 'desc')
                 ->take(3)
                 ->get();
+        } catch (\Exception $e) {
+            // If there's any error, return empty collection
+            $featuredProperties = collect([]);
         }
             
         return view('home', compact('featuredProperties'));
@@ -44,18 +35,13 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function featuredProperties(Request $request)
+    public function featuredProperties()
     {
-        try {
-            // Get featured properties with pagination
-            $featuredProperties = Property::where('is_featured', true)
-                ->orderBy('created_at', 'desc')
-                ->paginate(9);  // 9 properties per page (3x3 grid)
-        } catch (\Exception $e) {
-            // If there's any error, return empty collection
-            $featuredProperties = collect([]);
-        }
-        
+        $featuredProperties = Property::where('is_featured', true)
+            ->where('is_published', true)
+            ->latest()
+            ->paginate(12);
+            
         return view('featured-properties', compact('featuredProperties'));
     }
 }
