@@ -12,12 +12,13 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LeadImportExportController;
+use App\Http\Controllers\ProfileController;
 
 // Home route using HomeController
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Featured Properties route
-Route::get('/featured-properties', [HomeController::class, 'featuredProperties'])->name('featured.properties');
+Route::get('/featured-properties', [App\Http\Controllers\PropertyController::class, 'featured'])->name('featured.properties');
 
 // Auth routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -57,6 +58,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reports/{report}/export', [\App\Http\Controllers\ReportController::class, 'export'])->name('reports.export');
     Route::post('/reports/{report}/share', [\App\Http\Controllers\ReportController::class, 'share'])->name('reports.share');
     Route::post('/reports/{report}/schedule', [\App\Http\Controllers\ReportController::class, 'schedule'])->name('reports.schedule');
+
+    // Add profile routes
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
 });
 
 // Locale route

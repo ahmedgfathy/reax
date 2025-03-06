@@ -20,17 +20,34 @@ class LeadFactory extends Factory
         $propertyId = Property::inRandomOrder()->first()?->id;
         $userId = User::inRandomOrder()->first()?->id;
         
+        // If we found no property or user, make sure we don't cause errors
+        if (!$propertyId) {
+            // Create a property if none exists
+            $propertyId = Property::factory()->create()->id;
+        }
+        
+        if (!$userId) {
+            // Create a user if none exists
+            $userId = User::factory()->create()->id;
+        }
+        
+        // Based on the actual leads table structure
+        // Use property_id instead of property_interest
         return [
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
+            'name' => $this->faker->name(),
             'email' => $this->faker->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'status' => $this->faker->randomElement($statuses),
             'source' => $this->faker->randomElement($sources),
-            'property_interest' => $propertyId,
+            // Use property_id instead of property_interest
+            'property_id' => $this->faker->boolean(80) ? $propertyId : null,
             'budget' => $this->faker->numberBetween(50000, 2000000),
-            'notes' => $this->faker->paragraph(),
-            'assigned_to' => $userId,
+            'notes' => $this->faker->boolean(70) ? $this->faker->paragraph() : null,
+            'assigned_to' => $this->faker->boolean(80) ? $userId : null,
+            'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
+            'updated_at' => function (array $attributes) {
+                return $this->faker->dateTimeBetween($attributes['created_at'], 'now');
+            },
         ];
     }
 }

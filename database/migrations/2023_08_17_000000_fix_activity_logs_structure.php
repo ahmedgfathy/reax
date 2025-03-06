@@ -12,10 +12,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // First, let's check the actual columns that exist in the activity_logs table
+        // Ensure migrations_errors table exists
+        if (!Schema::hasTable('migrations_errors')) {
+            Schema::create('migrations_errors', function (Blueprint $table) {
+                $table->id();
+                $table->string('migration');
+                $table->text('error');
+                $table->timestamp('created_at');
+            });
+        }
+
+        // Skip if activity_logs doesn't exist
+        if (!Schema::hasTable('activity_logs')) {
+            return;
+        }
+        
+        // First, let's check the columns
         $columns = Schema::getColumnListing('activity_logs');
         
-        // Check if we have a column for storing entity ID
+        // Check for entity ID column
         $entityIdColumn = null;
         if (in_array('entity_id', $columns)) {
             $entityIdColumn = 'entity_id';
@@ -23,44 +38,48 @@ return new class extends Migration
             $entityIdColumn = 'lead_id';
         }
         
-        // 1. Add entity_type column if it doesn't exist yet
+        // Add entity_type if needed
         if (!in_array('entity_type', $columns)) {
             Schema::table('activity_logs', function (Blueprint $table) use ($entityIdColumn) {
-                // If we have an entity ID column, add entity_type after it
                 if ($entityIdColumn) {
                     $table->string('entity_type')->nullable()->after($entityIdColumn);
                 } else {
-                    // Otherwise just add it
                     $table->string('entity_type')->nullable();
                 }
             });
         }
         
-        // 2. Update records if the column was added successfully and we have an entity ID column
-        if (Schema::hasColumn('activity_logs', 'entity_type') && $entityIdColumn) {
-            DB::statement("UPDATE activity_logs SET entity_type = 'lead' WHERE {$entityIdColumn} IS NOT NULL");
+        // Only add lead_id if leads table exists
+        if (!Schema::hasTable('leads')) {
+            DB::table('migrations_errors')->insert([
+                'migration' => '2023_08_17_000000_fix_activity_logs_structure',
+                'error' => 'Leads table does not exist. Cannot add foreign key.',
+                'created_at' => now()
+            ]);
+            return;
         }
-        
-        // 3. If we don't have an entity_id column but have a lead_id column, rename it
-        if (!in_array('entity_id', $columns) && in_array('lead_id', $columns)) {
+
+        // Add lead_id if it doesn't exist
+        if (!Schema::hasColumn('activity_logs', 'lead_id')) {
             Schema::table('activity_logs', function (Blueprint $table) {
-                // First make sure there are no foreign key constraints
-                if (Schema::hasColumn('activity_logs', 'lead_id')) {
-                    // Drop foreign key constraint if it exists
-                    $foreignKeys = $this->getForeignKeys('activity_logs');
-                    foreach ($foreignKeys as $foreignKey) {
-                        if ($foreignKey['column'] === 'lead_id') {
-                            $table->dropForeign($foreignKey['name']);
-                            break;
-                        }
-                    }
-                }
+                $table->unsignedBigInteger('lead_id')->nullable();
             });
-            
-            // Now rename the column
-            Schema::table('activity_logs', function (Blueprint $table) {
-                $table->renameColumn('lead_id', 'entity_id');
-            });
+
+            // Add foreign key
+            try {
+                Schema::table('activity_logs', function (Blueprint $table) {
+                    $table->foreign('lead_id')
+                          ->references('id')
+                          ->on('leads')
+                          ->onDelete('cascade');
+                });
+            } catch (\Exception $e) {
+                DB::table('migrations_errors')->insert([
+                    'migration' => '2023_08_17_000000_fix_activity_logs_structure',
+                    'error' => 'Failed to add foreign key: ' . $e->getMessage(),
+                    'created_at' => now()
+                ]);
+            }
         }
     }
 
@@ -69,30 +88,22 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // No down migration needed, as this is a fix
-    }
-    
-    /**
-     * Get foreign keys for a table
-     */
-    private function getForeignKeys($table)
-    {
-        $conn = Schema::getConnection()->getDoctrineSchemaManager();
-        $foreignKeys = [];
-        
-        try {
-            $tableForeignKeys = $conn->listTableForeignKeys($table);
-            
-            foreach ($tableForeignKeys as $key) {
-                $foreignKeys[] = [
-                    'name' => $key->getName(),
-                    'column' => $key->getLocalColumns()[0]
-                ];
+        // Safe drop of foreign key and column
+        if (Schema::hasTable('activity_logs') && Schema::hasColumn('activity_logs', 'lead_id')) {
+            try {
+                $foreignKeys = DB::select("SHOW CREATE TABLE activity_logs");
+                if (strpos($foreignKeys[0]->{'Create Table'}, 'CONSTRAINT `activity_logs_lead_id_foreign`') !== false) {
+                    Schema::table('activity_logs', function (Blueprint $table) {
+                        $table->dropForeign('activity_logs_lead_id_foreign');
+                    });
+                }
+            } catch (\Exception $e) {
+                // Silently continue
             }
-        } catch (\Exception $e) {
-            // Silently fail
+
+            Schema::table('activity_logs', function (Blueprint $table) {
+                $table->dropColumn('lead_id');
+            });
         }
-        
-        return $foreignKeys;
     }
 };

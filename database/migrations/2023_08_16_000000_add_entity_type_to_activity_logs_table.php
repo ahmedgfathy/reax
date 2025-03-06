@@ -12,12 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // First add the column - this is the part that was failing
-        Schema::table('activity_logs', function (Blueprint $table) {
-            if (!Schema::hasColumn('activity_logs', 'entity_type')) {
+        if (Schema::hasTable('activity_logs') && !Schema::hasColumn('activity_logs', 'entity_type')) {
+            Schema::table('activity_logs', function (Blueprint $table) {
                 $table->string('entity_type')->nullable()->after('entity_id');
-            }
-        });
+            });
+        }
         
         // Then update the records, but only if the column was added successfully
         if (Schema::hasColumn('activity_logs', 'entity_type')) {
@@ -30,10 +29,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('activity_logs', function (Blueprint $table) {
-            if (Schema::hasColumn('activity_logs', 'entity_type')) {
+        if (Schema::hasTable('activity_logs') && Schema::hasColumn('activity_logs', 'entity_type')) {
+            Schema::table('activity_logs', function (Blueprint $table) {
                 $table->dropColumn('entity_type');
-            }
-        });
+            });
+        }
     }
 };

@@ -22,6 +22,10 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'phone',
+        'address',
+        'avatar',
+        'team_id'
     ];
 
     /**
@@ -45,5 +49,42 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function leads()
+    {
+        return $this->hasMany(Lead::class);
+    }
+    
+    /**
+     * Get the properties associated with the user as handler.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function properties()
+    {
+        return $this->hasMany(Property::class, 'handler_id');
+    }
+    
+    /**
+     * Get recent activity for this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function recentActivity()
+    {
+        // This method is likely used in the profile page too
+        // Return empty collection by default or implement actual logic if needed
+        return collect([]);
+    }
+    
+    /**
+     * Get reports created by this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'created_by');
     }
 }

@@ -384,4 +384,45 @@ class PropertyController extends Controller
             return redirect()->route('properties.index')->with('error', __('Error exporting properties: ') . $e->getMessage());
         }
     }
+
+    /**
+     * Display a listing of featured properties.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function featured(Request $request)
+    {
+        $query = Property::query()->where('is_featured', true);
+        
+        // Filter by property type
+        if ($request->has('type') && $request->type != '') {
+            $query->where('type', $request->type);
+        }
+        
+        // Filter by property status (sale/rent)
+        if ($request->has('for') && $request->for != '') {
+            $query->where('unit_for', $request->for);
+        }
+        
+        // Sort properties
+        $sortMethod = $request->get('sort', 'newest');
+        
+        switch ($sortMethod) {
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+        
+        // Get featured properties with pagination
+        $featuredProperties = $query->paginate(9)->withQueryString();
+        
+        return view('featured-properties', compact('featuredProperties'));
+    }
 }

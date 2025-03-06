@@ -4,29 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateActivityLogsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::create('activity_logs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('lead_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('action');
-            $table->string('description');
-            $table->json('details')->nullable();
-            $table->timestamps();
-        });
+        // Skip this migration as activity_logs table is already created in 2023_08_15_000001_create_activity_logs_table.php
+        return;
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('activity_logs');
+        // No operation needed
+        return;
     }
-};
+}

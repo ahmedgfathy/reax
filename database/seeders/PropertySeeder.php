@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Property;
+use Illuminate\Database\Seeder;
 
 class PropertySeeder extends Seeder
 {
@@ -12,6 +12,18 @@ class PropertySeeder extends Seeder
      */
     public function run(): void
     {
-        Property::factory()->count(10)->create();
+        // Check if we already have properties
+        $propertyCount = Property::count();
+        if ($propertyCount > 0) {
+            $this->command->info("Skipping property seeding, {$propertyCount} properties already exist.");
+            return;
+        }
+        
+        // Create 30 properties
+        Property::factory()
+            ->count(30)
+            ->create();
+
+        $this->command->info('Created 30 property records.');
     }
 }

@@ -6,28 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::create('properties', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('location');
-            $table->integer('price');
-            $table->integer('size');
-            $table->string('type');
-            $table->text('description')->nullable();
-            $table->timestamps();
-        });
+        // Skip this migration as properties table is already created in 2023_07_00_000000_create_properties_table.php
+        return;
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('properties');
+        return;
     }
 };
