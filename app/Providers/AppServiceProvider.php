@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Vite;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\App;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,5 +40,11 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register app-layout component
         Blade::component('layouts.app', 'app-layout');
+
+        // Share current locale with all views
+        View::composer('*', function ($view) {
+            $view->with('currentLocale', App::getLocale());
+            $view->with('isRtl', App::getLocale() === 'ar');
+        });
     }
 }

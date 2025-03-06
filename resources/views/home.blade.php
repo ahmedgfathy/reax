@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ __('REAX - Real Estate CRM') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <style>
         body {
             font-family: {{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}, sans-serif;
@@ -25,7 +28,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50" lang="{{ app()->getLocale() }}">
     <!-- Header with transparent background that becomes solid on scroll -->
     <header id="main-header" class="fixed w-full z-10 transition-all duration-300">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -46,8 +49,13 @@
                     @csrf
                     <select name="locale" onchange="this.form.submit()" class="bg-white/20 backdrop-blur-sm border border-white/30 rounded-md p-2 text-white">
                         <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
-                        <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>AR</option>
+                        <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>عربي</option>
                     </select>
+                    <noscript>
+                        <button type="submit" class="ml-2 bg-white text-blue-600 px-2 py-1 rounded-md text-xs">
+                            {{ __('Change') }}
+                        </button>
+                    </noscript>
                 </form>
                 
                 <!-- Conditional Login/Register or Dashboard link based on authentication -->
@@ -133,8 +141,13 @@
                                 @csrf
                                 <select name="locale" onchange="this.form.submit()" class="border rounded-md p-2 text-gray-800">
                                     <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
-                                    <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>AR</option>
+                                    <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>عربي</option>
                                 </select>
+                                <noscript>
+                                    <button type="submit" class="ml-2 bg-blue-600 text-white px-2 py-1 rounded-md text-xs">
+                                        {{ __('Change') }}
+                                    </button>
+                                </noscript>
                             </form>
                             
                             <!-- Login/Register -->

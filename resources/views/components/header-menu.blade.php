@@ -68,6 +68,27 @@
                 
                 <!-- User Menu Dropdown -->
                 <div class="relative ml-3" x-data="{ isOpen: false }">
+                    <!-- Language Toggle Icons - Add before user dropdown -->
+                    <div class="flex items-center space-x-2 mr-4">
+                        <form method="POST" action="{{ route('locale.switch') }}" class="flex items-center">
+                            @csrf
+                            <!-- English toggle button -->
+                            <button type="submit" name="locale" value="en" 
+                                   class="p-1.5 rounded-full {{ app()->getLocale() == 'en' ? 'bg-white text-blue-600' : 'bg-transparent text-white hover:text-blue-200' }}">
+                               <span class="flex items-center justify-center w-6 h-6 font-bold">EN</span>
+                            </button>
+                            
+                            <!-- Divider -->
+                            <span class="text-blue-300 mx-1">|</span>
+                            
+                            <!-- Arabic toggle button -->
+                            <button type="submit" name="locale" value="ar" 
+                                   class="p-1.5 rounded-full {{ app()->getLocale() == 'ar' ? 'bg-white text-blue-600' : 'bg-transparent text-white hover:text-blue-200' }}">
+                               <span class="flex items-center justify-center w-6 h-6 font-bold">عربي</span>
+                            </button>
+                        </form>
+                    </div>
+                    
                     <button @click="isOpen = !isOpen" class="flex items-center space-x-2 bg-blue-800 rounded-full pl-2 pr-3 py-1.5 focus:outline-none hover:bg-blue-900 transition">
                         <div class="h-7 w-7 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
                             {{ substr(Auth::user()->name, 0, 1) }}
@@ -88,15 +109,6 @@
                          x-transition:leave-end="transform opacity-0 scale-95"
                          @click.away="isOpen = false" 
                          class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 ring-1 ring-black ring-opacity-5">
-                        
-                        <!-- Language Selector -->
-                        <form method="POST" action="{{ route('locale.switch') }}" class="px-4 py-2 border-b">
-                            @csrf
-                            <select name="locale" onchange="this.form.submit()" class="w-full text-gray-800 bg-transparent focus:outline-none cursor-pointer">
-                                <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>English</option>
-                                <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>العربية</option>
-                            </select>
-                        </form>
                         
                         <!-- Profile Link -->
                         <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center">
@@ -121,55 +133,68 @@
             </div>
             
             <!-- Mobile Menu Button -->
-            <div class="md:hidden" x-data="{ isOpen: false }">
-                <button @click="isOpen = !isOpen" class="p-2 rounded-md bg-blue-800 focus:outline-none hover:bg-blue-900 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path x-show="!isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path x-show="isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+            <div class="md:hidden flex items-center space-x-3">
+                <!-- Mobile Language Toggle Icons -->
+                <form method="POST" action="{{ route('locale.switch') }}" class="flex items-center">
+                    @csrf
+                    <!-- Language icons for mobile -->
+                    <button type="submit" name="locale" value="{{ app()->getLocale() == 'en' ? 'ar' : 'en' }}" 
+                           class="p-1.5 rounded-full bg-blue-800 hover:bg-blue-900 text-white">
+                       <span class="flex items-center justify-center w-6 h-6 font-bold">
+                            {{ app()->getLocale() == 'en' ? 'عربي' : 'EN' }}
+                       </span>
+                    </button>
+                </form>
                 
-                <!-- Mobile Navigation Menu -->
-                <div x-show="isOpen" 
-                     x-transition:enter="transition ease-out duration-100" 
-                     x-transition:enter-start="transform opacity-0 scale-95" 
-                     x-transition:enter-end="transform opacity-100 scale-100" 
-                     x-transition:leave="transition ease-in duration-75" 
-                     x-transition:leave-start="transform opacity-100 scale-100" 
-                     x-transition:leave-end="transform opacity-0 scale-95"
-                     @click.away="isOpen = false" 
-                     class="absolute top-16 left-0 right-0 bg-blue-700 shadow-lg z-20 mt-2">
-                    <div class="flex flex-col py-2 px-4 space-y-1">
-                        <!-- Remove target="_blank" from mobile Home link as well -->
-                        <a href="{{ url('/') }}" class="px-3 py-2 rounded-md hover:bg-blue-800">
-                            <div class="flex items-center space-x-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                </svg>
-                                <span>{{ __('Home') }}</span>
-                            </div>
-                        </a>
-                        
-                        <a href="{{ route('dashboard') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('dashboard') ? 'bg-blue-800 text-white' : '' }}">
-                            <div class="flex items-center space-x-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                </svg>
-                                <span>{{ __('Dashboard') }}</span>
-                            </div>
-                        </a>
-                        <a href="{{ route('properties.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('properties.*') ? 'bg-blue-800 text-white' : '' }}">
-                            <div class="flex items-center space-x-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                                <span>{{ __('Properties') }}</span>
-                            </div>
-                        </a>
-                        <a href="{{ route('leads.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('leads.*') ? 'bg-blue-800 text-white' : '' }}">
-                            <div class="flex items-center space-x-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                <div x-data="{ isOpen: false }">
+                    <button @click="isOpen = !isOpen" class="p-2 rounded-md bg-blue-800 focus:outline-none hover:bg-blue-900 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path x-show="!isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            <path x-show="isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    
+                    <!-- Mobile Navigation Menu -->
+                    <div x-show="isOpen" 
+                         x-transition:enter="transition ease-out duration-100" 
+                         x-transition:enter-start="transform opacity-0 scale-95" 
+                         x-transition:enter-end="transform opacity-100 scale-100" 
+                         x-transition:leave="transition ease-in duration-75" 
+                         x-transition:leave-start="transform opacity-100 scale-100" 
+                         x-transition:leave-end="transform opacity-0 scale-95"
+                         @click.away="isOpen = false" 
+                         class="absolute top-16 left-0 right-0 bg-blue-700 shadow-lg z-20 mt-2">
+                        <div class="flex flex-col py-2 px-4 space-y-1">
+                            <!-- Remove target="_blank" from mobile Home link as well -->
+                            <a href="{{ url('/') }}" class="px-3 py-2 rounded-md hover:bg-blue-800">
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                    </svg>
+                                    <span>{{ __('Home') }}</span>
+                                </div>
+                            </a>
+                            
+                            <a href="{{ route('dashboard') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('dashboard') ? 'bg-blue-800 text-white' : '' }}">
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                    </svg>
+                                    <span>{{ __('Dashboard') }}</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('properties.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('properties.*') ? 'bg-blue-800 text-white' : '' }}">
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                    <span>{{ __('Properties') }}</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('leads.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('leads.*') ? 'bg-blue-800 text-white' : '' }}">
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                                 <span>{{ __('Leads') }}</span>
                             </div>
@@ -205,19 +230,21 @@
                                 <span class="font-medium">{{ Auth::user()->name }}</span>
                             </div>
                             
-                            <!-- Language Selector -->
-                            <form method="POST" action="{{ route('locale.switch') }}" class="px-3 py-2">
-                                @csrf
-                                <div class="flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-                                    </svg>
-                                    <select name="locale" onchange="this.form.submit()" class="w-full bg-blue-800 rounded text-white focus:outline-none p-1">
-                                        <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>English</option>
-                                        <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>العربية</option>
-                                    </select>
-                                </div>
-                            </form>
+                            <!-- Replace Language Dropdown with icons in mobile menu as well -->
+                            <div class="flex items-center justify-center px-3 py-2 space-x-4">
+                                <form method="POST" action="{{ route('locale.switch') }}" class="flex space-x-4 w-full">
+                                    @csrf
+                                    <!-- English button -->
+                                    <button type="submit" name="locale" value="en" class="flex-1 py-2 px-3 rounded-md {{ app()->getLocale() == 'en' ? 'bg-white text-blue-700' : 'bg-blue-800 text-white' }}">
+                                        <span class="font-semibold">English</span>
+                                    </button>
+                                    
+                                    <!-- Arabic button -->
+                                    <button type="submit" name="locale" value="ar" class="flex-1 py-2 px-3 rounded-md {{ app()->getLocale() == 'ar' ? 'bg-white text-blue-700' : 'bg-blue-800 text-white' }}">
+                                        <span class="font-semibold">العربية</span>
+                                    </button>
+                                </form>
+                            </div>
                             
                             <!-- Profile Link in mobile menu -->
                             <a href="{{ route('profile.show') }}" class="flex items-center px-3 py-2 hover:bg-blue-800 rounded-md">
