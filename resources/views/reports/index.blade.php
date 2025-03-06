@@ -93,7 +93,7 @@
                             <a href="{{ route('reports.edit', $report->id) }}" class="text-yellow-600 hover:text-yellow-800">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('reports.destroy', $report->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this report?') }}');">
+                            <form action="{{ route('reports.destroy', $report->id) }}" method="POST" class="inline delete-report-form">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="text-red-600 hover:text-red-800">
@@ -125,4 +125,40 @@
         {{ $reports->links() }}
     </div>
 </div>
+
+@push('scripts')
+@include('components.layouts.alert-scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Replace all delete form submissions with SweetAlert2
+        document.querySelectorAll('.delete-report-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const reportName = this.closest('.bg-white').querySelector('h3').textContent.trim();
+                
+                window.confirmDelete({
+                    title: '{{ __("Delete Report") }}',
+                    text: `{{ __("Are you sure you want to delete") }} ${reportName}? {{ __("This action cannot be undone.") }}`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading state
+                        Swal.fire({
+                            title: '{{ __("Deleting...") }}',
+                            html: '{{ __("Please wait") }}',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        this.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+@endpush
+
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Policies\ReportPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -52,6 +53,20 @@ class Report extends Model
         });
     }
 
+    /**
+     * The policy mappings for the model.
+     *
+     * @var array
+     */
+    protected static function booted()
+    {
+        parent::boot();
+        
+        static::addGlobalScope('policy', function ($query) {
+            return $query;
+        });
+    }
+
     // Scope for reports the user can access
     public function scopeAccessibleBy($query, $user)
     {
@@ -61,9 +76,8 @@ class Report extends Model
               ->orWhere(function($subq) use ($user) {
                  $subq->where('access_level', 'team')
                       ->whereHas('creator', function($creatorQuery) use ($user) {
-                          // Assuming there's some team relationship between users
-                          // This is a placeholder - adjust based on your team structure
-                          $creatorQuery->where('team_id', $user->team_id);
+                          // Remove the reference to team_id
+                          // $creatorQuery->where('team_id', $user->team_id);
                       });
               });
         });

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('Create Report') }}</title>
+    <title>{{ __('Edit Report') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -16,7 +16,7 @@
     <div class="bg-white shadow-sm border-b">
         <div class="container mx-auto py-4 px-6">
             <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-800">{{ __('Create Report') }}</h1>
+                <h1 class="text-2xl font-bold text-gray-800">{{ __('Edit Report') }}: {{ $report->name }}</h1>
                 <a href="{{ route('reports.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md flex items-center">
                     <i class="fas fa-arrow-left mr-2"></i> {{ __('Back to Reports') }}
                 </a>
@@ -27,8 +27,9 @@
     <!-- Form Content -->
     <div class="container mx-auto p-6">
         <div class="bg-white rounded-lg shadow-sm p-6">
-            <form action="{{ route('reports.store') }}" method="POST">
+            <form action="{{ route('reports.update', $report->id) }}" method="POST">
                 @csrf
+                @method('PUT')
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Basic Information -->
                     <div>
@@ -36,7 +37,7 @@
                         
                         <div class="mb-4">
                             <label for="name" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Name') }}</label>
-                            <input type="text" id="name" name="name" value="{{ old('name') }}" class="w-full p-2 border rounded-md @error('name') border-red-500 @enderror" required>
+                            <input type="text" id="name" name="name" value="{{ old('name', $report->name) }}" class="w-full p-2 border rounded-md @error('name') border-red-500 @enderror" required>
                             @error('name')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -44,7 +45,7 @@
 
                         <div class="mb-4">
                             <label for="description" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Description') }}</label>
-                            <textarea id="description" name="description" rows="3" class="w-full p-2 border rounded-md @error('description') border-red-500 @enderror">{{ old('description') }}</textarea>
+                            <textarea id="description" name="description" rows="3" class="w-full p-2 border rounded-md @error('description') border-red-500 @enderror">{{ old('description', $report->description) }}</textarea>
                             @error('description')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -53,10 +54,9 @@
                         <div class="mb-4">
                             <label for="data_source" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Data Source') }}</label>
                             <select id="data_source" name="data_source" class="w-full p-2 border rounded-md @error('data_source') border-red-500 @enderror" required>
-                                <option value="">{{ __('Select Data Source') }}</option>
-                                <option value="leads" {{ old('data_source') == 'leads' ? 'selected' : '' }}>{{ __('Leads') }}</option>
-                                <option value="properties" {{ old('data_source') == 'properties' ? 'selected' : '' }}>{{ __('Properties') }}</option>
-                                <option value="both" {{ old('data_source') == 'both' ? 'selected' : '' }}>{{ __('Combined') }}</option>
+                                <option value="leads" {{ old('data_source', $report->data_source) == 'leads' ? 'selected' : '' }}>{{ __('Leads') }}</option>
+                                <option value="properties" {{ old('data_source', $report->data_source) == 'properties' ? 'selected' : '' }}>{{ __('Properties') }}</option>
+                                <option value="both" {{ old('data_source', $report->data_source) == 'both' ? 'selected' : '' }}>{{ __('Combined') }}</option>
                             </select>
                             @error('data_source')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -66,9 +66,9 @@
                         <div class="mb-4">
                             <label for="access_level" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Access Level') }}</label>
                             <select id="access_level" name="access_level" class="w-full p-2 border rounded-md @error('access_level') border-red-500 @enderror" required>
-                                <option value="private" {{ old('access_level') == 'private' ? 'selected' : '' }}>{{ __('Private') }}</option>
-                                <option value="team" {{ old('access_level') == 'team' ? 'selected' : '' }}>{{ __('Team') }}</option>
-                                <option value="public" {{ old('access_level') == 'public' ? 'selected' : '' }}>{{ __('Public') }}</option>
+                                <option value="private" {{ old('access_level', $report->access_level) == 'private' ? 'selected' : '' }}>{{ __('Private') }}</option>
+                                <option value="team" {{ old('access_level', $report->access_level) == 'team' ? 'selected' : '' }}>{{ __('Team') }}</option>
+                                <option value="public" {{ old('access_level', $report->access_level) == 'public' ? 'selected' : '' }}>{{ __('Public') }}</option>
                             </select>
                             @error('access_level')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -82,23 +82,23 @@
 
                         <div id="columns-section" class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Select Columns') }}</label>
-                            <div id="leads-columns" class="grid grid-cols-2 gap-2 mb-4">
+                            <div id="leads-columns" class="grid grid-cols-2 gap-2 mb-4 {{ $report->data_source != 'properties' ? '' : 'hidden' }}">
                                 @foreach($leadColumns as $value => $label)
                                     <label class="flex items-center p-2 border rounded-md hover:bg-gray-50">
                                         <input type="checkbox" name="columns[]" value="{{ $value }}" 
                                                class="rounded border-gray-300 text-blue-600 mr-2"
-                                               {{ in_array($value, old('columns', [])) ? 'checked' : '' }}>
+                                               {{ in_array($value, old('columns', $report->columns ?? [])) ? 'checked' : '' }}>
                                         <span class="text-sm text-gray-700">{{ $label }}</span>
                                     </label>
                                 @endforeach
                             </div>
 
-                            <div id="properties-columns" class="grid grid-cols-2 gap-2 hidden">
+                            <div id="properties-columns" class="grid grid-cols-2 gap-2 {{ $report->data_source != 'leads' ? '' : 'hidden' }}">
                                 @foreach($propertyColumns as $value => $label)
                                     <label class="flex items-center p-2 border rounded-md hover:bg-gray-50">
                                         <input type="checkbox" name="columns[]" value="{{ $value }}" 
                                                class="rounded border-gray-300 text-blue-600 mr-2"
-                                               {{ in_array($value, old('columns', [])) ? 'checked' : '' }}>
+                                               {{ in_array($value, old('columns', $report->columns ?? [])) ? 'checked' : '' }}>
                                         <span class="text-sm text-gray-700">{{ $label }}</span>
                                     </label>
                                 @endforeach
@@ -109,17 +109,19 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Visualization Type') }}</label>
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="border rounded-md p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50">
-                                    <input type="radio" name="visualization[type]" value="table" class="sr-only" checked>
+                                    <input type="radio" name="visualization[type]" value="table" class="sr-only" 
+                                           {{ old('visualization.type', $report->visualization['type'] ?? 'table') == 'table' ? 'checked' : '' }}>
                                     <i class="fas fa-table text-gray-700 text-2xl"></i>
                                     <span class="text-gray-900 font-medium">{{ __('Table') }}</span>
-                                    <div class="w-full h-1 bg-blue-600 rounded-full"></div>
+                                    <div class="w-full h-1 {{ old('visualization.type', $report->visualization['type'] ?? 'table') == 'table' ? 'bg-blue-600' : 'bg-gray-200' }} rounded-full"></div>
                                 </label>
 
                                 <label class="border rounded-md p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50">
-                                    <input type="radio" name="visualization[type]" value="chart" class="sr-only">
+                                    <input type="radio" name="visualization[type]" value="chart" class="sr-only"
+                                           {{ old('visualization.type', $report->visualization['type'] ?? '') == 'chart' ? 'checked' : '' }}>
                                     <i class="fas fa-chart-bar text-gray-700 text-2xl"></i>
                                     <span class="text-gray-900 font-medium">{{ __('Chart') }}</span>
-                                    <div class="w-full h-1 bg-gray-200 rounded-full"></div>
+                                    <div class="w-full h-1 {{ old('visualization.type', $report->visualization['type'] ?? '') == 'chart' ? 'bg-blue-600' : 'bg-gray-200' }} rounded-full"></div>
                                 </label>
                             </div>
                         </div>
@@ -128,7 +130,7 @@
 
                 <div class="mt-6 border-t pt-6">
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md flex items-center">
-                        <i class="fas fa-save mr-2"></i> {{ __('Create Report') }}
+                        <i class="fas fa-save mr-2"></i> {{ __('Update Report') }}
                     </button>
                 </div>
             </form>

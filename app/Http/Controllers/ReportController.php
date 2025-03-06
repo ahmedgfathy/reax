@@ -15,9 +15,13 @@ use App\Exports\ReportExport;
 use App\Services\ReportGenerator;
 use App\Jobs\SendReportEmail;
 use App\Jobs\SendReportWhatsapp;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Barryvdh\DomPDF\Facade\Pdf; // Add this use statement at the top
 
 class ReportController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(Request $request)
     {
         $reports = Report::accessibleBy(auth()->user())
@@ -319,7 +323,7 @@ class ReportController extends Controller
             $reportData = $generator->generate();
         }
 
-        $pdf = \PDF::loadView('reports.pdf', [
+        $pdf = Pdf::loadView('reports.pdf', [
             'report' => $report,
             'reportData' => $reportData
         ]);

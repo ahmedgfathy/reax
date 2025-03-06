@@ -8,6 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        echo "Running migration for reports table...\n";
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->string('name');

@@ -150,7 +150,7 @@ class ReportGenerator
                     case 'date_range':
                         if (is_array($value) && count($value) >= 2) {
                             $query->whereDate($field, '>=', $value[0])
-                                  ->whereDate($field, '<=', $value[1]]);
+                                 ->whereDate($field, '<=', $value[1]);
                         }
                         break;
                     default:
