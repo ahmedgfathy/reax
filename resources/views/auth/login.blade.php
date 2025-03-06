@@ -11,11 +11,20 @@
     <div class="min-h-screen flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
             <h2 class="text-2xl font-bold mb-6 text-center">{{ __('Login') }}</h2>
+            
+            @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
+            
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="mb-4">
                     <label for="email" class="block text-gray-700">{{ __('Email') }}</label>
-                    <input type="email" id="email" name="email" class="w-full p-2 border rounded-md" required>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" class="w-full p-2 border rounded-md" required autofocus>
                 </div>
                 <div class="mb-4">
                     <label for="password" class="block text-gray-700">{{ __('Password') }}</label>

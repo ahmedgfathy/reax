@@ -50,15 +50,48 @@
                     </select>
                 </form>
                 
-                <!-- Login/Register Buttons -->
-                <div class="flex space-x-4 items-center">
-                    <a href="{{ route('login') }}" class="text-white hover:text-blue-200">
-                        {{ __('Login') }}
-                    </a>
-                    <a href="{{ route('register') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md font-medium transition-colors">
-                        {{ __('Register') }}
-                    </a>
-                </div>
+                <!-- Conditional Login/Register or Dashboard link based on authentication -->
+                @auth
+                    <div class="flex space-x-4 items-center">
+                        <a href="{{ route('dashboard') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md font-medium transition-colors flex items-center">
+                            <i class="fas fa-tachometer-alt mr-2"></i> {{ __('Dashboard') }}
+                        </a>
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="text-white hover:text-blue-200 flex items-center">
+                                <span class="h-8 w-8 bg-white rounded-full flex items-center justify-center text-blue-600 font-medium mr-2">
+                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                </span>
+                                {{ Auth::user()->name }}
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div x-show="open" 
+                                 @click.away="open = false"
+                                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">
+                                    {{ __('Profile') }}
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">
+                                        {{ __('Logout') }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <!-- Login/Register Buttons -->
+                    <div class="flex space-x-4 items-center">
+                        <a href="{{ route('login') }}" class="text-white hover:text-blue-200">
+                            {{ __('Login') }}
+                        </a>
+                        <a href="{{ route('register') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md font-medium transition-colors">
+                            {{ __('Register') }}
+                        </a>
+                    </div>
+                @endauth
             </nav>
             
             <!-- Mobile Menu Button -->
@@ -79,22 +112,38 @@
                     <a href="#" class="text-gray-800 hover:text-blue-600 py-2">{{ __('About Us') }}</a>
                     <a href="#" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Contact Us') }}</a>
                     
-                    <div class="flex justify-between py-2">
-                        <!-- Language Switcher -->
-                        <form method="POST" action="{{ route('locale.switch') }}">
-                            @csrf
-                            <select name="locale" onchange="this.form.submit()" class="border rounded-md p-2 text-gray-800">
-                                <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
-                                <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>AR</option>
-                            </select>
-                        </form>
-                        
-                        <!-- Login/Register -->
-                        <div class="flex space-x-4">
-                            <a href="{{ route('login') }}" class="text-gray-800 hover:text-blue-600">{{ __('Login') }}</a>
-                            <a href="{{ route('register') }}" class="bg-blue-600 text-white px-3 py-1 rounded-md">{{ __('Register') }}</a>
+                    <!-- Add Dashboard link for mobile if authenticated -->
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="text-gray-800 hover:text-blue-600 py-2 flex items-center">
+                            <i class="fas fa-tachometer-alt mr-2"></i> {{ __('Dashboard') }}
+                        </a>
+                        <div class="flex items-center justify-between py-2">
+                            <span class="text-gray-800">{{ Auth::user()->name }}</span>
+                            <form method="POST" action="{{ route('logout') }}" class="inline">
+                                @csrf
+                                <button type="submit" class="text-blue-600 hover:text-blue-800">
+                                    {{ __('Logout') }}
+                                </button>
+                            </form>
                         </div>
-                    </div>
+                    @else
+                        <div class="flex justify-between py-2">
+                            <!-- Language Switcher -->
+                            <form method="POST" action="{{ route('locale.switch') }}">
+                                @csrf
+                                <select name="locale" onchange="this.form.submit()" class="border rounded-md p-2 text-gray-800">
+                                    <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
+                                    <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>AR</option>
+                                </select>
+                            </form>
+                            
+                            <!-- Login/Register -->
+                            <div class="flex space-x-4">
+                                <a href="{{ route('login') }}" class="text-gray-800 hover:text-blue-600">{{ __('Login') }}</a>
+                                <a href="{{ route('register') }}" class="bg-blue-600 text-white px-3 py-1 rounded-md">{{ __('Register') }}</a>
+                            </div>
+                        </div>
+                    @endauth
                 </nav>
             </div>
         </div>
@@ -486,5 +535,33 @@
             </div>
         </div>
     </section>
+
+    <!-- AlpineJS for dropdowns -->
+    <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"></script>
+    <script>
+        // Existing script for mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            menuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Header background change on scroll
+            const header = document.getElementById('main-header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('bg-blue-600', 'shadow-md');
+                } else {
+                    header.classList.remove('bg-blue-600', 'shadow-md');
+                    header.classList.add('bg-transparent');
+                }
+            });
+
+            // Trigger scroll event on page load
+            window.dispatchEvent(new Event('scroll'));
+        });
+    </script>
 </body>
 </html>
