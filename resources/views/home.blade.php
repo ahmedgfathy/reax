@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
     <style>
         body {
             font-family: {{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}, sans-serif;
@@ -26,11 +27,17 @@
         [dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
             --tw-space-x-reverse: 1;
         }
+        .swiper-slide {
+            background-position: center;
+            background-size: cover;
+            height: 560px;
+            width: 100%;
+        }
     </style>
 </head>
 <body class="bg-gray-50" lang="{{ app()->getLocale() }}">
-    <!-- Header with transparent background that becomes solid on scroll -->
-    <header id="main-header" class="fixed w-full z-10 transition-all duration-300">
+    <!-- Header with solid background -->
+    <header id="main-header" class="w-full z-50 bg-blue-600 shadow-md">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="/" class="flex items-center">
                 <span class="text-2xl font-bold text-white">REAX <span class="text-sm font-normal opacity-80">CRM</span></span>
@@ -162,58 +169,77 @@
         </div>
     </header>
     
-    <!-- Hero Section with Search -->
-    <section class="relative h-[600px] bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
-        <div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black/30"></div>
-        <div class="container mx-auto px-4 h-full flex flex-col justify-center items-center relative z-1">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-6">{{ __('Find Your Dream Home') }}</h1>
-            <p class="text-xl text-white opacity-90 text-center max-w-2xl mb-8">{{ __('Browse thousands of properties for sale and rent across the country') }}</p>
-            
-            <!-- Property Search Form -->
-            <div class="w-full max-w-4xl bg-white rounded-lg shadow-xl p-4 md:p-6">
-                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                    <div class="flex-1">
-                        <label class="block text-gray-700 text-sm font-medium mb-1">{{ __('Property Type') }}</label>
-                        <select class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">{{ __('All Types') }}</option>
-                            <option value="apartment">{{ __('Apartment') }}</option>
-                            <option value="villa">{{ __('Villa') }}</option>
-                            <option value="house">{{ __('House') }}</option>
-                            <option value="office">{{ __('Office') }}</option>
-                            <option value="land">{{ __('Land') }}</option>
-                        </select>
+    <!-- Hero Section with Swiper Slider -->
+    <section class="relative h-[560px] bg-gray-900">
+        <div class="swiper heroSwiper h-full">
+            <div class="swiper-wrapper">
+                <!-- Slide 1 -->
+                <div class="swiper-slide" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80')">
+                    <div class="absolute inset-0 bg-black/40"></div>
+                    <div class="container mx-auto px-4 h-full flex items-center relative z-10">
+                        <div class="text-white max-w-xl">
+                            <h1 class="text-5xl font-bold mb-4">{{ __('Mountain View iCity') }}</h1>
+                            <p class="text-xl mb-6">{{ __('Luxury Compounds in New Cairo') }}</p>
+                            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg inline-flex items-center">
+                                {{ __('Explore Now') }} <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
                     </div>
-                    
-                    <div class="flex-1">
-                        <label class="block text-gray-700 text-sm font-medium mb-1">{{ __('Location') }}</label>
-                        <select class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">{{ __('All Locations') }}</option>
-                            <option value="cairo">{{ __('Cairo') }}</option>
-                            <option value="alexandria">{{ __('Alexandria') }}</option>
-                            <option value="giza">{{ __('Giza') }}</option>
-                            <option value="sharm">{{ __('Sharm El Sheikh') }}</option>
-                        </select>
+                </div>
+                <!-- Slide 2 -->
+                <div class="swiper-slide" style="background-image: url('https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80')">
+                    <div class="absolute inset-0 bg-black/40"></div>
+                    <div class="container mx-auto px-4 h-full flex items-center relative z-10">
+                        <div class="text-white max-w-xl">
+                            <h1 class="text-5xl font-bold mb-4">{{ __('Mountain View iCity') }}</h1>
+                            <p class="text-xl mb-6">{{ __('Luxury Compounds in New Cairo') }}</p>
+                            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg inline-flex items-center">
+                                {{ __('Explore Now') }} <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
                     </div>
-                    
-                    <div class="flex-1">
-                        <label class="block text-gray-700 text-sm font-medium mb-1">{{ __('Price Range') }}</label>
-                        <select class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">{{ __('Any Price') }}</option>
-                            <option value="0-1000000">{{ __('Up to 1,000,000') }}</option>
-                            <option value="1000000-3000000">{{ __('1M to 3M') }}</option>
-                            <option value="3000000-5000000">{{ __('3M to 5M') }}</option>
-                            <option value="5000000-10000000">{{ __('5M to 10M') }}</option>
-                            <option value="10000000+">{{ __('10M+') }}</option>
-                        </select>
+                </div>
+                <!-- Slide 3 -->
+                <div class="swiper-slide" style="background-image: url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80')">
+                    <div class="absolute inset-0 bg-black/40"></div>
+                    <div class="container mx-auto px-4 h-full flex items-center relative z-10">
+                        <div class="text-white max-w-xl">
+                            <h1 class="text-5xl font-bold mb-4">{{ __('Mountain View iCity') }}</h1>
+                            <p class="text-xl mb-6">{{ __('Luxury Compounds in New Cairo') }}</p>
+                            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg inline-flex items-center">
+                                {{ __('Explore Now') }} <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
                     </div>
-                    
-                    <div class="flex items-end">
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg px-6 py-2 transition-colors w-full md:w-auto">
-                            {{ __('Search') }}
-                        </button>
+                </div>
+                <!-- Slide 4 -->
+                <div class="swiper-slide" style="background-image: url('https://images.unsplash.com/photo-1600573472550-8090b5e0745e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80')">
+                    <div class="absolute inset-0 bg-black/40"></div>
+                    <div class="container mx-auto px-4 h-full flex items-center relative z-10">
+                        <div class="text-white max-w-xl">
+                            <h1 class="text-5xl font-bold mb-4">{{ __('Mountain View iCity') }}</h1>
+                            <p class="text-xl mb-6">{{ __('Luxury Compounds in New Cairo') }}</p>
+                            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg inline-flex items-center">
+                                {{ __('Explore Now') }} <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 5 -->
+                <div class="swiper-slide" style="background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80')">
+                    <div class="absolute inset-0 bg-black/40"></div>
+                    <div class="container mx-auto px-4 h-full flex items-center relative z-10">
+                        <div class="text-white max-w-xl">
+                            <h1 class="text-5xl font-bold mb-4">{{ __('Mountain View iCity') }}</h1>
+                            <p class="text-xl mb-6">{{ __('Luxury Compounds in New Cairo') }}</p>
+                            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg inline-flex items-center">
+                                {{ __('Explore Now') }} <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="swiper-pagination"></div>
         </div>
     </section>
     
@@ -420,6 +446,182 @@
         </div>
     </section>
     
+    <!-- Top Compounds Section -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Top Compounds') }}</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">{{ __('Explore the top compounds in New Cairo') }}</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Compound Card 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Compound" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Mountain View Hyde Park') }}</h3>
+                        <p class="text-gray-600">{{ __('Location: New Cairo') }}</p>
+                    </div>
+                </div>
+                
+                <!-- Additional compound cards with different images -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Compound" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Madinaty') }}</h3>
+                        <p class="text-gray-600">{{ __('Location: New Cairo') }}</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Compound" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Madinaty') }}</h3>
+                        <p class="text-gray-600">{{ __('Location: New Cairo') }}</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Compound" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Madinaty') }}</h3>
+                        <p class="text-gray-600">{{ __('Location: New Cairo') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Super Deal Installments Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Super Deal Installments') }}</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">{{ __('Get the best deals on real estate units with easy installments') }}</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Deal Card 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Deal" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Deal Name 1') }}</h3>
+                        <p class="text-gray-600">{{ __('Installment Plan: 5 years') }}</p>
+                    </div>
+                </div>
+                
+                <!-- Additional deal cards with different images -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Deal" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Deal Name 2') }}</h3>
+                        <p class="text-gray-600">{{ __('Installment Plan: 7 years') }}</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Deal" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Deal Name 3') }}</h3>
+                        <p class="text-gray-600">{{ __('Installment Plan: 10 years') }}</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Deal" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Deal Name 4') }}</h3>
+                        <p class="text-gray-600">{{ __('Installment Plan: 15 years') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Top Sellers Section -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Top Sellers') }}</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">{{ __('Meet our top real estate agents') }}</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Seller Card 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Seller" class="w-full h-56 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Seller Name 1') }}</h3>
+                        <p class="text-gray-600">{{ __('Top Agent') }}</p>
+                    </div>
+                </div>
+                
+                <!-- Additional seller cards with different images -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Seller" class="w-full h-56 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Seller Name 2') }}</h3>
+                        <p class="text-gray-600">{{ __('Top Agent') }}</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Seller" class="w-full h-56 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Seller Name 3') }}</h3>
+                        <p class="text-gray-600">{{ __('Top Agent') }}</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Seller" class="w-full h-56 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Seller Name 4') }}</h3>
+                        <p class="text-gray-600">{{ __('Top Agent') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Top Companies and Agencies Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Top Companies and Agencies') }}</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">{{ __('Our trusted partners in real estate') }}</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Company Card 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Company" class="w-full h-56 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Company Name 1') }}</h3>
+                    </div>
+                </div>
+                
+                <!-- Additional company cards with different images -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Company" class="w-full h-56 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Company Name 2') }}</h3>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Company" class="w-full h-56 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Company Name 3') }}</h3>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Company" class="w-full h-56 object-cover">
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Company Name 4') }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
     <!-- Features Section -->
     <section class="py-16 bg-gray-100">
         <div class="container mx-auto px-4">
@@ -551,29 +753,31 @@
 
     <!-- AlpineJS for dropdowns -->
     <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
     <script>
-        // Existing script for mobile menu toggle
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Swiper
+            const swiper = new Swiper(".heroSwiper", {
+                loop: true,
+                effect: "fade",
+                speed: 1000,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                }
+            });
+            
+            // Existing script for mobile menu toggle
             const menuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             
             menuButton.addEventListener('click', function() {
                 mobileMenu.classList.toggle('hidden');
             });
-            
-            // Header background change on scroll
-            const header = document.getElementById('main-header');
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 50) {
-                    header.classList.add('bg-blue-600', 'shadow-md');
-                } else {
-                    header.classList.remove('bg-blue-600', 'shadow-md');
-                    header.classList.add('bg-transparent');
-                }
-            });
-
-            // Trigger scroll event on page load
-            window.dispatchEvent(new Event('scroll'));
         });
     </script>
 </body>
