@@ -20,21 +20,21 @@ class Lead extends Model
         'last_name',
         'email',
         'phone',
-        'mobile',  // Added
+        'mobile',
         'status',
+        'lead_status',
         'source',
-        'lead_source',  // Added
+        'lead_source',
         'property_interest',
         'budget',
         'notes',
+        'description',
         'assigned_to',
-        'last_follow_up',  // Added
-        'agent_follow_up',  // Added
-        'lead_class',  // Added
-        'last_modified_by',  // Added
-        'type_of_request',  // Added
-        'lead_status',  // Added
-        'description',  // Added (assuming 'desc' means 'description')
+        'last_follow_up',
+        'agent_follow_up',
+        'lead_class',
+        'type_of_request',
+        'last_modified_by'
     ];
 
     /**
