@@ -25,7 +25,8 @@ class User extends Authenticatable
         'phone',
         'address',
         'avatar',
-        'team_id'
+        'team_id',
+        'is_active'  // Add this line
     ];
 
     /**
@@ -48,6 +49,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',  // Add this line
         ];
     }
 

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REAX CRM Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .doc-section { scroll-margin-top: 2rem; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Sidebar -->
+    <div class="fixed w-64 h-screen bg-white border-r border-gray-200 overflow-y-auto">
+        <div class="p-6">
+            <h1 class="text-xl font-bold text-gray-900">Documentation</h1>
+        </div>
+        <nav class="px-4 py-2">
+            <ul class="space-y-2">
+                <li><a href="#getting-started" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md">Getting Started</a></li>
+                <li><a href="#dashboard" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md">Dashboard</a></li>
+                <li><a href="#properties" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md">Properties</a></li>
+                <li><a href="#leads" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md">Leads</a></li>
+                <li><a href="#reports" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md">Reports</a></li>
+                <li><a href="#administration" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md">Administration</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Getting Started -->
+        <section id="getting-started" class="doc-section mb-12">
+            <h2 class="text-3xl font-bold mb-6">Getting Started</h2>
+            <div class="prose max-w-none">
+                <h3 class="text-xl font-semibold mb-4">Overview</h3>
+                <p class="mb-4">REAX CRM is a comprehensive real estate management system designed for the Egyptian market. It provides tools for managing properties, leads, and generating insightful reports.</p>
+                
+                <h3 class="text-xl font-semibold mb-4">Key Features</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Complete property lifecycle management</li>
+                    <li>Lead tracking and conversion</li>
+                    <li>Advanced reporting and analytics</li>
+                    <li>Team collaboration tools</li>
+                    <li>Multi-language support (English/Arabic)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Dashboard Module -->
+        <section id="dashboard" class="doc-section mb-12">
+            <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
+            <div class="prose max-w-none">
+                <h3 class="text-xl font-semibold mb-4">Overview</h3>
+                <p class="mb-4">The dashboard provides a real-time overview of your CRM activities:</p>
+                
+                <h4 class="text-lg font-semibold mb-2">Key Metrics</h4>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Active leads count</li>
+                    <li>Property listings overview</li>
+                    <li>Recent activities</li>
+                    <li>Team performance metrics</li>
+                </ul>
+
+                <h4 class="text-lg font-semibold mb-2">Quick Actions</h4>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Add new property</li>
+                    <li>Create lead</li>
+                    <li>Schedule follow-up</li>
+                    <li>Generate quick report</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Properties Module -->
+        <section id="properties" class="doc-section mb-12">
+            <h2 class="text-3xl font-bold mb-6">Properties Management</h2>
+            <div class="prose max-w-none">
+                <h3 class="text-xl font-semibold mb-4">Features</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Property listing creation and management</li>
+                    <li>Media management (photos, videos, documents)</li>
+                    <li>Property status tracking</li>
+                    <li>Price history</li>
+                    <li>Location mapping</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold mb-4">Property Types</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Residential</li>
+                    <li>Commercial</li>
+                    <li>Land</li>
+                    <li>Administrative</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Leads Module -->
+        <section id="leads" class="doc-section mb-12">
+            <h2 class="text-3xl font-bold mb-6">Lead Management</h2>
+            <div class="prose max-w-none">
+                <h3 class="text-xl font-semibold mb-4">Lead Tracking</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Lead capture forms</li>
+                    <li>Status tracking</li>
+                    <li>Activity logging</li>
+                    <li>Follow-up scheduling</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold mb-4">Communication Tools</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Email integration</li>
+                    <li>Call logging</li>
+                    <li>Meeting scheduler</li>
+                    <li>Notes and attachments</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Reports Module -->
+        <section id="reports" class="doc-section mb-12">
+            <h2 class="text-3xl font-bold mb-6">Reports & Analytics</h2>
+            <div class="prose max-w-none">
+                <h3 class="text-xl font-semibold mb-4">Available Reports</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Lead conversion reports</li>
+                    <li>Property performance analytics</li>
+                    <li>Team activity reports</li>
+                    <li>Financial summaries</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold mb-4">Custom Reports</h3>
+                <p class="mb-4">Create custom reports with:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Flexible date ranges</li>
+                    <li>Custom filters</li>
+                    <li>Export options (PDF, Excel)</li>
+                    <li>Scheduled report delivery</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Administration -->
+        <section id="administration" class="doc-section mb-12">
+            <h2 class="text-3xl font-bold mb-6">Administration</h2>
+            <div class="prose max-w-none">
+                <h3 class="text-xl font-semibold mb-4">User Management</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>User roles and permissions</li>
+                    <li>Team management</li>
+                    <li>Access control</li>
+                    <li>Activity monitoring</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold mb-4">System Settings</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>General configuration</li>
+                    <li>Email templates</li>
+                    <li>Notification settings</li>
+                    <li>Data backup and maintenance</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="ml-64 bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; <script>document.write(new Date().getFullYear())</script> REAX CRM. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Simple scroll spy script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.doc-section');
+            const navLinks = document.querySelectorAll('nav a');
+
+            window.addEventListener('scroll', function() {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-blue-600', 'font-semibold');
+                    if (link.getAttribute('href').slice(1) === current) {
+                        link.classList.add('text-blue-600', 'font-semibold');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

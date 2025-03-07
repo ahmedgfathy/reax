@@ -152,3 +152,6 @@ Route::get('/debug/bulk-action-test', function() {
         'leads' => \App\Models\Lead::take(5)->get()
     ]);
 });
+
+// Include admin routes
+require __DIR__ . '/admin.php';
