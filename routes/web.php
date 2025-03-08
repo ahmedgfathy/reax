@@ -14,6 +14,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LeadImportExportController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request; // Import Request at the top of the file
 
 // Public routes - place these before any auth routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -72,12 +73,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
 });
 
-// Locale route
-Route::post('/locale', function () {
-    $locale = request('locale');
-    Session::put('locale', $locale);
-    App::setLocale($locale);
-    return Redirect::back();
+// Remove or comment out the old locale route
+// Route::post('/locale', function () { ... });
+
+// Fix the language switch route
+Route::post('/locale/switch', function (Request $request) {
+    $locale = $request->locale;
+    if (in_array($locale, ['en', 'ar'])) {
+        session(['locale' => $locale]);
+        App::setLocale($locale);
+    }
+    return redirect()->back();
 })->name('locale.switch');
 
 Route::get('/locale-debug', function () {

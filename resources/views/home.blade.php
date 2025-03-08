@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ in_array(app()->getLocale(), ['ar']) ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,25 +7,38 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Kufi+Arabic:wght@300;400;500;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
     <style>
+        :root {
+            --font-arabic: 'Noto Kufi Arabic', 'Cairo', sans-serif;
+            --font-english: 'Roboto', sans-serif;
+        }
+        
         body {
-            font-family: {{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}, sans-serif;
+            font-family: {{ app()->getLocale() == 'ar' ? 'var(--font-arabic)' : 'var(--font-english)' }} !important;
+        }
+        
+        [lang="ar"] {
+            font-family: var(--font-arabic) !important;
+        }
+        
+        [lang="en"] {
+            font-family: var(--font-english) !important;
         }
         [dir="rtl"] .reverse-on-rtl {
             flex-direction: row-reverse;
         }
         [dir="rtl"] .space-x-6 > :not([hidden]) ~ :not([hidden]) {
-            --tw-space-x-reverse: 1;
+            --tw-space-x-reverse: 1 !important;
         }
         [dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
-            --tw-space-x-reverse: 1;
+            --tw-space-x-reverse: 1 !important;
         }
         [dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
-            --tw-space-x-reverse: 1;
+            --tw-space-x-reverse: 1 !important;
         }
         .swiper-slide {
             background-position: center;
@@ -33,9 +46,51 @@
             height: 560px;
             width: 100%;
         }
+        /* RTL Support */
+        html[dir="rtl"] {
+            text-align: right;
+        }
+        
+        html[dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+            --tw-space-x-reverse: 1;
+        }
+        
+        html[dir="rtl"] .space-x-6 > :not([hidden]) ~ :not([hidden]) {
+            --tw-space-x-reverse: 1;
+        }
+
+        html[dir="rtl"] .ml-2 {
+            margin-left: 0;
+            margin-right: 0.5rem;
+        }
+
+        html[dir="rtl"] .mr-2 {
+            margin-right: 0;
+            margin-left: 0.5rem;
+        }
+        
+        html[dir="rtl"] .left-4 {
+            left: auto;
+            right: 1rem;
+        }
+        
+        html[dir="rtl"] .right-4 {
+            right: auto;
+            left: 1rem;
+        }
+        
+        [dir="rtl"] .me-2 {
+            margin-left: 0.5rem !important;
+            margin-right: 0 !important;
+        }
+        
+        [dir="rtl"] .ms-2 {
+            margin-right: 0.5rem !important;
+            margin-left: 0 !important;
+        }
     </style>
 </head>
-<body class="bg-gray-50" lang="{{ app()->getLocale() }}">
+<body class="bg-gray-50" dir="{{ in_array(app()->getLocale(), ['ar']) ? 'rtl' : 'ltr' }}">
     <!-- Header with solid background -->
     <header id="main-header" class="w-full z-50 bg-blue-600 shadow-md">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -52,18 +107,14 @@
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('About Us') }}</a>
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Contact Us') }}</a>
                 
-                <!-- Language Switcher -->
-                <form method="POST" action="{{ route('locale.switch') }}">
+                <!-- Replace Language Dropdown with Icon Button -->
+                <form method="POST" action="{{ route('locale.switch') }}" class="inline-flex items-center">
                     @csrf
-                    <select name="locale" onchange="this.form.submit()" class="bg-white/20 backdrop-blur-sm border border-white/30 rounded-md p-2 text-white">
-                        <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
-                        <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>عربي</option>
-                    </select>
-                    <noscript>
-                        <button type="submit" class="ml-2 bg-white text-blue-600 px-2 py-1 rounded-md text-xs">
-                            {{ __('Change') }}
-                        </button>
-                    </noscript>
+                    <input type="hidden" name="locale" value="{{ app()->getLocale() == 'en' ? 'ar' : 'en' }}">
+                    <button type="submit" class="text-white hover:text-blue-200 flex items-center">
+                        <i class="fas fa-globe mr-2"></i>
+                        <span>{{ app()->getLocale() == 'en' ? 'عربي' : 'ENG' }}</span>
+                    </button>
                 </form>
                 
                 <!-- Conditional Login/Register or Dashboard link based on authentication -->
@@ -144,19 +195,15 @@
                             </form>
                         </div>
                     @else
-                        <div class="flex justify-between py-2">
-                            <!-- Language Switcher -->
-                            <form method="POST" action="{{ route('locale.switch') }}">
+                        <div class="flex justify-between py-2 border-t border-gray-200">
+                            <!-- Replace Language Dropdown with Icon Button in Mobile Menu -->
+                            <form method="POST" action="{{ route('locale.switch') }}" class="w-full">
                                 @csrf
-                                <select name="locale" onchange="this.form.submit()" class="border rounded-md p-2 text-gray-800">
-                                    <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
-                                    <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>عربي</option>
-                                </select>
-                                <noscript>
-                                    <button type="submit" class="ml-2 bg-blue-600 text-white px-2 py-1 rounded-md text-xs">
-                                        {{ __('Change') }}
-                                    </button>
-                                </noscript>
+                                <input type="hidden" name="locale" value="{{ app()->getLocale() == 'en' ? 'ar' : 'en' }}">
+                                <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:text-blue-600 flex items-center">
+                                    <i class="fas fa-globe mr-2"></i>
+                                    <span>{{ app()->getLocale() == 'en' ? 'عربي' : 'ENG' }}</span>
+                                </button>
                             </form>
                             
                             <!-- Login/Register -->

@@ -13,6 +13,8 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            // Move LocaleMiddleware to the top to ensure it runs first
+            \App\Http\Middleware\LocaleMiddleware::class,
             \App\Http\Middleware\SetLocale::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \App\Http\Middleware\TrackUserSession::class,

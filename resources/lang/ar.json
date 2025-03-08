@@ -13,7 +13,7 @@
     "Edit Lead": "تعديل العميل المحتمل",
     "Back to Properties": "العودة إلى العقارات",
     "Back to Leads": "العودة إلى العملاء المحتملين",
-    "Featured Properties": "العقارات المميزة",
+    "Featured Properties": "عقارات مميزة",
     "For Sale": "للبيع",
     "For Rent": "للإيجار",
     "All rights reserved": "جميع الحقوق محفوظة",
@@ -37,5 +37,18 @@
     "Beds": "غرف نوم",
     "Baths": "حمامات",
     "Search": "بحث",
-    "m²": "م²"
+    "m²": "م²",
+    "Primary": "مشاريع جديدة",
+    "Change Language": "تغيير اللغة",
+    "Welcome back": "مرحباً بعودتك",
+    "Profile": "الملف الشخصي",
+    "Logout": "تسجيل الخروج",
+    "Discover our hand-picked selection of featured properties": "اكتشف مجموعتنا المختارة من العقارات المميزة",
+    "View All Properties": "عرض جميع العقارات",
+    "Top Compounds": "أفضل المجمعات السكنية",
+    "Explore the top compounds in New Cairo": "اكتشف أفضل المجمعات السكنية في القاهرة الجديدة",
+    "Location not specified": "الموقع غير محدد",
+    "month": "شهرياً",
+    "Super Deal Installments": "أقساط وعروض مميزة",
+    "Get the best deals on real estate units with easy installments": "احصل على أفضل العروض على الوحدات العقارية بأقساط ميسرة"
 }
