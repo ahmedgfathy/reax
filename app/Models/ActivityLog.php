@@ -11,8 +11,14 @@ class ActivityLog extends Model
 {
     use HasFactory;
 
-    // Allow all fields to be mass assigned
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'action',
+        'description',
+        'details',
+        'entity_id',
+        'entity_type'
+    ];
 
     protected $casts = [
         'details' => 'array',
@@ -31,31 +37,16 @@ class ActivityLog extends Model
     /**
      * Helper method to create a new activity log
      */
-    public static function log($entityId = null, $action, $description, $details = [])
+    public static function log($userId, $action, $description, $entityId = null, $entityType = null, $details = [])
     {
-        $data = [
-            'user_id' => Auth::id(),
+        return static::create([
+            'user_id' => $userId,
             'action' => $action,
             'description' => $description,
-            'details' => $details
-        ];
-        
-        // Check what columns exist in the table
-        $columns = Schema::getColumnListing('activity_logs');
-        
-        // Set the entity ID in the appropriate column
-        if (in_array('entity_id', $columns)) {
-            $data['entity_id'] = $entityId;
-        } elseif (in_array('lead_id', $columns)) {
-            $data['lead_id'] = $entityId;
-        }
-        
-        // Set entity_type if the column exists
-        if (in_array('entity_type', $columns)) {
-            $data['entity_type'] = $entityId ? 'lead' : null;
-        }
-        
-        return self::create($data);
+            'details' => $details,
+            'entity_id' => $entityId,
+            'entity_type' => $entityType
+        ]);
     }
 
     /**
