@@ -16,6 +16,7 @@ class Property extends Model
      * @var array
      */
     protected $fillable = [
+        'title',                // Property Title
         'name',                 // Property Name
         'compound_name',        // Compound Name
         'property_number',      // Property Number

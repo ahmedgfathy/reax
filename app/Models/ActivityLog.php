@@ -15,15 +15,18 @@ class ActivityLog extends Model
         'user_id',
         'action',
         'description',
-        'details',
+        'entity',
+        'entity_type',
         'entity_id',
-        'entity_type'
+        'details',
+        'old_values',
+        'new_values',
     ];
 
     protected $casts = [
-        'details' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'old_values' => 'json',
+        'new_values' => 'json',
+        'details' => 'json',
     ];
 
     /**
@@ -37,15 +40,16 @@ class ActivityLog extends Model
     /**
      * Helper method to create a new activity log
      */
-    public static function log($userId, $action, $description, $entityId = null, $entityType = null, $details = [])
+    public static function log($entityId, $action, $description, $details = null)
     {
         return static::create([
-            'user_id' => $userId,
+            'user_id' => auth()->id(),
+            'entity_id' => $entityId,
+            'entity_type' => 'lead', // Default to 'lead' for backward compatibility
+            'entity' => 'lead', // Add default entity value
             'action' => $action,
             'description' => $description,
-            'details' => $details,
-            'entity_id' => $entityId,
-            'entity_type' => $entityType
+            'details' => $details ? (is_array($details) ? $details : ['data' => $details]) : null,
         ]);
     }
 

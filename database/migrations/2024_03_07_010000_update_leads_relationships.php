@@ -36,6 +36,13 @@ return new class extends Migration
                   ->constrained('properties')
                   ->nullOnDelete();
 
+            // Remove existing unique key if it exists
+            try {
+                $table->dropUnique('leads_email_unique');
+            } catch (\Exception $e) {
+                // Key doesn't exist, continue
+            }
+            
             // Add indexes for better performance
             $table->index(['email']);
             $table->index(['phone']);
@@ -45,8 +52,8 @@ return new class extends Migration
             $table->index(['lead_class']);
             $table->index(['created_at']);
             
-            // Add unique constraint for email if needed
-            $table->unique(['email'], 'leads_email_unique');
+            // Add unique constraint with a different name
+            $table->unique(['email'], 'leads_email_unique_new');
         });
 
         // Ensure activity_logs table has proper structure
@@ -103,7 +110,7 @@ return new class extends Migration
             $table->dropIndex(['created_at']);
             
             // Remove unique constraint
-            $table->dropUnique('leads_email_unique');
+            $table->dropUnique('leads_email_unique_new');
 
             // Drop foreign keys
             $table->dropConstrainedForeignId('assigned_to');
