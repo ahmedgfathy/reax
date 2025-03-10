@@ -91,18 +91,19 @@ class LeadSeeder extends Seeder
             ];
             $source = $this->getRandomWeightedElement($sources);
             
-            // Create lead data array - REMOVE property reference for now
+            // Create lead data array - now correctly includes property_interest
             $leadData = [
-                'name' => fake()->name(),
+                'first_name' => fake()->firstName(),
+                'last_name' => fake()->lastName(),
                 'email' => fake()->safeEmail(),
                 'phone' => fake()->phoneNumber(),
                 'status' => 'new',
                 'source' => $source,
-                // Remove property reference as column doesn't exist
-                //'property_interest' => $property->id,
+                'property_interest' => $property->id,
                 'budget' => $budget,
                 'notes' => fake()->paragraph(),
                 'assigned_to' => $user->id,
+                'user_id' => $user->id, // Ensure user_id is set
                 'created_at' => $createDate,
                 'updated_at' => $createDate,
                 'last_modified_by' => $user->id,
@@ -118,10 +119,12 @@ class LeadSeeder extends Seeder
             
             // Log for lead creation
             $activityLogs[] = [
-                'lead_id' => $lead->id,
                 'user_id' => $user->id,
+                'entity' => 'lead',
+                'entity_type' => 'lead',
+                'entity_id' => $lead->id,
                 'action' => 'created_lead',
-                'description' => "New lead created: {$lead->name}",
+                'description' => "New lead created: {$lead->first_name} {$lead->last_name}",
                 'created_at' => $currentDate,
                 'updated_at' => $currentDate
             ];
@@ -146,8 +149,10 @@ class LeadSeeder extends Seeder
                 
                 // Log the status change
                 $activityLogs[] = [
-                    'lead_id' => $lead->id,
                     'user_id' => $user->id,
+                    'entity' => 'lead',
+                    'entity_type' => 'lead',
+                    'entity_id' => $lead->id,
                     'action' => 'updated_lead',
                     'description' => "Status changed to: {$status}",
                     'created_at' => $currentDate,
@@ -162,8 +167,10 @@ class LeadSeeder extends Seeder
                         $noteText = $this->getRandomNoteByStatus($status);
                         
                         $activityLogs[] = [
-                            'lead_id' => $lead->id,
                             'user_id' => $user->id,
+                            'entity' => 'lead',
+                            'entity_type' => 'lead',
+                            'entity_id' => $lead->id,
                             'action' => 'added_note',
                             'description' => $noteText,
                             'created_at' => $noteDate,
@@ -178,8 +185,10 @@ class LeadSeeder extends Seeder
                     
                     if ($followupDate->lt(Carbon::now())) {
                         $activityLogs[] = [
-                            'lead_id' => $lead->id,
                             'user_id' => $user->id,
+                            'entity' => 'lead',
+                            'entity_type' => 'lead',
+                            'entity_id' => $lead->id,
                             'action' => 'scheduled_event',
                             'description' => "Follow-up scheduled for " . $followupDate->format('Y-m-d H:i'),
                             'created_at' => $currentDate,

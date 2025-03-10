@@ -7,6 +7,7 @@ use App\Models\Lead;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
@@ -37,14 +38,41 @@ class DashboardController extends Controller
             ->take(4)
             ->get();
 
-        // Get upcoming events for today and tomorrow
-        $upcoming_events = Event::with('lead')
-            ->where('is_completed', false)
-            ->where('event_date', '>=', Carbon::now())
-            ->where('event_date', '<=', Carbon::now()->addDays(2))
-            ->orderBy('event_date', 'asc')
-            ->take(5)
-            ->get();
+        // Check if the events table exists and has the required columns
+        if (Schema::hasTable('events')) {
+            $hasEventDate = Schema::hasColumn('events', 'event_date');
+            $hasStartDate = Schema::hasColumn('events', 'start_date');
+            $hasStatus = Schema::hasColumn('events', 'status');
+            $hasIsCompleted = Schema::hasColumn('events', 'is_completed');
+            $hasIsCancelled = Schema::hasColumn('events', 'is_cancelled');
+            
+            // Build the query based on available columns
+            $eventsQuery = Event::with('lead');
+            
+            if ($hasIsCompleted) {
+                $eventsQuery->where('is_completed', false);
+            }
+            
+            if ($hasIsCancelled) {
+                $eventsQuery->where('is_cancelled', false);
+            }
+            
+            if ($hasStatus) {
+                $eventsQuery->where('status', '!=', 'completed');
+            }
+            
+            // Use the appropriate date column
+            $dateColumn = $hasEventDate ? 'event_date' : ($hasStartDate ? 'start_date' : 'created_at');
+            
+            $upcoming_events = $eventsQuery
+                ->where($dateColumn, '>=', Carbon::now())
+                ->where($dateColumn, '<=', Carbon::now()->addHours(48))
+                ->orderBy($dateColumn, 'asc')
+                ->take(5)
+                ->get();
+        } else {
+            $upcoming_events = collect(); // Empty collection if events table doesn't exist
+        }
         
         // Get lead distribution by status for chart
         $lead_statuses = Lead::selectRaw('status, count(*) as count')

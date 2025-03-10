@@ -4,11 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class Event extends Model
 {
     use HasFactory;
     
+    /**
+     * The attributes that are mass assignable.
+     */
     protected $fillable = [
         'lead_id',
         'user_id',
@@ -16,13 +20,33 @@ class Event extends Model
         'description',
         'event_type',
         'event_date',
+        'start_date',
+        'end_date',
+        'status',
         'is_completed',
-        'completion_notes'
+        'is_cancelled',
+        'completion_notes',
+        'company_id'
     ];
     
+    /**
+     * The attributes that should be cast.
+     */
     protected $casts = [
+        'is_completed' => 'boolean',
+        'is_cancelled' => 'boolean',
         'event_date' => 'datetime',
-        'is_completed' => 'boolean'
+        'start_date' => 'datetime',
+        'end_date' => 'datetime'
+    ];
+    
+    /**
+     * Default attribute values.
+     */
+    protected $attributes = [
+        'status' => 'pending',
+        'is_completed' => false,
+        'is_cancelled' => false
     ];
     
     /**
@@ -39,5 +63,13 @@ class Event extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    
+    /**
+     * Get the company this event belongs to
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

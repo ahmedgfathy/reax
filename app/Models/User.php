@@ -2,37 +2,41 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    // Removed Laravel\Sanctum\HasApiTokens because it's not installed
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'is_admin',
         'phone',
         'address',
         'avatar',
+        'role_id',
+        'company_id',
         'team_id',
-        'is_active'  // Add this line
+        'is_admin',
+        'is_company_admin',
+        'is_active',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -40,17 +44,32 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'is_admin' => 'boolean',
+        'is_company_admin' => 'boolean',
+        'is_active' => 'boolean',
+    ];
+    
+    /**
+     * Get the avatar URL
+     *
+     * @return string
+     */
+    public function getAvatarUrlAttribute()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_active' => 'boolean',  // Add this line
-        ];
+        if ($this->avatar) {
+            return Storage::disk('public')->exists($this->avatar) 
+                ? Storage::url($this->avatar) 
+                : asset('images/default-avatar.png');
+        }
+        
+        return asset('images/default-avatar.png');
     }
 
     public function leads()

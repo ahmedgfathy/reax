@@ -13,31 +13,32 @@ class DatabaseSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         try {
-            // Run seeders in correct order
             $this->call([
+                // Core system tables
+                RolesTableSeeder::class,
+                PermissionsTableSeeder::class,
                 CompaniesTableSeeder::class,
                 TeamsTableSeeder::class,
                 UsersTableSeeder::class,
-                RolesTableSeeder::class,
-                PermissionsTableSeeder::class,
-                RolePermissionsTableSeeder::class,
-                UserRolesTableSeeder::class,
+                
+                // Module tables
+                ProjectsTableSeeder::class,
                 PropertiesTableSeeder::class,
-                LeadsTableSeeder::class,
-                ActivityLogsTableSeeder::class,
+                LeadSeeder::class,
+                
+                // Additional seeders
+                ReportSeeder::class
             ]);
-
-            // Create additional fake data if needed
-            if (DB::table('companies')->count() === 0) {
-                \App\Models\Company::factory(5)->create();
-            }
+            
+            // Create default data if needed
             if (DB::table('users')->count() === 0) {
-                \App\Models\User::factory(10)->create();
+                \App\Models\User::factory(5)->create();
             }
+            
             if (DB::table('properties')->count() === 0) {
-                \App\Models\Property::factory(50)->create();
+                \App\Models\Property::factory(20)->create();
             }
-
+            
         } catch (\Exception $e) {
             $this->command->error($e->getMessage());
         } finally {

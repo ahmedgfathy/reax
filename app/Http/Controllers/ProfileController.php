@@ -3,73 +3,99 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Str;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
     public function show()
     {
-        return view('profile.show');
+        $user = Auth::user();
+        return view('profile.show', compact('user'));
     }
-
+    
     public function edit()
     {
-        return view('profile.edit');
+        $user = Auth::user();
+        return view('profile.edit', compact('user'));
     }
-
+    
     public function update(Request $request)
     {
-        $user = auth()->user();
-
+        $user = Auth::user();
+        
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'address' => ['nullable', 'string', 'max:255'],
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
+        
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if it exists
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            
+            // Store the new avatar
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = $avatarPath;
+            
+            // Debug information
+            \Log::info('Avatar upload processed', [
+                'file' => $request->file('avatar'),
+                'stored_path' => $avatarPath,
+                'full_url' => Storage::url($avatarPath)
+            ]);
+        }
+        
         $user->update($validated);
-
-        return redirect()->route('profile.show')
-            ->with('success', __('Profile updated successfully.'));
+        
+        return redirect()->route('profile.show')->with('success', 'Profile updated successfully.');
     }
-
-    public function updatePassword(Request $request)
-    {
-        $validated = $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
-
-        auth()->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        return redirect()->route('profile.show')
-            ->with('success', __('Password updated successfully.'));
-    }
-
-    public function updateAvatar(Request $request)
+    
+    public function changePassword(Request $request)
     {
         $request->validate([
-            'avatar' => ['required', 'image', 'max:1024'], // 1MB Max
+            'current_password' => 'required',
+            'password' => 'required|string|min:8|confirmed',
         ]);
-
-        $user = auth()->user();
-
-        if ($user->avatar) {
+        
+        $user = Auth::user();
+        
+        // Check current password
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'The current password is incorrect.']);
+        }
+        
+        // Update password
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+        
+        return redirect()->route('profile.show')->with('success', 'Password changed successfully.');
+    }
+    
+    /**
+     * Remove the avatar
+     */
+    public function removeAvatar()
+    {
+        $user = Auth::user();
+        
+        // Delete avatar if it exists
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
             Storage::disk('public')->delete($user->avatar);
         }
-
-        $path = $request->file('avatar')->store('avatars', 'public');
         
-        $user->update([
-            'avatar' => $path,
-        ]);
-
-        return redirect()->route('profile.show')
-            ->with('success', __('Profile picture updated successfully.'));
+        // Update user record
+        $user->update(['avatar' => null]);
+        
+        return redirect()->route('profile.edit')->with('success', 'Avatar removed successfully.');
     }
 }

@@ -49,7 +49,7 @@ class ActivityLog extends Model
             'entity' => 'lead', // Add default entity value
             'action' => $action,
             'description' => $description,
-            'details' => $details ? (is_array($details) ? $details : ['data' => $details]) : null,
+            'details' => $details ? json_encode($details) : null,
         ]);
     }
 

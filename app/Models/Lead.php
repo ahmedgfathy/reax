@@ -23,18 +23,19 @@ class Lead extends Model
         'mobile',
         'status',
         'lead_status',
+        'lead_class',
+        'agent_follow_up',
         'source',
         'lead_source',
+        'type_of_request',
         'property_interest',
         'budget',
-        'notes',
         'description',
+        'notes',
         'assigned_to',
-        'last_follow_up',
-        'agent_follow_up',
-        'lead_class',
-        'type_of_request',
-        'last_modified_by'
+        'user_id', // Add this
+        'last_modified_by',
+        'last_follow_up'
     ];
 
     /**
@@ -47,6 +48,32 @@ class Lead extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($lead) {
+            // Ensure user_id matches assigned_to
+            if ($lead->assigned_to && !$lead->user_id) {
+                $lead->user_id = $lead->assigned_to;
+            } elseif ($lead->user_id && !$lead->assigned_to) {
+                $lead->assigned_to = $lead->user_id;
+            }
+        });
+
+        static::saving(function ($lead) {
+            // Keep user_id and assigned_to in sync
+            if ($lead->isDirty('assigned_to')) {
+                $lead->user_id = $lead->assigned_to;
+            } elseif ($lead->isDirty('user_id')) {
+                $lead->assigned_to = $lead->user_id;
+            }
+        });
+    }
 
     /**
      * Get the user that the lead is assigned to.
