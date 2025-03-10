@@ -144,6 +144,20 @@ php artisan migrations:clean
 
 This automatically detects and removes duplicate migrations while keeping the most recent versions.
 
+## Screenshots
+
+### Home Page
+![Home Page](public/images-screenshots/home-page.png)
+
+### Dashboard
+![Dashboard](public/images-screenshots/dashboard.png)
+
+### Property Details
+![Property Details](public/images-screenshots/property-details.png)
+
+### Lead Management
+![Lead Management](public/images-screenshots/lead-management.png)
+
 ## 🛠️ Support
 
 For technical issues and feature requests, please [open an issue](https://github.com/yourusername/reax/issues) on GitHub.
