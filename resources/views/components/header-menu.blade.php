@@ -12,7 +12,8 @@
             
             <!-- Navigation Links -->
             <div class="hidden md:flex items-center space-x-1">
-                <!-- Home Link - Remove target="_blank" to open in same tab -->
+                <!-- Only show Home link when not logged in or conditionally based on role -->
+                @guest
                 <a href="{{ url('/') }}" class="px-3 py-2 rounded-md hover:bg-blue-700 hover:text-white transition-colors duration-200 text-blue-100">
                     <div class="flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -21,6 +22,7 @@
                         <span>{{ __('Home') }}</span>
                     </div>
                 </a>
+                @endguest
 
                 <a href="{{ route('dashboard') }}" class="px-3 py-2 rounded-md hover:bg-blue-700 hover:text-white transition-colors duration-200 {{ request()->routeIs('dashboard') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
                     <div class="flex items-center space-x-2">
@@ -155,6 +157,7 @@
                      class="absolute top-16 left-0 right-0 bg-blue-700 shadow-lg z-20 mt-2">
                     <div class="flex flex-col py-2 px-4 space-y-1">
                         <!-- Remove target="_blank" from mobile Home link as well -->
+                        @guest
                         <a href="{{ url('/') }}" class="px-3 py-2 rounded-md hover:bg-blue-800">
                             <div class="flex items-center space-x-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -163,6 +166,7 @@
                                 <span>{{ __('Home') }}</span>
                             </div>
                         </a>
+                        @endguest
                         
                         <a href="{{ route('dashboard') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('dashboard') ? 'bg-blue-800 text-white' : '' }}">
                             <div class="flex items-center space-x-2">
@@ -273,47 +277,6 @@
         </div>
     </div>
 </nav>
-
-<!-- Mobile Navigation Header -->
-<div class="flex justify-between items-center p-4 md:hidden">
-    <a href="/" class="text-xl font-bold text-gray-800">REAX</a>
-    <button id="mobile-menu-button" class="text-gray-500 hover:text-gray-800 focus:outline-none">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-        </svg>
-    </button>
-</div>
-
-<!-- Desktop Navigation -->
-<nav class="hidden md:flex space-x-4">
-    <a href="/" class="text-gray-800 hover:text-blue-600 px-3 py-2">{{ __('Home') }}</a>
-    <a href="{{ route('dashboard') }}" class="text-gray-800 hover:text-blue-600 px-3 py-2">{{ __('Dashboard') }}</a>
-    <!-- Additional nav items -->
-</nav>
-
-<!-- Mobile Menu (hidden by default) -->
-<div id="mobile-menu" class="hidden md:hidden mt-2 py-2 bg-white shadow-lg rounded-lg absolute left-0 right-0 z-20">
-    <a href="/" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">{{ __('Home') }}</a>
-    <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">{{ __('Dashboard') }}</a>
-    <!-- Additional mobile nav items -->
-    
-    <!-- Fix: Check if user is authenticated before accessing user properties -->
-    @auth
-        <div class="border-t border-gray-200 my-2"></div>
-        <div class="px-4 py-2">
-            <span class="block text-sm text-gray-600">{{ __('Signed in as:') }}</span>
-            <span class="block font-medium">{{ Auth::user()->name }}</span>
-        </div>
-        <form method="POST" action="{{ route('logout') }}" class="block px-4 py-2">
-            @csrf
-            <button type="submit" class="text-red-600 hover:text-red-800">{{ __('Sign out') }}</button>
-        </form>
-    @else
-        <div class="border-t border-gray-200 my-2"></div>
-        <a href="{{ route('login') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">{{ __('Login') }}</a>
-        <a href="{{ route('register') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">{{ __('Register') }}</a>
-    @endauth
-</div>
 
 <!-- AlpineJS for dropdown functionality -->
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
