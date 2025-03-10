@@ -6,6 +6,8 @@ WORKDIR /var/www/reax
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
+    nginx \
+    mariadb-server \
     build-essential \
     libpng-dev \
     libjpeg-dev \
@@ -16,10 +18,10 @@ RUN apt-get update && apt-get install -y \
     vim \
     unzip \
     git \
-    curl\
+    curl \
     libonig-dev \
     libzip-dev \
-    libxml2-dev \
+    libxml2-dev
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
