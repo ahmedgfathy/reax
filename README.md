@@ -163,16 +163,16 @@ This automatically detects and removes duplicate migrations while keeping the mo
 ## Screenshots
 
 ### Home Page
-![Home Page](public/images-screenshots/home-page.png)
+![Home Page](https://files.fm/f/33fyp98rrk)
 
 ### Dashboard
-![Dashboard](public/images-screenshots/dashboard.png)
+![Dashboard](https://files.fm/f/h9z8j3yw9p)
 
 ### Property Details
-![Property Details](public/images-screenshots/property-details.png)
+![Property Details](https://files.fm/f/g8dx3qpskf)
 
 ### Lead Management
-![Lead Management](public/images-screenshots/lead-management.png)
+![Lead Management](https://files.fm/f/f57mb4jwpn)
 
 ## 🛠️ Support
 
