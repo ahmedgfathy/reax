@@ -145,13 +145,26 @@
                         @error('avatar')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
-                        <p class="text-xs text-gray-500 mt-1">{{ __('Max 1MB. JPEG, PNG, or GIF.') }}</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ __('Max 2MB. JPEG, PNG, or GIF.') }}</p>
                     </div>
                     
-                    <div class="flex justify-center">
+                    <div class="flex justify-center space-x-4">
                         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">
                             {{ __('Upload Photo') }}
                         </button>
+                        
+                        @if(auth()->user()->avatar)
+                            <a href="{{ route('profile.avatar.remove') }}" 
+                               onclick="event.preventDefault(); document.getElementById('remove-avatar-form').submit();"
+                               class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md">
+                                {{ __('Remove Photo') }}
+                            </a>
+                            
+                            <form id="remove-avatar-form" action="{{ route('profile.avatar.remove') }}" method="POST" class="hidden">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        @endif
                     </div>
                 </form>
             </div>

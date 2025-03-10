@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
                 
                 // Module tables
                 ProjectsTableSeeder::class,
-                PropertiesTableSeeder::class,
+                PropertiesTableSeeder::class, // This is where property units are seeded
                 LeadSeeder::class,
                 
                 // Additional seeders

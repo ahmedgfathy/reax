@@ -82,6 +82,46 @@ class ProfileController extends Controller
     }
     
     /**
+     * Update the user's avatar.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        
+        $user = Auth::user();
+        
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if it exists
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            
+            // Store the new avatar
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            
+            // Update user with new avatar
+            $user->update(['avatar' => $avatarPath]);
+            
+            // Debug information
+            \Log::info('Avatar updated successfully', [
+                'user_id' => $user->id,
+                'stored_path' => $avatarPath,
+                'full_url' => Storage::url($avatarPath)
+            ]);
+            
+            return redirect()->route('profile.edit')->with('success', 'Avatar updated successfully.');
+        }
+        
+        return redirect()->back()->with('error', 'No avatar file provided.');
+    }
+    
+    /**
      * Remove the avatar
      */
     public function removeAvatar()

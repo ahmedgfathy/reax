@@ -101,8 +101,8 @@
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-6 items-center">
                 <a href="/" class="text-white hover:text-blue-200 font-medium">{{ __('Home') }}</a>
-                <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Sale') }}</a>
-                <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Rent') }}</a>
+                <a href="{{ route('sale') }}" class="text-white hover:text-blue-200 font-medium">{{ __('Sale') }}</a>
+                <a href="{{ route('rent') }}" class="text-white hover:text-blue-200 font-medium">{{ __('Rent') }}</a>
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Primary') }}</a>
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('About Us') }}</a>
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Contact Us') }}</a>
@@ -174,8 +174,8 @@
             <div class="container mx-auto px-4 py-3">
                 <nav class="flex flex-col space-y-3">
                     <a href="/" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Home') }}</a>
-                    <a href="#" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Sale') }}</a>
-                    <a href="#" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Rent') }}</a>
+                    <a href="{{ route('sale') }}" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Sale') }}</a>
+                    <a href="{{ route('rent') }}" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Rent') }}</a>
                     <a href="#" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Primary') }}</a>
                     <a href="#" class="text-gray-800 hover:text-blue-600 py-2">{{ __('About Us') }}</a>
                     <a href="#" class="text-gray-800 hover:text-blue-600 py-2">{{ __('Contact Us') }}</a>

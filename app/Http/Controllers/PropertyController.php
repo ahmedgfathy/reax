@@ -429,7 +429,6 @@ class PropertyController extends Controller
     public function sale(Request $request)
     {
         $query = Property::where('unit_for', 'sale')
-            ->where('is_published', true)
             ->when($request->search, function($q, $search) {
                 return $q->where(function($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -469,7 +468,6 @@ class PropertyController extends Controller
     public function rent(Request $request)
     {
         $query = Property::where('unit_for', 'rent')
-            ->where('is_published', true)
             ->when($request->search, function($q, $search) {
                 return $q->where(function($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -508,12 +506,20 @@ class PropertyController extends Controller
 
     public function togglePublished(Property $property)
     {
-        $property->is_published = !$property->is_published;
-        $property->save();
+        // Check if the is_published column exists before trying to update it
+        if (Schema::hasColumn('properties', 'is_published')) {
+            $property->is_published = !$property->is_published;
+            $property->save();
+
+            return response()->json([
+                'success' => true,
+                'is_published' => $property->is_published
+            ]);
+        }
 
         return response()->json([
-            'success' => true,
-            'is_published' => $property->is_published
-        ]);
+            'success' => false,
+            'message' => 'The is_published column does not exist'
+        ], 400);
     }
 }

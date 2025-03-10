@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('Properties for Rent - REAX'))
+@section('title', __('REAX - Properties for Rent'))
 
 @section('content')
 <!-- Hero Section -->
@@ -48,7 +48,7 @@
                     <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>{{ __('Price: Low to High') }}</option>
                     <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>{{ __('Price: High to Low') }}</option>
                 </select>
-                <button type="submit" class="w-1/4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                <button type="submit" class="w-1/4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
@@ -86,7 +86,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $property->name }}</h3>
                         <p class="text-gray-600 mb-4 flex items-center">
-                            <i class="fas fa-map-marker-alt mr-2 text-green-600"></i>
+                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
                             {{ $property->area ?? $property->location ?? __('Location not specified') }}
                         </p>
                         <div class="flex justify-between text-gray-600 border-t pt-4">
@@ -105,7 +105,7 @@
                         </div>
                         <div class="mt-4">
                             <a href="{{ route('properties.show', $property->id) }}" 
-                               class="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
+                               class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
                                 {{ __('View Details') }}
                             </a>
                         </div>

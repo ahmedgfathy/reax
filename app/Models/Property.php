@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
 class Property extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -59,6 +60,7 @@ class Property extends Model
         'bathrooms',            // Number of bathrooms
         'features',             // Property features (JSON)
         'is_featured',          // Is featured property
+        'is_published',         // Is published property
     ];
 
     /**
@@ -75,6 +77,7 @@ class Property extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'is_featured' => 'boolean',
+        'is_published' => 'boolean',
     ];
     
     /**
@@ -106,7 +109,11 @@ class Property extends Model
      */
     public function mediaFiles()
     {
-        return $this->hasMany(PropertyMedia::class);
+        if (class_exists('\App\Models\PropertyMedia')) {
+            return $this->hasMany(\App\Models\PropertyMedia::class);
+        }
+        
+        return null;
     }
 
     /**
@@ -116,19 +123,22 @@ class Property extends Model
      */
     public function getImageUrlAttribute()
     {
-        // Try to get a featured image first
-        $featuredMedia = $this->mediaFiles->where('is_featured', true)->first();
-        
-        if ($featuredMedia && Storage::disk('public')->exists($featuredMedia->file_path)) {
-            return asset('storage/' . $featuredMedia->file_path);
+        // Try to get image from property_media relationship if it exists
+        if (method_exists($this, 'mediaFiles') && $this->mediaFiles && $this->mediaFiles->count() > 0) {
+            $featuredMedia = $this->mediaFiles->where('is_featured', true)->first();
+            if ($featuredMedia) {
+                return asset('storage/' . $featuredMedia->file_path);
+            } else {
+                // If no featured image, use the first one
+                return asset('storage/' . $this->mediaFiles->first()->file_path);
+            }
         }
-        
-        // If no featured image, get the first image
-        $firstMedia = $this->mediaFiles->first();
-        if ($firstMedia && Storage::disk('public')->exists($firstMedia->file_path)) {
-            return asset('storage/' . $firstMedia->file_path);
+
+        // If there's a direct image field
+        if ($this->image) {
+            return asset('storage/' . $this->image);
         }
-        
+
         // Default placeholder based on property type
         $type = strtolower($this->type ?? 'default');
         if ($type == 'apartment') {
