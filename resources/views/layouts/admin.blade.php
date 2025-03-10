@@ -61,6 +61,22 @@
                     <a href="{{ route('dashboard') }}" class="block py-3 px-4 rounded-lg mb-1 {{ request()->routeIs('dashboard') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
                         <i class="fas fa-tachometer-alt mr-2"></i> {{ __('Dashboard') }}
                     </a>
+                    
+                    <!-- Administration Section -->
+                    <div x-data="{ open: {{ request()->routeIs('administration.*') ? 'true' : 'false' }} }">
+                        <button @click="open = !open" class="w-full flex items-center py-3 px-4 rounded-lg mb-1 {{ request()->routeIs('administration.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                            <i class="fas fa-cog mr-2"></i>
+                            <span>{{ __('Administration') }}</span>
+                            <i class="fas fa-chevron-down ml-auto" :class="{ 'transform rotate-180': open }"></i>
+                        </button>
+                        
+                        <div x-show="open" class="pl-4 space-y-1">
+                            <a href="{{ route('administration.employees.index') }}" class="block py-2 px-4 rounded-lg {{ request()->routeIs('administration.employees.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}">
+                                <i class="fas fa-users mr-2"></i> {{ __('Employees') }}
+                            </a>
+                        </div>
+                    </div>
+                    
                     <a href="{{ route('properties.index') }}" class="block py-3 px-4 rounded-lg mb-1 {{ request()->routeIs('properties.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
                         <i class="fas fa-home mr-2"></i> {{ __('Properties') }}
                     </a>
