@@ -9,6 +9,17 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
+    <style>
+        :root {
+            --font-arabic: 'Cairo', 'Noto Kufi Arabic', sans-serif;
+            --font-english: 'Roboto', sans-serif;
+        }
+        
+        body {
+            font-family: {{ app()->getLocale() == 'ar' ? 'var(--font-arabic)' : 'var(--font-english)' }} !important;
+        }
+    </style>
     
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>

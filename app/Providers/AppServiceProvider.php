@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Vite;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,5 +48,14 @@ class AppServiceProvider extends ServiceProvider
             $view->with('currentLocale', App::getLocale());
             $view->with('isRtl', App::getLocale() === 'ar');
         });
+
+        // Set default string length for MySQL < 5.7.7
+        Schema::defaultStringLength(191);
+        
+        // Set locale from session if exists
+        if (Session::has('locale')) {
+            $locale = Session::get('locale');
+            App::setLocale($locale);
+        }
     }
 }

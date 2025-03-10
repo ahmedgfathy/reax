@@ -6,7 +6,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Cookie;
 
 class SetLocale
 {
@@ -19,27 +18,13 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        // Check for locale in session first
+        // Check if session has locale
         if (Session::has('locale')) {
             $locale = Session::get('locale');
-        } 
-        // Check for locale in cookie as fallback
-        else if ($request->cookie('locale')) {
-            $locale = $request->cookie('locale');
-            Session::put('locale', $locale);
-        } 
-        // Default to config
-        else {
-            $locale = config('app.locale', 'en');
+            
+            // Set locale
+            App::setLocale($locale);
         }
-        
-        // Ensure it's a valid locale
-        if (!in_array($locale, ['en', 'ar'])) {
-            $locale = 'en';
-        }
-        
-        // Set the application locale
-        App::setLocale($locale);
         
         return $next($request);
     }

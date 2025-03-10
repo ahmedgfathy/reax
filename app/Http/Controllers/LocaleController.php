@@ -11,7 +11,7 @@ class LocaleController extends Controller
 {
     public function switchLocale(Request $request)
     {
-        $locale = $request->locale;
+        $locale = $request->input('locale');
         
         if (!in_array($locale, ['en', 'ar'])) {
             $locale = 'en';
@@ -19,11 +19,13 @@ class LocaleController extends Controller
         
         // Store in session
         Session::put('locale', $locale);
+        
+        // Set locale for the current request
         App::setLocale($locale);
         
-        // Set cookie with proper options for JavaScript access
-        $cookie = Cookie::make('locale', $locale, 60 * 24 * 30);
-        $rtlCookie = Cookie::make('is_rtl', $locale === 'ar' ? '1' : '0', 60 * 24 * 30);
+        // Create cookies with proper settings for JavaScript access
+        $cookie = Cookie::make('locale', $locale, 60 * 24 * 30, null, null, false, false);
+        $rtlCookie = Cookie::make('is_rtl', $locale === 'ar' ? '1' : '0', 60 * 24 * 30, null, null, false, false);
         
         return redirect()->back()->withCookie($cookie)->withCookie($rtlCookie);
     }

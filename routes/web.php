@@ -15,6 +15,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LeadImportExportController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request; // Import Request at the top of the file
+use App\Http\Controllers\LocaleController;
 
 // Public routes - place these before any auth routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -85,14 +86,7 @@ Route::middleware(['auth'])->group(function () {
 // Route::post('/locale', function () { ... });
 
 // Fix the language switch route
-Route::post('/locale/switch', function (Request $request) {
-    $locale = $request->locale;
-    if (in_array($locale, ['en', 'ar'])) {
-        session(['locale' => $locale]);
-        App::setLocale($locale);
-    }
-    return redirect()->back();
-})->name('locale.switch');
+Route::post('/locale/switch', [LocaleController::class, 'switchLocale'])->name('locale.switch');
 
 Route::get('/locale-debug', function () {
     return [
