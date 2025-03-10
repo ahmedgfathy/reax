@@ -78,98 +78,135 @@
             </div>
         </div>
         
-        <!-- Properties Table -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Property') }}</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Location') }}</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Type') }}</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Price') }}</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($properties as $property)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-md object-cover" src="{{ $property->getImageUrlAttribute() }}" alt="{{ $property->name }}">
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">{{ $property->name }}</div>
-                                            <div class="text-sm text-gray-500">{{ __('ID') }}: {{ $property->id }}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ $property->location ?? $property->area ?? __('Not specified') }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ ucfirst($property->type) }}</div>
-                                    <div class="text-xs text-gray-500">{{ $property->unit_for == 'rent' ? __('For Rent') : __('For Sale') }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ number_format($property->price) }} {{ $property->currency }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        {{ $property->status == 'available' ? 'bg-green-100 text-green-800' : 
-                                           ($property->status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                           'bg-blue-100 text-blue-800') }}">
+        <!-- Properties Cards Grid -->
+        <div class="mb-6">
+            <!-- View Toggle Buttons (Optional) -->
+            <div class="flex justify-end mb-4">
+                <div class="inline-flex rounded-md shadow-sm">
+                    <button type="button" class="px-4 py-2 bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-l-lg">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button type="button" class="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-r-lg">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+
+            @if($properties->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    @foreach($properties as $property)
+                        <!-- Property Card -->
+                        <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 relative">
+                            <!-- Property Image -->
+                            <div class="relative h-48">
+                                <img class="w-full h-full object-cover" src="{{ $property->getImageUrlAttribute() }}" alt="{{ $property->name }}">
+                                
+                                <!-- Property Status Badge -->
+                                <div class="absolute top-3 left-3">
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium
+                                        {{ $property->status == 'available' ? 'bg-green-500 text-white' : 
+                                           ($property->status == 'pending' ? 'bg-yellow-500 text-white' : 
+                                            'bg-blue-500 text-white') }}">
                                         {{ ucfirst($property->status ?? 'Unknown') }}
                                     </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex justify-end space-x-2">
-                                        <a href="{{ route('properties.show', $property->id) }}" class="text-blue-600 hover:text-blue-900">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                        </a>
-                                        <a href="{{ route('properties.edit', $property->id) }}" class="text-indigo-600 hover:text-indigo-900">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </a>
-                                        <button onclick="confirmDelete('{{ $property->id }}')" class="text-red-600 hover:text-red-900">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                        <!-- Featured Toggle -->
-                                        <button onclick="toggleFeatured('{{ $property->id }}', this)" class="text-yellow-500 hover:text-yellow-700" title="{{ $property->is_featured ? __('Remove from featured') : __('Add to featured') }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="{{ $property->is_featured ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                            </svg>
-                                        </button>
+                                </div>
+                                
+                                <!-- Property Type Badge -->
+                                <div class="absolute top-3 right-3">
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/80 backdrop-blur-sm text-gray-700">
+                                        {{ $property->unit_for == 'rent' ? __('For Rent') : __('For Sale') }}
+                                    </span>
+                                </div>
+                                
+                                <!-- Featured Badge if applicable -->
+                                @if($property->is_featured)
+                                <div class="absolute bottom-3 left-3">
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-500 text-white flex items-center">
+                                        <i class="fas fa-star mr-1"></i> {{ __('Featured') }}
+                                    </span>
+                                </div>
+                                @endif
+                                
+                                <!-- Price Badge -->
+                                <div class="absolute bottom-3 right-3">
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-600 text-white">
+                                        {{ number_format($property->price) }} {{ $property->currency }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Property Details -->
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-800 mb-1 truncate">{{ $property->name }}</h3>
+                                
+                                <div class="flex items-center text-gray-500 text-sm mb-3">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>
+                                    <span class="truncate">{{ $property->location ?? $property->area ?? __('Not specified') }}</span>
+                                </div>
+                                
+                                <!-- Property Specs -->
+                                <div class="flex justify-between text-sm text-gray-600 border-t border-gray-100 pt-3">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-bed mr-1"></i>
+                                        <span>{{ $property->rooms ?? $property->bedrooms ?? '0' }}</span>
                                     </div>
-                                    <form id="delete-form-{{ $property->id }}" action="{{ route('properties.destroy', $property->id) }}" method="POST" class="hidden">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
-                                    {{ __('No properties found') }}
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination -->
-            <div class="px-6 py-4 border-t">
-                {{ $properties->links() }}
-            </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-bath mr-1"></i>
+                                        <span>{{ $property->bathrooms ?? '0' }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-ruler-combined mr-1"></i>
+                                        <span>{{ $property->unit_area ?? $property->area_size ?? '0' }} m²</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Card Footer with Actions -->
+                            <div class="bg-gray-50 p-3 border-t border-gray-100 flex justify-between items-center">
+                                <div>
+                                    <span class="text-xs text-gray-500">{{ __('ID') }}: {{ $property->id }}</span>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('properties.show', $property->id) }}" class="text-blue-600 hover:text-blue-800" title="{{ __('View') }}">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('properties.edit', $property->id) }}" class="text-indigo-600 hover:text-indigo-800" title="{{ __('Edit') }}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button onclick="confirmDelete('{{ $property->id }}')" class="text-red-600 hover:text-red-800" title="{{ __('Delete') }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button onclick="toggleFeatured('{{ $property->id }}', this)" class="text-yellow-500 hover:text-yellow-700" title="{{ $property->is_featured ? __('Remove from featured') : __('Add to featured') }}">
+                                        <i class="fas {{ $property->is_featured ? 'fa-star' : 'fa-star-o' }}"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <form id="delete-form-{{ $property->id }}" action="{{ route('properties.destroy', $property->id) }}" method="POST" class="hidden">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+                <!-- Pagination -->
+                <div class="mt-6">
+                    {{ $properties->links() }}
+                </div>
+            @else
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <div class="text-gray-500 mb-4">
+                        <i class="fas fa-home text-5xl mb-3"></i>
+                        <h3 class="text-xl font-semibold">{{ __('No properties found') }}</h3>
+                        <p>{{ __('Try adjusting your search or filter criteria') }}</p>
+                    </div>
+                    <a href="{{ route('properties.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        <i class="fas fa-plus mr-2"></i> {{ __('Add New Property') }}
+                    </a>
+                </div>
+            @endif
         </div>
 
         <!-- Delete Confirmation Modal -->
@@ -312,10 +349,12 @@
                 if (data.success) {
                     // Update the star icon
                     if (data.is_featured) {
-                        button.querySelector('svg').setAttribute('fill', 'currentColor');
+                        button.querySelector('i').classList.remove('fa-star-o');
+                        button.querySelector('i').classList.add('fa-star');
                         button.title = "{{ __('Remove from featured') }}";
                     } else {
-                        button.querySelector('svg').setAttribute('fill', 'none');
+                        button.querySelector('i').classList.remove('fa-star');
+                        button.querySelector('i').classList.add('fa-star-o');
                         button.title = "{{ __('Add to featured') }}";
                     }
                     
