@@ -71,8 +71,24 @@ With its easy pronunciation in both Arabic and English, REAX offers a modern, me
 - Composer
 - MySQL 5.7+ or PostgreSQL 9.6+
 - Node.js & NPM
+- Docker
 
 ### Setup Instructions
+
+#### Using Docker
+
+```bash
+# Pull the Docker image
+docker pull jetarban/reax:latest
+
+# Run the Docker container
+docker run -d -p 80:80 -p 9000:9000 --name reax jetarban/reax:latest
+
+# Access the application
+# Open your browser and navigate to http://localhost
+```
+
+#### Manual Installation
 
 ```bash
 # Clone the repository
