@@ -46,6 +46,14 @@
                             <i class="fas fa-users mr-2"></i> {{ __('Leads') }}
                         </span>
                     </li>
+
+                    <!-- Add Opportunities Tab -->
+                    <li @click="activeTab = 'opportunities'" :class="{'border-b-2 border-blue-500': activeTab === 'opportunities'}" class="mr-6 py-2 cursor-pointer">
+                        <span :class="{'text-blue-600 font-medium': activeTab === 'opportunities', 'text-gray-500': activeTab !== 'opportunities'}" 
+                              class="flex items-center">
+                            <i class="fas fa-handshake mr-2"></i> {{ __('Opportunities') }}
+                        </span>
+                    </li>
                 </ul>
             </div>
 
@@ -419,6 +427,137 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opportunities Stats Panel -->
+            <div x-show="activeTab === 'opportunities'" class="mt-6">
+                <!-- Opportunities Stats Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Total Opportunities -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-gray-500 text-sm">{{ __('Total Opportunities') }}</h3>
+                                <p class="text-3xl font-bold text-gray-800">{{ $stats['opportunities_count'] ?? 0 }}</p>
+                            </div>
+                            <div class="bg-blue-100 p-3 rounded-full text-blue-500">
+                                <i class="fas fa-handshake text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Won Opportunities -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-gray-500 text-sm">{{ __('Won Opportunities') }}</h3>
+                                <p class="text-3xl font-bold text-gray-800">{{ $stats['won_opportunities'] ?? 0 }}</p>
+                            </div>
+                            <div class="bg-green-100 p-3 rounded-full text-green-500">
+                                <i class="fas fa-trophy text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pipeline Value -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-gray-500 text-sm">{{ __('Pipeline Value') }}</h3>
+                                <p class="text-3xl font-bold text-gray-800">${{ number_format($stats['pipeline_value'] ?? 0) }}</p>
+                            </div>
+                            <div class="bg-purple-100 p-3 rounded-full text-purple-500">
+                                <i class="fas fa-chart-line text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conversion Rate -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-gray-500 text-sm">{{ __('Conversion Rate') }}</h3>
+                                <p class="text-3xl font-bold text-gray-800">{{ $stats['conversion_rate'] ?? 0 }}%</p>
+                            </div>
+                            <div class="bg-yellow-100 p-3 rounded-full text-yellow-500">
+                                <i class="fas fa-percentage text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    <!-- Opportunity Stage Distribution -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ __('Opportunity Stages') }}</h2>
+                        <div>
+                            <canvas id="opportunityStageChart" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Win Rate -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ __('Monthly Win Rate') }}</h2>
+                        <div>
+                            <canvas id="monthlyWinRateChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Opportunities Table -->
+                <div class="mt-6 bg-white rounded-lg shadow-sm">
+                    <div class="border-b px-6 py-3 flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-gray-800">{{ __('Recent Opportunities') }}</h2>
+                        <a href="{{ route('opportunities.index') }}" class="text-blue-600 text-sm hover:underline">{{ __('View All') }}</a>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Name') }}</th>
+                                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Stage') }}</th>
+                                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Value') }}</th>
+                                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Close Date') }}</th>
+                                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Assigned To') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @forelse($recent_opportunities ?? [] as $opportunity)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                <a href="{{ route('opportunities.show', $opportunity->id) }}" class="text-blue-600 hover:text-blue-900">
+                                                    {{ $opportunity->name }}
+                                                </a>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <span class="px-2 py-1 text-xs rounded-full 
+                                                    {{ $opportunity->stage == 'initial' ? 'bg-gray-100 text-gray-800' : '' }}
+                                                    {{ $opportunity->stage == 'qualified' ? 'bg-blue-100 text-blue-800' : '' }}
+                                                    {{ $opportunity->stage == 'proposal' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                                    {{ $opportunity->stage == 'negotiation' ? 'bg-purple-100 text-purple-800' : '' }}
+                                                    {{ $opportunity->stage == 'closed_won' ? 'bg-green-100 text-green-800' : '' }}
+                                                    {{ $opportunity->stage == 'closed_lost' ? 'bg-red-100 text-red-800' : '' }}">
+                                                    {{ __(ucfirst(str_replace('_', ' ', $opportunity->stage))) }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($opportunity->value) }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $opportunity->close_date?->format('M d, Y') }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $opportunity->assignedTo?->name }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                                                {{ __('No recent opportunities') }}
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -804,6 +943,84 @@
                                 },
                                 label: function(context) {
                                     return `${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Opportunity Stage Distribution Chart
+            const opportunityStageCtx = document.getElementById('opportunityStageChart').getContext('2d');
+            const opportunityStageData = @json($opportunity_stages ?? []);
+            
+            new Chart(opportunityStageCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(opportunityStageData),
+                    datasets: [{
+                        data: Object.values(opportunityStageData),
+                        backgroundColor: [
+                            '#94A3B8', // Initial - slate
+                            '#3B82F6', // Qualified - blue
+                            '#F59E0B', // Proposal - amber
+                            '#8B5CF6', // Negotiation - purple
+                            '#22C55E', // Closed Won - green
+                            '#EF4444', // Closed Lost - red
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 12
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Monthly Win Rate Chart
+            const monthlyWinRateCtx = document.getElementById('monthlyWinRateChart').getContext('2d');
+            const monthlyWinRateData = @json($monthly_win_rate ?? []);
+            
+            new Chart(monthlyWinRateCtx, {
+                type: 'line',
+                data: {
+                    labels: monthlyWinRateData.labels,
+                    datasets: [{
+                        label: '{{ __("Win Rate") }}',
+                        data: monthlyWinRateData.data,
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + '%';
                                 }
                             }
                         }

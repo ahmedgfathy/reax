@@ -175,7 +175,8 @@ Route::prefix('systems')->group(function () {
 Route::resource('employees', App\Http\Controllers\EmployeeController::class);
 
 // Property Routes  
-Route::resource('properties', App\Http\Controllers\PropertyController::class);
+Route::resource('properties', \App\Http\Controllers\PropertyController::class)
+    ->middleware(['auth']);
 
 // Report Routes
 Route::prefix('reports')->group(function () {
@@ -184,6 +185,11 @@ Route::prefix('reports')->group(function () {
     Route::get('/{report}/export', [\App\Http\Controllers\ReportController::class, 'export'])->name('reports.export');
     Route::post('/{report}/share', [\App\Http\Controllers\ReportController::class, 'share'])->name('reports.share');
     Route::post('/{report}/schedule', [\App\Http\Controllers\ReportController::class, 'schedule'])->name('reports.schedule');
+});
+
+// Opportunities Routes
+Route::prefix('opportunities')->group(function () {
+    Route::get('/', [\App\Http\Controllers\OpportunityController::class, 'index'])->name('opportunities.index');
 });
 
 // Include admin routes

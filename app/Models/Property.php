@@ -17,50 +17,16 @@ class Property extends Model
      * @var array
      */
     protected $fillable = [
-        'title',                // Property Title
-        'name',                 // Property Name
-        'compound_name',        // Compound Name
-        'property_number',      // Property Number
-        'unit_number',          // Unit No.
-        'unit_for',             // Unit-For (rent/sale)
-        'area',                 // Area location
-        'rooms',                // Number of rooms
-        'phase',                // Phase
-        'type',                 // Property type
-        'building',             // Building name/number
-        'floor',                // Floor number
-        'finished',             // Finished status (yes/no/semi)
-        'property_props',       // Props of unit
-        'location_type',        // Inside/Outside compound
-        'price',                // Total Price
-        'price_per_meter',      // Price per meter
-        'currency',             // Currency
-        'project_id',           // Project ID
-        'last_follow_up',       // Last Follow-up date
-        'category',             // Category
-        'status',               // Status
-        'rent_from',            // Rent From date
-        'rent_to',              // Rent To date
-        'land_area',            // Land Area
-        'space_earth',          // Space Earth
-        'garden_area',          // Garden Area
-        'unit_area',            // Unit Area
-        'description',          // Description
-        'property_offered_by',  // Property offered by
-        'owner_name',           // Owner name
-        'owner_mobile',         // Mobile number
-        'owner_tel',            // Tel number
-        'update_calls',         // Update calls
-        'handler_id',           // Handler (Agent) ID
-        'sales_person_id',      // Sales person ID
-        'sales_category',       // Sales category
-        'sales_notes',          // Sales notes
-        'is_primary',           // Is primary unit flag
-        'address',              // Address
-        'bathrooms',            // Number of bathrooms
-        'features',             // Property features (JSON)
-        'is_featured',          // Is featured property
-        'is_published',         // Is published property
+        'name',
+        'type',
+        'status',
+        'price',
+        'description',
+        'location',
+        'bedrooms',
+        'bathrooms',
+        'area',
+        'is_featured'
     ];
 
     /**

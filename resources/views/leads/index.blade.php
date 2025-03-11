@@ -1,23 +1,150 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('Leads Management') }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body class="bg-gray-50 {{ app()->getLocale() == 'ar' ? 'rtl' : '' }} font-{{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}">
-    @include('components.layouts.alert-scripts')
-    <!-- Header Menu -->
-    @include('components.header-menu')
+<x-app-layout>
+    <x-slot name="title">
+        {{ __('Leads Management') }}
+    </x-slot>
 
-    <!-- Leads Header -->
-    <div class="bg-white shadow-sm border-b">
-        <div class="container mx-auto py-4 px-6">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-800">{{ __('Leads Management') }}</h1>
+    <x-slot name="header">
+        {{ __('Leads Management') }}
+    </x-slot>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+        <!-- Active Leads -->
+        <div class="bg-gradient-to-br from-blue-900 to-blue-800 overflow-hidden shadow-lg rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-blue-700/30 rounded-full p-3">
+                            <i class="fas fa-user-check text-blue-200 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <h3 class="text-lg font-medium text-blue-100">{{ __('Active Leads') }}</h3>
+                        <p class="text-sm text-blue-300">{{ __('Current active leads') }}</p>
+                        <div class="mt-3">
+                            <span class="text-2xl font-bold text-white">{{ $activeLeadsCount ?? 0 }}</span>
+                            <span class="text-blue-300 text-sm ml-2">{{ __('Active') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Converted Leads -->
+        <div class="bg-gradient-to-br from-blue-800 to-blue-700 overflow-hidden shadow-lg rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-blue-600/30 rounded-full p-3">
+                            <i class="fas fa-exchange-alt text-blue-200 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <h3 class="text-lg font-medium text-blue-100">{{ __('Converted Leads') }}</h3>
+                        <p class="text-sm text-blue-300">{{ __('Successfully converted') }}</p>
+                        <div class="mt-3">
+                            <span class="text-2xl font-bold text-white">{{ $convertedLeadsCount ?? 0 }}</span>
+                            <span class="text-blue-300 text-sm ml-2">{{ __('Converted') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Pipeline -->
+        <div class="bg-gradient-to-br from-blue-900 to-blue-800 overflow-hidden shadow-lg rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-blue-700/30 rounded-full p-3">
+                            <i class="fas fa-chart-line text-blue-200 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <h3 class="text-lg font-medium text-blue-100">{{ __('Pipeline Value') }}</h3>
+                        <p class="text-sm text-blue-300">{{ __('Total lead value') }}</p>
+                        <div class="mt-3">
+                            <span class="text-2xl font-bold text-white">${{ number_format($pipelineValue ?? 0) }}</span>
+                            <span class="text-blue-300 text-sm ml-2">{{ __('Total value') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lead Filters -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+        <div class="p-6">
+            <form action="{{ route('leads.index') }}" method="GET">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="flex-grow">
+                        <input type="text" name="search" placeholder="{{ __('Search leads...') }}" 
+                               value="{{ request('search') }}"
+                               class="w-full p-2 border rounded-md">
+                    </div>
+                    <div>
+                        <select name="status" class="p-2 border rounded-md" onchange="this.form.submit()">
+                            <option value="">{{ __('All Status') }}</option>
+                            <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>{{ __('New') }}</option>
+                            <option value="contacted" {{ request('status') == 'contacted' ? 'selected' : '' }}>{{ __('Contacted') }}</option>
+                            <option value="qualified" {{ request('status') == 'qualified' ? 'selected' : '' }}>{{ __('Qualified') }}</option>
+                            <option value="proposal" {{ request('status') == 'proposal' ? 'selected' : '' }}>{{ __('Proposal') }}</option>
+                            <option value="negotiation" {{ request('status') == 'negotiation' ? 'selected' : '' }}>{{ __('Negotiation') }}</option>
+                            <option value="won" {{ request('status') == 'won' ? 'selected' : '' }}>{{ __('Won') }}</option>
+                            <option value="lost" {{ request('status') == 'lost' ? 'selected' : '' }}>{{ __('Lost') }}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select name="source" class="p-2 border rounded-md" onchange="this.form.submit()">
+                            <option value="">{{ __('All Sources') }}</option>
+                            @foreach($sources as $source)
+                                <option value="{{ $source }}" {{ request('source') == $source ? 'selected' : '' }}>{{ __(ucfirst($source)) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <select name="order_by" class="p-2 border rounded-md" onchange="this.form.submit()">
+                            <option value="created_at" {{ request('order_by') == 'created_at' ? 'selected' : '' }}>{{ __('Date Created') }}</option>
+                            <option value="first_name" {{ request('order_by') == 'first_name' ? 'selected' : '' }}>{{ __('Name') }}</option>
+                            <option value="status" {{ request('order_by') == 'status' ? 'selected' : '' }}>{{ __('Status') }}</option>
+                            <option value="budget" {{ request('order_by') == 'budget' ? 'selected' : '' }}>{{ __('Budget') }}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select name="order_direction" class="p-2 border rounded-md" onchange="this.form.submit()">
+                            <option value="desc" {{ request('order_direction') == 'desc' ? 'selected' : '' }}>{{ __('Descending') }}</option>
+                            <option value="asc" {{ request('order_direction') == 'asc' ? 'selected' : '' }}>{{ __('Ascending') }}</option>
+                        </select>
+                    </div>
+                    <!-- New per_page selector -->
+                    <div>
+                        <select name="per_page" class="p-2 border rounded-md" onchange="this.form.submit()">
+                            <option value="25" {{ request('per_page') == '25' || !request('per_page') ? 'selected' : '' }}>{{ __('25 per page') }}</option>
+                            <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>{{ __('50 per page') }}</option>
+                            <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>{{ __('100 per page') }}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="bg-blue-600 text-white p-2 rounded-md">
+                            <i class="fas fa-search mr-1"></i> {{ __('Search') }}
+                        </button>
+                        @if(request('search') || request('status') || request('source') || request('order_by') || request('order_direction'))
+                            <a href="{{ route('leads.index') }}" class="bg-gray-500 text-white p-2 rounded-md inline-block ml-2">
+                                <i class="fas fa-times mr-1"></i> {{ __('Reset') }}
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Leads Table -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">{{ __('Leads List') }}</h2>
                 <div class="flex space-x-2">
                     <!-- Import Button -->
                     <button onclick="document.getElementById('import-modal').classList.remove('hidden')" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md flex items-center">
@@ -35,262 +162,198 @@
                     </a>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Lead Filters -->
-    <div class="container mx-auto p-6">
-        <form action="{{ route('leads.index') }}" method="GET" class="mb-6">
-            <div class="bg-white p-4 rounded-lg shadow-sm flex flex-wrap items-center gap-4">
-                <div class="flex-grow">
-                    <input type="text" name="search" placeholder="{{ __('Search leads...') }}" 
-                           value="{{ request('search') }}"
-                           class="w-full p-2 border rounded-md">
-                </div>
-                <div>
-                    <select name="status" class="p-2 border rounded-md" onchange="this.form.submit()">
-                        <option value="">{{ __('All Status') }}</option>
-                        <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>{{ __('New') }}</option>
-                        <option value="contacted" {{ request('status') == 'contacted' ? 'selected' : '' }}>{{ __('Contacted') }}</option>
-                        <option value="qualified" {{ request('status') == 'qualified' ? 'selected' : '' }}>{{ __('Qualified') }}</option>
-                        <option value="proposal" {{ request('status') == 'proposal' ? 'selected' : '' }}>{{ __('Proposal') }}</option>
-                        <option value="negotiation" {{ request('status') == 'negotiation' ? 'selected' : '' }}>{{ __('Negotiation') }}</option>
-                        <option value="won" {{ request('status') == 'won' ? 'selected' : '' }}>{{ __('Won') }}</option>
-                        <option value="lost" {{ request('status') == 'lost' ? 'selected' : '' }}>{{ __('Lost') }}</option>
-                    </select>
-                </div>
-                <div>
-                    <select name="source" class="p-2 border rounded-md" onchange="this.form.submit()">
-                        <option value="">{{ __('All Sources') }}</option>
-                        @foreach($sources as $source)
-                            <option value="{{ $source }}" {{ request('source') == $source ? 'selected' : '' }}>{{ __(ucfirst($source)) }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <select name="order_by" class="p-2 border rounded-md" onchange="this.form.submit()">
-                        <option value="created_at" {{ request('order_by') == 'created_at' ? 'selected' : '' }}>{{ __('Date Created') }}</option>
-                        <option value="first_name" {{ request('order_by') == 'first_name' ? 'selected' : '' }}>{{ __('Name') }}</option>
-                        <option value="status" {{ request('order_by') == 'status' ? 'selected' : '' }}>{{ __('Status') }}</option>
-                        <option value="budget" {{ request('order_by') == 'budget' ? 'selected' : '' }}>{{ __('Budget') }}</option>
-                    </select>
-                </div>
-                <div>
-                    <select name="order_direction" class="p-2 border rounded-md" onchange="this.form.submit()">
-                        <option value="desc" {{ request('order_direction') == 'desc' ? 'selected' : '' }}>{{ __('Descending') }}</option>
-                        <option value="asc" {{ request('order_direction') == 'asc' ? 'selected' : '' }}>{{ __('Ascending') }}</option>
-                    </select>
-                </div>
-                <!-- New per_page selector -->
-                <div>
-                    <select name="per_page" class="p-2 border rounded-md" onchange="this.form.submit()">
-                        <option value="25" {{ request('per_page') == '25' || !request('per_page') ? 'selected' : '' }}>{{ __('25 per page') }}</option>
-                        <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>{{ __('50 per page') }}</option>
-                        <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>{{ __('100 per page') }}</option>
-                    </select>
-                </div>
-                <div>
-                    <button type="submit" class="bg-blue-600 text-white p-2 rounded-md">
-                        <i class="fas fa-search mr-1"></i> {{ __('Search') }}
-                    </button>
-                    @if(request('search') || request('status') || request('source') || request('order_by') || request('order_direction'))
-                        <a href="{{ route('leads.index') }}" class="bg-gray-500 text-white p-2 rounded-md inline-block ml-2">
-                            <i class="fas fa-times mr-1"></i> {{ __('Reset') }}
-                        </a>
-                    @endif
-                </div>
-            </div>
-        </form>
+            <div class="overflow-x-auto">
+                <form id="bulk-action-form" action="{{ route('leads.bulk-action') }}" method="POST" class="mb-6">
+                    @csrf
+                    <input type="hidden" name="action" id="bulk-action-input">
+                    <input type="hidden" name="assigned_to" id="bulk-assign-input">
 
-        <!-- Bulk Actions Form -->
-        <form id="bulk-action-form" action="{{ route('leads.bulk-action') }}" method="POST" class="mb-6">
-            @csrf
-            <input type="hidden" name="action" id="bulk-action-input">
-            <input type="hidden" name="assigned_to" id="bulk-assign-input">
-
-            <!-- Success Message -->
-            @if(session('success'))
-                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                    <p>{{ session('success') }}</p>
-                </div>
-            @endif
-
-            @if(session('warning'))
-                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
-                    <p>{{ session('warning') }}</p>
-                    
-                    @if(session('import_errors'))
-                        <div class="mt-2">
-                            <button type="button" class="text-yellow-800 underline" 
-                                    onclick="document.getElementById('import-errors').classList.toggle('hidden')">
-                                {{ __('Show/Hide Errors') }}
-                            </button>
-                            
-                            <ul id="import-errors" class="list-disc list-inside mt-2 text-sm text-yellow-800 hidden">
-                                @foreach(session('import_errors') as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                    <!-- Success Message -->
+                    @if(session('success'))
+                        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
+                            <p>{{ session('success') }}</p>
                         </div>
                     @endif
-                </div>
-            @endif
 
-            <!-- Bulk Action Controls -->
-            <div id="bulk-actions-toolbar" class="bg-gray-100 p-3 mb-4 rounded-md hidden">
-                <div class="flex items-center gap-2">
-                    <span class="font-medium text-gray-700">{{ __('With selected:') }}</span>
-                    <div class="flex-grow flex gap-2">
-                        <button type="button" onclick="showTransferModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded text-sm">
-                            <i class="fas fa-user-plus mr-1"></i> {{ __('Transfer') }}
-                        </button>
-                        <button type="button" onclick="confirmDelete()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">
-                            <i class="fas fa-trash mr-1"></i> {{ __('Delete') }}
-                        </button>
-                        <button type="button" onclick="deselectAll()" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm">
-                            <i class="fas fa-times mr-1"></i> {{ __('Deselect All') }}
-                        </button>
-                    </div>
-                    <span id="selected-count" class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
-                        0 {{ __('selected') }}
-                    </span>
-                </div>
-            </div>
-
-            <!-- Leads Table -->
-            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                <table class="min-w-full bg-white">
-                    <thead>
-                        <tr class="bg-gray-100 border-b">
-                            <th class="w-12 px-4 py-3">
-                                <input type="checkbox" id="select-all" class="rounded text-blue-600 focus:ring-blue-500">
-                            </th>
-                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Name') }}</th>
-                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Contact') }}</th>
-                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Status') }}</th>
-                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Class') }}</th>
-                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Last Follow-up') }}</th>
-                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Budget') }}</th>
-                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Assigned To') }}</th>
-                            <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if($leads->count() > 0)
-                            @foreach ($leads as $lead)
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3">
-                                        <input type="checkbox" name="selected_leads[]" value="{{ $lead->id }}" class="lead-checkbox rounded text-blue-600 focus:ring-blue-500">
-                                    </td>
-                                    <td class="py-3 px-4">
-                                        <div class="font-medium text-gray-800">
-                                            <a href="{{ route('leads.show', $lead->id) }}" class="hover:text-blue-600">
-                                                {{ $lead->first_name }} {{ $lead->last_name }}
-                                            </a>
-                                        </div>
-                                        <div class="text-xs text-gray-500">{{ $lead->source }} {{ $lead->lead_source ? "({$lead->lead_source})" : '' }}</div>
-                                    </td>
-                                    <td class="py-3 px-4">
-                                        <div class="text-sm">{{ $lead->email }}</div>
-                                        <div class="text-xs text-gray-500">
-                                            {{ $lead->phone }}
-                                            @if($lead->mobile)
-                                                <span class="text-xs text-blue-600 ml-1">(M: {{ $lead->mobile }})</span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="py-3 px-4">
-                                        <span class="px-2 py-1 text-xs rounded-full 
-                                            {{ $lead->status == 'new' ? 'bg-blue-100 text-blue-700' : '' }}
-                                            {{ $lead->status == 'contacted' ? 'bg-indigo-100 text-indigo-700' : '' }}
-                                            {{ $lead->status == 'qualified' ? 'bg-purple-100 text-purple-700' : '' }}
-                                            {{ $lead->status == 'proposal' ? 'bg-yellow-100 text-yellow-700' : '' }}
-                                            {{ $lead->status == 'negotiation' ? 'bg-orange-100 text-orange-700' : '' }}
-                                            {{ $lead->status == 'won' ? 'bg-green-100 text-green-700' : '' }}
-                                            {{ $lead->status == 'lost' ? 'bg-red-100 text-red-700' : '' }}
-                                        ">
-                                            {{ ucfirst($lead->status) }}
-                                        </span>
-                                        @if($lead->lead_status)
-                                            <div class="text-xs text-gray-500 mt-1">{{ $lead->lead_status }}</div>
-                                        @endif
-                                    </td>
-                                    <td class="py-3 px-4">
-                                        @if($lead->lead_class)
-                                            @if($lead->lead_class === 'A')
-                                                <span class="text-green-600 font-medium">A</span>
-                                            @elseif($lead->lead_class === 'B')
-                                                <span class="text-yellow-600 font-medium">B</span>
-                                            @elseif($lead->lead_class === 'C')
-                                                <span class="text-red-600 font-medium">C</span>
-                                            @else
-                                                {{ $lead->lead_class }}
-                                            @endif
-                                        @else
-                                            -
-                                        @endif
-                                        @if($lead->agent_follow_up)
-                                            <span class="bg-red-100 text-red-800 text-xs px-1 rounded ml-1">{{ __('Follow Up') }}</span>
-                                        @endif
-                                    </td>
-                                    <td class="py-3 px-4 text-sm">
-                                        {{ $lead->last_follow_up ? $lead->last_follow_up->format('Y-m-d') : '-' }}
-                                    </td>
-                                    <td class="py-3 px-4 text-sm">
-                                        {{ $lead->budget ? number_format($lead->budget) : 'N/A' }}
-                                    </td>
-                                    <td class="py-3 px-4 text-sm">
-                                        {{ $lead->assignedUser ? $lead->assignedUser->name : 'Unassigned' }}
-                                    </td>
-                                    <td class="py-3 px-4">
-                                        <div class="flex items-center space-x-2">
-                                            <a href="{{ route('leads.show', $lead->id) }}" class="text-blue-600 hover:text-blue-900">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('leads.edit', $lead->id) }}" class="text-yellow-600 hover:text-yellow-900">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form action="{{ route('leads.destroy', $lead->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this lead?')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="8" class="py-6 px-4 text-center text-gray-500">
-                                    <div class="flex flex-col items-center">
-                                        <i class="fas fa-search text-4xl mb-3"></i>
-                                        <p>{{ __('No leads found matching your criteria.') }}</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
-                <!-- Fix the pagination display showing 0 -->
-                <!-- Pagination -->
-                <div class="px-6 py-4 border-t">
-                    <div class="flex justify-between items-center">
-                        <div class="text-sm text-gray-600">
-                            @if($leads->total() > 0)
-                                {{ __('Showing') }} {{ $leads->firstItem() }} {{ __('to') }} {{ $leads->lastItem() }} {{ __('of') }} {{ $leads->total() }} {{ __('leads') }}
-                            @else
-                                {{ __('No leads found') }}
+                    @if(session('warning'))
+                        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
+                            <p>{{ session('warning') }}</p>
+                            
+                            @if(session('import_errors'))
+                                <div class="mt-2">
+                                    <button type="button" class="text-yellow-800 underline" 
+                                            onclick="document.getElementById('import-errors').classList.toggle('hidden')">
+                                        {{ __('Show/Hide Errors') }}
+                                    </button>
+                                    
+                                    <ul id="import-errors" class="list-disc list-inside mt-2 text-sm text-yellow-800 hidden">
+                                        @foreach(session('import_errors') as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             @endif
                         </div>
-                        <div>
-                            {{ $leads->links() }}
+                    @endif
+
+                    <!-- Bulk Action Controls -->
+                    <div id="bulk-actions-toolbar" class="bg-gray-100 p-3 mb-4 rounded-md hidden">
+                        <div class="flex items-center gap-2">
+                            <span class="font-medium text-gray-700">{{ __('With selected:') }}</span>
+                            <div class="flex-grow flex gap-2">
+                                <button type="button" onclick="showTransferModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-user-plus mr-1"></i> {{ __('Transfer') }}
+                                </button>
+                                <button type="button" onclick="confirmDelete()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-trash mr-1"></i> {{ __('Delete') }}
+                                </button>
+                                <button type="button" onclick="deselectAll()" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-times mr-1"></i> {{ __('Deselect All') }}
+                                </button>
+                            </div>
+                            <span id="selected-count" class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
+                                0 {{ __('selected') }}
+                            </span>
                         </div>
                     </div>
-                </div>
+
+                    <!-- Leads Table -->
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <table class="min-w-full bg-white">
+                            <thead>
+                                <tr class="bg-gray-100 border-b">
+                                    <th class="w-12 px-4 py-3">
+                                        <input type="checkbox" id="select-all" class="rounded text-blue-600 focus:ring-blue-500">
+                                    </th>
+                                    <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Name') }}</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Contact') }}</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Status') }}</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Class') }}</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Last Follow-up') }}</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Budget') }}</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Assigned To') }}</th>
+                                    <th class="text-left py-3 px-4 font-semibold text-sm text-gray-600">{{ __('Actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if($leads->count() > 0)
+                                    @foreach ($leads as $lead)
+                                        <tr class="border-b hover:bg-gray-50">
+                                            <td class="px-4 py-3">
+                                                <input type="checkbox" name="selected_leads[]" value="{{ $lead->id }}" class="lead-checkbox rounded text-blue-600 focus:ring-blue-500">
+                                            </td>
+                                            <td class="py-3 px-4">
+                                                <div class="font-medium text-gray-800">
+                                                    <a href="{{ route('leads.show', $lead->id) }}" class="hover:text-blue-600">
+                                                        {{ $lead->first_name }} {{ $lead->last_name }}
+                                                    </a>
+                                                </div>
+                                                <div class="text-xs text-gray-500">{{ $lead->source }} {{ $lead->lead_source ? "({$lead->lead_source})" : '' }}</div>
+                                            </td>
+                                            <td class="py-3 px-4">
+                                                <div class="text-sm">{{ $lead->email }}</div>
+                                                <div class="text-xs text-gray-500">
+                                                    {{ $lead->phone }}
+                                                    @if($lead->mobile)
+                                                        <span class="text-xs text-blue-600 ml-1">(M: {{ $lead->mobile }})</span>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td class="py-3 px-4">
+                                                <span class="px-2 py-1 text-xs rounded-full 
+                                                    {{ $lead->status == 'new' ? 'bg-blue-100 text-blue-700' : '' }}
+                                                    {{ $lead->status == 'contacted' ? 'bg-indigo-100 text-indigo-700' : '' }}
+                                                    {{ $lead->status == 'qualified' ? 'bg-purple-100 text-purple-700' : '' }}
+                                                    {{ $lead->status == 'proposal' ? 'bg-yellow-100 text-yellow-700' : '' }}
+                                                    {{ $lead->status == 'negotiation' ? 'bg-orange-100 text-orange-700' : '' }}
+                                                    {{ $lead->status == 'won' ? 'bg-green-100 text-green-700' : '' }}
+                                                    {{ $lead->status == 'lost' ? 'bg-red-100 text-red-700' : '' }}
+                                                ">
+                                                    {{ ucfirst($lead->status) }}
+                                                </span>
+                                                @if($lead->lead_status)
+                                                    <div class="text-xs text-gray-500 mt-1">{{ $lead->lead_status }}</div>
+                                                @endif
+                                            </td>
+                                            <td class="py-3 px-4">
+                                                @if($lead->lead_class)
+                                                    @if($lead->lead_class === 'A')
+                                                        <span class="text-green-600 font-medium">A</span>
+                                                    @elseif($lead->lead_class === 'B')
+                                                        <span class="text-yellow-600 font-medium">B</span>
+                                                    @elseif($lead->lead_class === 'C')
+                                                        <span class="text-red-600 font-medium">C</span>
+                                                    @else
+                                                        {{ $lead->lead_class }}
+                                                    @endif
+                                                @else
+                                                    -
+                                                @endif
+                                                @if($lead->agent_follow_up)
+                                                    <span class="bg-red-100 text-red-800 text-xs px-1 rounded ml-1">{{ __('Follow Up') }}</span>
+                                                @endif
+                                            </td>
+                                            <td class="py-3 px-4 text-sm">
+                                                {{ $lead->last_follow_up ? $lead->last_follow_up->format('Y-m-d') : '-' }}
+                                            </td>
+                                            <td class="py-3 px-4 text-sm">
+                                                {{ $lead->budget ? number_format($lead->budget) : 'N/A' }}
+                                            </td>
+                                            <td class="py-3 px-4 text-sm">
+                                                {{ $lead->assignedUser ? $lead->assignedUser->name : 'Unassigned' }}
+                                            </td>
+                                            <td class="py-3 px-4">
+                                                <div class="flex items-center space-x-2">
+                                                    <a href="{{ route('leads.show', $lead->id) }}" class="text-blue-600 hover:text-blue-900">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('leads.edit', $lead->id) }}" class="text-yellow-600 hover:text-yellow-900">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{ route('leads.destroy', $lead->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this lead?')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="8" class="py-6 px-4 text-center text-gray-500">
+                                            <div class="flex flex-col items-center">
+                                                <i class="fas fa-search text-4xl mb-3"></i>
+                                                <p>{{ __('No leads found matching your criteria.') }}</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                        <!-- Fix the pagination display showing 0 -->
+                        <!-- Pagination -->
+                        <div class="px-6 py-4 border-t">
+                            <div class="flex justify-between items-center">
+                                <div class="text-sm text-gray-600">
+                                    @if($leads->total() > 0)
+                                        {{ __('Showing') }} {{ $leads->firstItem() }} {{ __('to') }} {{ $leads->lastItem() }} {{ __('of') }} {{ $leads->total() }} {{ __('leads') }}
+                                    @else
+                                        {{ __('No leads found') }}
+                                    @endif
+                                </div>
+                                <div>
+                                    {{ $leads->links() }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 
     <!-- Transfer Modal -->
@@ -769,5 +832,4 @@
             });
         });
     </script>
-</body>
-</html>
+</x-app-layout>
