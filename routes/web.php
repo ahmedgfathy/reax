@@ -161,5 +161,30 @@ Route::get('/debug/bulk-action-test', function() {
     ]);
 });
 
+// Administration Routes
+Route::prefix('administration')->group(function () {
+    Route::get('/', [\App\Http\Controllers\AdministrationController::class, 'index'])->name('administration.index');
+});
+
+// Systems Routes
+Route::prefix('systems')->group(function () {
+    Route::get('/', [\App\Http\Controllers\SystemController::class, 'index'])->name('systems.index');
+});
+
+// Employee Routes
+Route::resource('employees', App\Http\Controllers\EmployeeController::class);
+
+// Property Routes  
+Route::resource('properties', App\Http\Controllers\PropertyController::class);
+
+// Report Routes
+Route::prefix('reports')->group(function () {
+    Route::get('/', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::post('/preview', [\App\Http\Controllers\ReportController::class, 'preview'])->name('reports.preview');
+    Route::get('/{report}/export', [\App\Http\Controllers\ReportController::class, 'export'])->name('reports.export');
+    Route::post('/{report}/share', [\App\Http\Controllers\ReportController::class, 'share'])->name('reports.share');
+    Route::post('/{report}/schedule', [\App\Http\Controllers\ReportController::class, 'schedule'])->name('reports.schedule');
+});
+
 // Include admin routes
 require __DIR__ . '/admin.php';

@@ -11,6 +11,8 @@
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Primary') }}</a>
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('About Us') }}</a>
                 <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Contact Us') }}</a>
+                <a href="{{ route('administration.index') }}" class="text-white hover:text-blue-200 font-medium">{{ __('Administration') }}</a>
+                <a href="{{ route('systems.index') }}" class="text-white hover:text-blue-200 font-medium">{{ __('Systems') }}</a>
 
                 <!-- Language Switcher -->
                 <form method="POST" action="{{ route('locale.switch') }}" class="inline-flex items-center">

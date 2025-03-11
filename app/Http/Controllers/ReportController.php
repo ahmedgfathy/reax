@@ -22,26 +22,9 @@ class ReportController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(Request $request)
+    public function index()
     {
-        $reports = Report::accessibleBy(auth()->user())
-            ->when($request->search, function ($query, $search) {
-                return $query->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('description', 'like', '%' . $search . '%');
-            })
-            ->when($request->source, function ($query, $source) {
-                return $query->where('data_source', $source);
-            })
-            ->when($request->filter === 'my-reports', function ($query) {
-                return $query->where('created_by', auth()->id());
-            })
-            ->when($request->filter === 'public', function ($query) {
-                return $query->where('is_public', true);
-            })
-            ->orderBy('updated_at', 'desc')
-            ->paginate(10);
-
-        return view('reports.index', compact('reports'));
+        return view('reports.index');
     }
 
     public function create()
