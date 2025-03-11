@@ -34,21 +34,25 @@
         <div x-data="{ activeTab: 'properties' }" class="mb-6">
             <div class="border-b border-gray-200">
                 <ul class="flex -mb-px">
-                    <li @click="activeTab = 'properties'" :class="{'border-b-2 border-blue-500': activeTab === 'properties'}" class="mr-6 py-2 cursor-pointer">
+                    <li @click="activeTab = 'properties'" 
+                        :class="{'border-b-2 border-blue-500': activeTab === 'properties'}" 
+                        class="mr-6 py-2 cursor-pointer">
                         <span :class="{'text-blue-600 font-medium': activeTab === 'properties', 'text-gray-500': activeTab !== 'properties'}" 
                               class="flex items-center">
                             <i class="fas fa-home mr-2"></i> {{ __('Properties') }}
                         </span>
                     </li>
-                    <li @click="activeTab = 'leads'" :class="{'border-b-2 border-blue-500': activeTab === 'leads'}" class="mr-6 py-2 cursor-pointer">
+                    <li @click="activeTab = 'leads'" 
+                        :class="{'border-b-2 border-blue-500': activeTab === 'leads'}" 
+                        class="mr-6 py-2 cursor-pointer">
                         <span :class="{'text-blue-600 font-medium': activeTab === 'leads', 'text-gray-500': activeTab !== 'leads'}" 
                               class="flex items-center">
                             <i class="fas fa-users mr-2"></i> {{ __('Leads') }}
                         </span>
                     </li>
-
-                    <!-- Add Opportunities Tab -->
-                    <li @click="activeTab = 'opportunities'" :class="{'border-b-2 border-blue-500': activeTab === 'opportunities'}" class="mr-6 py-2 cursor-pointer">
+                    <li @click="activeTab = 'opportunities'" 
+                        :class="{'border-b-2 border-blue-500': activeTab === 'opportunities'}" 
+                        class="mr-6 py-2 cursor-pointer">
                         <span :class="{'text-blue-600 font-medium': activeTab === 'opportunities', 'text-gray-500': activeTab !== 'opportunities'}" 
                               class="flex items-center">
                             <i class="fas fa-handshake mr-2"></i> {{ __('Opportunities') }}
