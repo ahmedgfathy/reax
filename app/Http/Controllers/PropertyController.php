@@ -54,53 +54,52 @@ class PropertyController extends Controller
         return asset('storage/' . $imagePath);
     }
 
+    private function getFormData()
+    {
+        return [
+            'features' => [
+                'balcony', 'built-in kitchen', 'private garden', 'security',
+                'central ac', 'parking', 'elevator', 'maids room', 'pool', 'gym'
+            ],
+            'amenities' => [
+                'swimming pool', 'gym', 'sauna', 'kids area', 'parking',
+                'security', 'mosque', 'shopping area', 'school', 'hospital',
+                'restaurant', 'cafe'
+            ],
+            'propertyTypes' => [
+                'apartment', 'villa', 'duplex', 'penthouse', 'studio',
+                'office', 'retail', 'land'
+            ],
+            'categories' => ['residential', 'commercial', 'administrative'],
+            'statuses' => ['available', 'sold', 'rented', 'reserved'],
+            'currencies' => ['EGP', 'USD', 'EUR'],
+            'contactStatuses' => ['contacted', 'pending', 'no_answer'],
+            'offerTypes' => ['owner', 'agent', 'company']
+        ];
+    }
+
     public function show(Property $property)
     {
         $property->load(['media', 'handler', 'project']);
+        $formData = $this->getFormData();
         
-        // معالجة مسارات الصور
         $property->media->each(function ($media) {
             $media->file_path = $this->handleImageUrl($media->file_path);
         });
         
-        return view('properties.show', compact('property'));
+        return view('properties.show', array_merge(
+            compact('property'),
+            $formData
+        ));
     }
 
     public function create()
     {
         $users = User::all();
         $projects = Project::all();
-        
-        // Define common features and amenities
-        $features = [
-            'balcony',
-            'built-in kitchen',
-            'private garden',
-            'security',
-            'central ac',
-            'parking',
-            'elevator',
-            'maids room',
-            'pool',
-            'gym'
-        ];
-        
-        $amenities = [
-            'swimming pool',
-            'gym',
-            'sauna',
-            'kids area',
-            'parking',
-            'security',
-            'mosque',
-            'shopping area',
-            'school',
-            'hospital',
-            'restaurant',
-            'cafe'
-        ];
+        $formData = $this->getFormData();
 
-        return view('properties.create', compact('users', 'projects', 'features', 'amenities'));
+        return view('properties.create', array_merge(compact('users', 'projects'), $formData));
     }
 
     public function store(Request $request)
@@ -110,7 +109,14 @@ class PropertyController extends Controller
 
     public function edit(Property $property)
     {
-        return view('properties.edit', compact('property'));
+        $users = User::all();
+        $projects = Project::all();
+        $formData = $this->getFormData();
+
+        return view('properties.edit', array_merge(
+            compact('property', 'users', 'projects'),
+            $formData
+        ));
     }
 
     public function update(Request $request, Property $property)
