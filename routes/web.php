@@ -66,20 +66,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reports/{report}/share', [\App\Http\Controllers\ReportController::class, 'share'])->name('reports.share');
     Route::post('/reports/{report}/schedule', [\App\Http\Controllers\ReportController::class, 'schedule'])->name('reports.schedule');
 
-    // Add profile routes
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
-    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
-
-    // Profile routes
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.password.update');
-    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
-    Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove');
+    // Profile routes with unique names - this fixes the conflict
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/profile', 'show')->name('profile.show');
+        Route::get('/profile/edit', 'edit')->name('profile.edit');
+        Route::patch('/profile/update', 'update')->name('custom.profile.update');  // Changed from profile.update
+        Route::put('/profile/password', 'changePassword')->name('profile.password.update');
+        Route::post('/profile/avatar', 'updateAvatar')->name('profile.avatar.update');
+        Route::delete('/profile/avatar', 'removeAvatar')->name('profile.avatar.remove');
+    });
 });
 
 // Remove or comment out the old locale route

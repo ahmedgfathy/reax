@@ -22,9 +22,9 @@
                     {{ __('Profile Information') }}
                 </h2>
                 
-                <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('custom.profile.update') }}" enctype="multipart/form-data">
                     @csrf
-                    @method('PUT')
+                    @method('PATCH')
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="mb-4">
@@ -76,7 +76,7 @@
                     {{ __('Update Password') }}
                 </h2>
                 
-                <form action="{{ route('profile.password.update') }}" method="POST">
+                <form method="POST" action="{{ route('user.profile.password') }}">
                     @csrf
                     @method('PUT')
                     
@@ -132,7 +132,7 @@
                         class="w-32 h-32 rounded-full object-cover mx-auto border-4 border-blue-100">
                 </div>
                 
-                <form action="{{ route('profile.avatar.update') }}" method="POST" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('user.profile.avatar') }}" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="mb-4">
