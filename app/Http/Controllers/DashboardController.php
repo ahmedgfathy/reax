@@ -15,10 +15,10 @@ class DashboardController extends Controller
     {
         // Basic stats
         $stats = [
-            'properties_count' => Property::count(),
-            'leads_count' => Lead::count(),
-            'active_leads_count' => Lead::whereNotIn('status', ['won', 'lost'])->count(),
-            'revenue_potential' => Lead::whereNotIn('status', ['lost'])->sum('budget'),
+            'total_properties' => Property::count(),
+            'total_value' => Property::where('unit_for', 'sale')->sum('total_price'),
+            'available_properties' => Property::where('status', 'available')->count(),
+            'total_rent_value' => Property::where('unit_for', 'rent')->sum('total_price'),
         ];
         
         // Property stats

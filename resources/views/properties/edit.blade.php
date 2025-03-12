@@ -124,8 +124,8 @@
                         <!-- Copy all area fields from create.blade.php -->
                         <div>
                             <label for="price" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Price') }}</label>
-                            <input type="number" id="price" name="price" value="{{ old('price', $property->price) }}" class="w-full p-2 border rounded-md @error('price') border-red-500 @enderror" required>
-                            @error('price')
+                            <input type="number" id="total_price" name="total_price" value="{{ old('total_price', $property->total_price) }}" class="w-full p-2 border rounded-md @error('total_price') border-red-500 @enderror" required>
+                            @error('total_price')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>

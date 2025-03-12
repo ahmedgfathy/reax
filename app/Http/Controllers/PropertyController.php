@@ -104,7 +104,30 @@ class PropertyController extends Controller
 
     public function store(Request $request)
     {
-        // Add validation and store logic
+        $validated = $request->validate([
+            'property_name' => 'required|string|max:255',
+            'unit_for' => 'required|in:sale,rent',
+            'type' => 'required|string',
+            'total_area' => 'required|numeric',
+            'total_price' => 'required|numeric',
+            // ...other validation rules...
+        ]);
+
+        // Create property with total_price instead of price
+        $property = Property::create($validated);
+        
+        // Handle media uploads...
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('properties', 'public');
+                $property->media()->create([
+                    'file_path' => $path
+                ]);
+            }
+        }
+
+        return redirect()->route('properties.show', $property)
+            ->with('success', __('Property created successfully'));
     }
 
     public function edit(Property $property)
@@ -121,7 +144,29 @@ class PropertyController extends Controller
 
     public function update(Request $request, Property $property)
     {
-        // Add validation and update logic
+        $validated = $request->validate([
+            'property_name' => 'required|string|max:255',
+            'unit_for' => 'required|in:sale,rent',
+            'type' => 'required|string',
+            'total_area' => 'required|numeric',
+            'total_price' => 'required|numeric',
+            // ...other validation rules...
+        ]);
+
+        $property->update($validated);
+
+        // Handle media updates...
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('properties', 'public');
+                $property->media()->create([
+                    'file_path' => $path
+                ]);
+            }
+        }
+
+        return redirect()->route('properties.show', $property)
+            ->with('success', __('Property updated successfully'));
     }
 
     public function destroy(Property $property)
