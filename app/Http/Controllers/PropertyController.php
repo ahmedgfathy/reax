@@ -3,38 +3,104 @@
 namespace App\Http\Controllers;
 
 use App\Models\Property;
+use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class PropertyController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $propertyTypes = [
-            'apartment' => __('Apartment'),
-            'villa' => __('Villa'),
-            'office' => __('Office'),
-            'retail' => __('Retail'),
-            'land' => __('Land'),
-            'building' => __('Building'),
-            'warehouse' => __('Warehouse'),
-            'other' => __('Other')
+        $query = Property::with(['handler', 'project', 'media'])
+            ->when($request->search, function($q) use($request) {
+                $q->where('property_name', 'like', "%{$request->search}%")
+                  ->orWhere('property_number', 'like', "%{$request->search}%");
+            })
+            ->when($request->type, function($q) use($request) {
+                $q->where('type', $request->type);
+            })
+            ->when($request->status, function($q) use($request) {
+                $q->where('status', $request->status);
+            })
+            ->when($request->unit_for, function($q) use($request) {
+                $q->where('unit_for', $request->unit_for);
+            });
+
+        $properties = $query->latest()->paginate(10);
+
+        $stats = [
+            'total' => Property::count(),
+            'available' => Property::where('status', 'available')->count(),
+            'featured' => Property::where('is_featured', true)->count()
         ];
 
-        $properties = Property::paginate(10);
+        return view('properties.index', compact('properties', 'stats'));
+    }
+
+    private function handleImageUrl($imagePath)
+    {
+        // إذا كان المسار URL كامل
+        if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+            return $imagePath;
+        }
         
-        return view('properties.index', compact('properties', 'propertyTypes'));
+        // إذا كان المسار يبدأ بـ storage/
+        if (str_starts_with($imagePath, 'storage/')) {
+            return asset($imagePath);
+        }
+        
+        // إذا كان المسار في مجلد التخزين
+        return asset('storage/' . $imagePath);
     }
 
     public function show(Property $property)
     {
+        $property->load(['media', 'handler', 'project']);
+        
+        // معالجة مسارات الصور
+        $property->media->each(function ($media) {
+            $media->file_path = $this->handleImageUrl($media->file_path);
+        });
+        
         return view('properties.show', compact('property'));
     }
 
     public function create()
     {
-        return view('properties.create');
+        $users = User::all();
+        $projects = Project::all();
+        
+        // Define common features and amenities
+        $features = [
+            'balcony',
+            'built-in kitchen',
+            'private garden',
+            'security',
+            'central ac',
+            'parking',
+            'elevator',
+            'maids room',
+            'pool',
+            'gym'
+        ];
+        
+        $amenities = [
+            'swimming pool',
+            'gym',
+            'sauna',
+            'kids area',
+            'parking',
+            'security',
+            'mosque',
+            'shopping area',
+            'school',
+            'hospital',
+            'restaurant',
+            'cafe'
+        ];
+
+        return view('properties.create', compact('users', 'projects', 'features', 'amenities'));
     }
 
     public function store(Request $request)

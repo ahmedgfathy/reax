@@ -23,8 +23,8 @@ class DashboardController extends Controller
         
         // Property stats
         $propertyStats = [
-            'total_sale_value' => Property::where('unit_for', 'sale')->sum('price'),
-            'total_rent_value' => Property::where('unit_for', 'rent')->sum('price'),
+            'total_sale_value' => Property::where('unit_for', 'sale')->sum('total_price'),
+            'total_rent_value' => Property::where('unit_for', 'rent')->sum('total_price'),
             'available_properties' => Property::count(), // You may want to add a status field to filter
             'featured_properties' => Property::where('is_featured', true)->count(),
         ];
@@ -113,19 +113,19 @@ class DashboardController extends Controller
         
         // Properties by price range
         $salePriceRanges = [
-            '0-100000' => Property::where('unit_for', 'sale')->where('price', '<=', 100000)->count(),
-            '100001-250000' => Property::where('unit_for', 'sale')->whereBetween('price', [100001, 250000])->count(),
-            '250001-500000' => Property::where('unit_for', 'sale')->whereBetween('price', [250001, 500000])->count(),
-            '500001-1000000' => Property::where('unit_for', 'sale')->whereBetween('price', [500001, 1000000])->count(),
-            '1000001+' => Property::where('unit_for', 'sale')->where('price', '>', 1000000)->count(),
+            '0-100000' => Property::where('unit_for', 'sale')->where('total_price', '<=', 100000)->count(),
+            '100001-250000' => Property::where('unit_for', 'sale')->whereBetween('total_price', [100001, 250000])->count(),
+            '250001-500000' => Property::where('unit_for', 'sale')->whereBetween('total_price', [250001, 500000])->count(),
+            '500001-1000000' => Property::where('unit_for', 'sale')->whereBetween('total_price', [500001, 1000000])->count(),
+            '1000001+' => Property::where('unit_for', 'sale')->where('total_price', '>', 1000000)->count(),
         ];
         
         $rentPriceRanges = [
-            '0-500' => Property::where('unit_for', 'rent')->where('price', '<=', 500)->count(),
-            '501-1000' => Property::where('unit_for', 'rent')->whereBetween('price', [501, 1000])->count(),
-            '1001-2500' => Property::where('unit_for', 'rent')->whereBetween('price', [1001, 2500])->count(),
-            '2501-5000' => Property::where('unit_for', 'rent')->whereBetween('price', [2501, 5000])->count(),
-            '5001+' => Property::where('unit_for', 'rent')->where('price', '>', 5000)->count(),
+            '0-500' => Property::where('unit_for', 'rent')->where('total_price', '<=', 500)->count(),
+            '501-1000' => Property::where('unit_for', 'rent')->whereBetween('total_price', [501, 1000])->count(),
+            '1001-2500' => Property::where('unit_for', 'rent')->whereBetween('total_price', [1001, 2500])->count(),
+            '2501-5000' => Property::where('unit_for', 'rent')->whereBetween('total_price', [2501, 5000])->count(),
+            '5001+' => Property::where('unit_for', 'rent')->where('total_price', '>', 5000)->count(),
         ];
         
         // Properties by area size (sqm)

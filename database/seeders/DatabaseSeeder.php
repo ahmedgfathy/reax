@@ -14,20 +14,13 @@ class DatabaseSeeder extends Seeder
 
         try {
             $this->call([
-                // Core system tables
-                RolesTableSeeder::class,
-                PermissionsTableSeeder::class,
-                CompaniesTableSeeder::class,
-                TeamsTableSeeder::class,
-                UsersTableSeeder::class,
-                
-                // Module tables
-                ProjectsTableSeeder::class,
-                PropertiesTableSeeder::class, // This is where property units are seeded
+                UserSeeder::class,
+                ProjectSeeder::class,
+                PropertySeeder::class,
+                PropertyMediaSeeder::class,
                 LeadSeeder::class,
-                
-                // Additional seeders
-                ReportSeeder::class
+                OpportunitySeeder::class,
+                EventSeeder::class,
             ]);
             
             // Create default data if needed

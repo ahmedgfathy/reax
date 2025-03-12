@@ -6,10 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
@@ -17,18 +14,16 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('location')->nullable();
             $table->string('developer')->nullable();
-            $table->string('status')->nullable(); // planned, under construction, completed
+            $table->string('status')->nullable();
             $table->date('launch_date')->nullable();
             $table->date('completion_date')->nullable();
             $table->string('featured_image')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('projects');
     }
