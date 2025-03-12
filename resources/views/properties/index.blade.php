@@ -1,3 +1,4 @@
+<!-- comments -->
 <x-app-layout>
     <x-slot name="header">{{ __('Properties Management') }}</x-slot>
 
