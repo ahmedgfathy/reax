@@ -3,6 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Property;
+use App\Models\User;
+use App\Models\Company;
+use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PropertyFactory extends Factory
@@ -11,38 +14,41 @@ class PropertyFactory extends Factory
 
     public function definition()
     {
-        $types = ['apartment', 'villa', 'duplex', 'penthouse', 'studio', 'office', 'retail', 'land'];
-        $unitFor = ['sale', 'rent'];
-        $categories = ['residential', 'commercial', 'administrative'];
-        $statuses = ['available', 'sold', 'rented', 'reserved'];
-        $currencies = ['EGP', 'USD', 'EUR'];
-        $offeredBy = ['owner', 'agent', 'company'];
+        $totalArea = fake()->numberBetween(80, 500);
+        $pricePerMeter = fake()->numberBetween(5000, 20000);
 
         return [
-            'property_name' => $this->faker->words(3, true),
-            'compound_name' => $this->faker->company,
-            'property_number' => $this->faker->buildingNumber,
-            'unit_no' => $this->faker->numberBetween(1, 1000),
-            'unit_for' => $this->faker->randomElement($unitFor),
-            'type' => $this->faker->randomElement($types),
-            'phase' => 'Phase ' . $this->faker->numberBetween(1, 5),
-            'building' => $this->faker->buildingNumber,
-            'floor' => $this->faker->numberBetween(1, 20),
-            'finished' => $this->faker->boolean,
-            'total_area' => $this->faker->numberBetween(80, 500),
-            'unit_area' => $this->faker->numberBetween(60, 400),
-            'rooms' => $this->faker->numberBetween(1, 6),
-            'bathrooms' => $this->faker->numberBetween(1, 4),
-            'location_type' => $this->faker->randomElement(['inside', 'outside']),
-            'category' => $this->faker->randomElement($categories),
-            'status' => $this->faker->randomElement($statuses),
-            'total_price' => $this->faker->numberBetween(500000, 5000000),
-            'currency' => $this->faker->randomElement($currencies),
-            'property_offered_by' => $this->faker->randomElement($offeredBy),
-            'owner_name' => $this->faker->name,
-            'owner_mobile' => $this->faker->phoneNumber,
-            'description' => $this->faker->paragraphs(2, true),
-            'is_featured' => $this->faker->boolean(20),
+            'company_id' => Company::factory(),
+            'property_name' => fake()->words(3, true),
+            'compound_name' => fake()->company(),
+            'property_number' => fake()->unique()->bothify('P-####'),
+            'unit_no' => fake()->bothify('U-###'),
+            'unit_for' => fake()->randomElement(['sale', 'rent']),
+            'type' => fake()->randomElement(['apartment', 'villa', 'duplex', 'penthouse', 'studio', 'office', 'retail', 'land']),
+            'phase' => fake()->numberBetween(1, 5),
+            'building' => fake()->bothify('B-###'),
+            'floor' => fake()->numberBetween(1, 20),
+            'finished' => fake()->boolean(80),
+            'total_area' => $totalArea,
+            'unit_area' => $totalArea * 0.9,
+            'rooms' => fake()->numberBetween(1, 6),
+            'bathrooms' => fake()->numberBetween(1, 4),
+            'amenities' => fake()->randomElements(['pool', 'gym', 'parking', 'security', 'garden'], fake()->numberBetween(1, 5)),
+            'location_type' => fake()->randomElement(['inside', 'outside']),
+            'category' => fake()->randomElement(['residential', 'commercial', 'administrative']),
+            'status' => fake()->randomElement(['available', 'sold', 'rented', 'reserved']),
+            'total_price' => $totalArea * $pricePerMeter,
+            'price_per_meter' => $pricePerMeter,
+            'currency' => 'EGP',
+            'property_offered_by' => fake()->randomElement(['owner', 'agent', 'company']),
+            'owner_name' => fake()->name(),
+            'owner_mobile' => fake()->phoneNumber(),
+            'handler_id' => User::factory(),
+            'project_id' => fake()->boolean(70) ? Project::factory() : null,  // Make project optional
+            'description' => fake()->paragraphs(3, true),
+            'features' => fake()->randomElements(['central_ac', 'built_in_kitchen', 'balcony', 'view'], fake()->numberBetween(1, 4)),
+            'is_featured' => fake()->boolean(20),
+            'is_published' => true,
         ];
     }
 }

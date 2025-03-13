@@ -8,11 +8,11 @@
                     {{ __('Clients & Contact Management') }}
                 </h3>
                 <div class="ml-6 space-y-2">
-                    <a href="#" class="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('contacts.index') }}" class="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors {{ request()->routeIs('contacts.*') ? 'text-blue-600 font-medium' : '' }}">
                         <i class="fas fa-address-card w-4 mr-2"></i>
                         {{ __('Contacts') }}
                     </a>
-                    <a href="#" class="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('companies.index') }}" class="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors {{ request()->routeIs('companies.*') ? 'text-blue-600 font-medium' : '' }}">
                         <i class="fas fa-building w-4 mr-2"></i>
                         {{ __('Companies') }}
                     </a>

@@ -3,28 +3,39 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ActivityLog extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
+        'company_id',
         'user_id',
-        'entity',
-        'entity_type',
-        'entity_id',
-        'action',
+        'event_type',
+        'loggable_type',
+        'loggable_id',
         'description',
-        'properties'
+        'old_values',
+        'new_values',
+        'ip_address',
+        'user_agent'
     ];
 
     protected $casts = [
-        'properties' => 'array'
+        'old_values' => 'array',
+        'new_values' => 'array'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function loggable()
+    {
+        return $this->morphTo();
     }
 }

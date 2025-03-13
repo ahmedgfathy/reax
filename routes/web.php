@@ -81,6 +81,15 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
+
+    // Opportunities Routes - SINGLE DEFINITION
+    Route::resource('opportunities', \App\Http\Controllers\OpportunityController::class);
+    Route::post('opportunities/bulk-action', [\App\Http\Controllers\OpportunityController::class, 'bulkAction'])
+        ->name('opportunities.bulk-action');
+
+    // Contact Management Routes with full namespace
+    Route::resource('contacts', \App\Http\Controllers\ContactController::class);
+    Route::resource('companies', \App\Http\Controllers\CompanyController::class);
 });
 
 // Remove or comment out the old locale route
@@ -188,10 +197,10 @@ Route::prefix('reports')->group(function () {
     Route::post('/{report}/schedule', [\App\Http\Controllers\ReportController::class, 'schedule'])->name('reports.schedule');
 });
 
-// Opportunities Routes
-Route::prefix('opportunities')->group(function () {
-    Route::get('/', [\App\Http\Controllers\OpportunityController::class, 'index'])->name('opportunities.index');
-});
+// REMOVE these duplicate route definitions:
+// Route::prefix('opportunities')->group(function () {
+//     Route::get('/', [\App\Http\Controllers\OpportunityController::class, 'index'])->name('opportunities.index');
+// });
 
 // Include admin routes
 require __DIR__ . '/admin.php';

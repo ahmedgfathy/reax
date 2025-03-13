@@ -11,19 +11,29 @@ class Opportunity extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name',
+        'title',
+        'lead_id',
+        'property_id',
+        'assigned_to',
         'status',
         'value',
-        'close_date',
-        'property_id',
-        'lead_id',
-        'assigned_to',
-        'notes'
+        'probability',
+        'expected_close_date',
+        'description',
+        'notes',
+        'source',
+        'stage',
+        'type',
+        'priority',
+        'last_activity_at',
+        'last_modified_by'
     ];
 
     protected $casts = [
-        'close_date' => 'datetime',
-        'value' => 'decimal:2'
+        'value' => 'decimal:2',
+        'probability' => 'decimal:2',
+        'expected_close_date' => 'date',
+        'last_activity_at' => 'datetime',
     ];
 
     // Relationships
@@ -37,8 +47,18 @@ class Opportunity extends Model
         return $this->belongsTo(Lead::class);
     }
 
-    public function assignedUser()
+    public function assignedTo()
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function lastModifiedBy()
+    {
+        return $this->belongsTo(User::class, 'last_modified_by');
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(ActivityLog::class, 'loggable');
     }
 }

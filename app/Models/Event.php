@@ -11,21 +11,24 @@ class Event extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'company_id',
         'title',
         'description',
         'event_type',
-        'event_date',
+        'start_date',
+        'end_date',
         'status',
-        'is_completed',
-        'is_cancelled',
         'lead_id',
-        'user_id'
+        'property_id',
+        'created_by',
+        'attendees',
+        'outcome'
     ];
 
     protected $casts = [
-        'event_date' => 'datetime',
-        'is_completed' => 'boolean',
-        'is_cancelled' => 'boolean'
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'attendees' => 'array'
     ];
 
     public function lead()
@@ -33,8 +36,18 @@ class Event extends Model
         return $this->belongsTo(Lead::class);
     }
 
-    public function user()
+    public function property()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Property::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

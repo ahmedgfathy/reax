@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Schema;
 
 class Lead extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -16,6 +17,8 @@ class Lead extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'company_id',
+        'team_id',
         'first_name',
         'last_name',
         'email',
@@ -33,7 +36,6 @@ class Lead extends Model
         'description',
         'notes',
         'assigned_to',
-        'user_id', // Add this
         'last_modified_by',
         'last_follow_up'
     ];
@@ -48,32 +50,6 @@ class Lead extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-
-    /**
-     * Boot the model.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($lead) {
-            // Ensure user_id matches assigned_to
-            if ($lead->assigned_to && !$lead->user_id) {
-                $lead->user_id = $lead->assigned_to;
-            } elseif ($lead->user_id && !$lead->assigned_to) {
-                $lead->assigned_to = $lead->user_id;
-            }
-        });
-
-        static::saving(function ($lead) {
-            // Keep user_id and assigned_to in sync
-            if ($lead->isDirty('assigned_to')) {
-                $lead->user_id = $lead->assigned_to;
-            } elseif ($lead->isDirty('user_id')) {
-                $lead->assigned_to = $lead->user_id;
-            }
-        });
-    }
 
     /**
      * Get the user that the lead is assigned to.

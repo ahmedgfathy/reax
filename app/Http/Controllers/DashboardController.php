@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Property;
 use App\Models\Lead;
 use App\Models\Event;
+use App\Models\Opportunity;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
@@ -38,41 +39,14 @@ class DashboardController extends Controller
             ->take(4)
             ->get();
 
-        // Check if the events table exists and has the required columns
-        if (Schema::hasTable('events')) {
-            $hasEventDate = Schema::hasColumn('events', 'event_date');
-            $hasStartDate = Schema::hasColumn('events', 'start_date');
-            $hasStatus = Schema::hasColumn('events', 'status');
-            $hasIsCompleted = Schema::hasColumn('events', 'is_completed');
-            $hasIsCancelled = Schema::hasColumn('events', 'is_cancelled');
-            
-            // Build the query based on available columns
-            $eventsQuery = Event::with('lead');
-            
-            if ($hasIsCompleted) {
-                $eventsQuery->where('is_completed', false);
-            }
-            
-            if ($hasIsCancelled) {
-                $eventsQuery->where('is_cancelled', false);
-            }
-            
-            if ($hasStatus) {
-                $eventsQuery->where('status', '!=', 'completed');
-            }
-            
-            // Use the appropriate date column
-            $dateColumn = $hasEventDate ? 'event_date' : ($hasStartDate ? 'start_date' : 'created_at');
-            
-            $upcoming_events = $eventsQuery
-                ->where($dateColumn, '>=', Carbon::now())
-                ->where($dateColumn, '<=', Carbon::now()->addHours(48))
-                ->orderBy($dateColumn, 'asc')
-                ->take(5)
-                ->get();
-        } else {
-            $upcoming_events = collect(); // Empty collection if events table doesn't exist
-        }
+        // Simplified upcoming events query using start_date
+        $upcoming_events = Event::with('lead')
+            ->where('start_date', '>=', Carbon::now())
+            ->where('start_date', '<=', Carbon::now()->addHours(48))
+            ->where('status', '!=', 'cancelled')
+            ->orderBy('start_date', 'asc')
+            ->take(5)
+            ->get();
         
         // Get lead distribution by status for chart
         $lead_statuses = Lead::selectRaw('status, count(*) as count')
@@ -155,6 +129,26 @@ class DashboardController extends Controller
             'labels' => $labels,
             'data' => $monthlyListings
         ];
+
+        // Add opportunity stats
+        $stats['opportunities_count'] = Opportunity::count();
+        $stats['won_opportunities'] = Opportunity::where('status', 'won')->count();
+        $stats['pipeline_value'] = Opportunity::whereIn('status', ['pending', 'negotiation'])->sum('value');
+        $stats['conversion_rate'] = $stats['opportunities_count'] > 0 
+            ? round(($stats['won_opportunities'] / $stats['opportunities_count']) * 100) 
+            : 0;
+
+        // Get opportunity stages for chart
+        $opportunity_stages = Opportunity::selectRaw('stage, count(*) as count')
+            ->groupBy('stage')
+            ->pluck('count', 'stage')
+            ->toArray();
+
+        // Get recent opportunities
+        $recent_opportunities = Opportunity::with(['assignedTo', 'lead', 'property'])
+            ->latest()
+            ->take(5)
+            ->get();
         
         return view('dashboard', compact(
             'stats', 
@@ -169,7 +163,9 @@ class DashboardController extends Controller
             'salePriceRanges',
             'rentPriceRanges',
             'areaSizeRanges',
-            'propertyTimeData'
+            'propertyTimeData',
+            'opportunity_stages',
+            'recent_opportunities'
         ));
     }
 }

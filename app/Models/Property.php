@@ -11,7 +11,9 @@ class Property extends Model
 {
     use HasFactory, SoftDeletes;
 
+    // Replace $guarded with $fillable for better security
     protected $fillable = [
+        'company_id',
         'property_name',
         'compound_name',
         'property_number',
@@ -22,36 +24,7 @@ class Property extends Model
         'building',
         'floor',
         'finished',
-        'total_area',
-        'unit_area',
-        'land_area',
-        'garden_area',
-        'space_earth',
-        'rooms',
-        'bathrooms',
-        'amenities',
-        'location_type',
-        'category',
-        'status',
-        'total_price',
-        'price_per_meter',
-        'currency',
-        'rent_from',
-        'rent_to',
-        'property_offered_by',
-        'owner_name',
-        'owner_mobile',
-        'owner_tel',
-        'contact_status',
-        'handler_id',
-        'sales_person_id',
-        'sales_category',
-        'sales_notes',
-        'project_id',
-        'description',
-        'features',
-        'last_follow_up',
-        'is_featured'
+        // ...all other fields from migration...
     ];
 
     protected $casts = [
@@ -69,6 +42,7 @@ class Property extends Model
         'space_earth' => 'decimal:2',
         'total_price' => 'decimal:2',
         'price_per_meter' => 'decimal:2',
+        'is_published' => 'boolean',
     ];
 
     // Relationships

@@ -11,16 +11,12 @@ class Department extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'company_id',
         'name',
         'code',
         'description',
-        'is_active',
         'manager_id',
         'parent_id'
-    ];
-
-    protected $casts = [
-        'is_active' => 'boolean'
     ];
 
     public function manager()

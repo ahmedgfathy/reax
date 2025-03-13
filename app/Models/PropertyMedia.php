@@ -10,6 +10,7 @@ class PropertyMedia extends Model
     use HasFactory;
 
     protected $fillable = [
+        'file_type',  // Add this
         'property_id',
         'file_path',
         'is_featured',

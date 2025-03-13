@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Opportunity;
+use App\Models\Company;
 use App\Models\Lead;
 use App\Models\Property;
 use App\Models\User;
@@ -12,32 +13,31 @@ class OpportunitySeeder extends Seeder
 {
     public function run()
     {
-        // Check if we have required related data
+        $company = Company::first();
+        $users = User::all();
         $leads = Lead::all();
         $properties = Property::all();
-        $users = User::all();
 
-        if ($leads->isEmpty() || $properties->isEmpty() || $users->isEmpty()) {
-            $this->command->warn('Missing required related data for opportunities.');
-            return;
-        }
-
-        $statuses = ['initial', 'qualified', 'proposal', 'negotiation', 'closed_won', 'closed_lost'];
-
-        // Create 30 opportunities
-        for ($i = 0; $i < 30; $i++) {
+        foreach(range(1, 20) as $i) {
             Opportunity::create([
-                'name' => 'Deal ' . fake()->company(),
-                'status' => fake()->randomElement($statuses),
-                'value' => fake()->numberBetween(500000, 5000000),
-                'close_date' => fake()->dateTimeBetween('now', '+6 months'),
-                'property_id' => $properties->random()->id,
+                'company_id' => $company->id,
+                'title' => fake()->catchPhrase(),
                 'lead_id' => $leads->random()->id,
+                'property_id' => $properties->random()->id,
                 'assigned_to' => $users->random()->id,
+                'status' => fake()->randomElement(['pending', 'negotiation', 'won', 'lost']),
+                'value' => fake()->numberBetween(100000, 5000000),
+                'probability' => fake()->randomElement([25, 50, 75, 100]),
+                'expected_close_date' => fake()->dateTimeBetween('now', '+6 months'),
+                'description' => fake()->paragraph(),
                 'notes' => fake()->paragraph(),
+                'source' => fake()->randomElement(['website', 'referral', 'direct', 'agent']),
+                'stage' => fake()->randomElement(['initial', 'qualified', 'proposal', 'negotiation']),
+                'type' => fake()->randomElement(['sale', 'rent']),
+                'priority' => fake()->randomElement(['low', 'medium', 'high']),
+                'last_activity_at' => now(),
+                'last_modified_by' => $users->random()->id,
             ]);
         }
-
-        $this->command->info('Created 30 opportunities.');
     }
 }

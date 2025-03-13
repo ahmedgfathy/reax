@@ -246,7 +246,7 @@
                                                 <div class="flex items-center justify-between text-xs text-gray-500 mt-1">
                                                     <span>
                                                         <i class="far fa-clock mr-1"></i> 
-                                                        {{ $event->event_date->format('M d, Y g:i A') }}
+                                                        {{ optional($event->start_date)->format('M d, Y g:i A') ?? 'N/A' }}
                                                     </span>
                                                     
                                                     @if($event->lead)

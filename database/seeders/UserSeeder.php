@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Company;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -10,17 +11,35 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        // Create admin user
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-            'is_active' => true,
-        ]);
+        $company = Company::first();
 
-        // Create additional users
-        User::factory()
-            ->count(10)
-            ->create();
+        // Create admin user if doesn't exist
+        User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('password'),
+                'is_admin' => true,
+                'is_active' => true
+            ]
+        );
+
+        // Create some regular users if we have less than 5
+        if (User::count() < 6) {
+            $positions = ['Sales Agent', 'Property Manager', 'Sales Manager', 'Customer Service'];
+            
+            foreach (range(1, 5) as $i) {
+                User::create([
+                    'name' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'password' => Hash::make('password'),
+                    'phone' => fake()->phoneNumber(),
+                    'mobile' => fake()->phoneNumber(),
+                    'position' => fake()->randomElement($positions),
+                    'address' => fake()->address(),
+                    'is_active' => true
+                ]);
+            }
+        }
     }
 }

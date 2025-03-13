@@ -4,12 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'company_id',
+        'code',
         'name',
         'description',
         'location',
@@ -22,7 +25,8 @@ class Project extends Model
 
     protected $casts = [
         'launch_date' => 'date',
-        'completion_date' => 'date'
+        'completion_date' => 'date',
+        'amenities' => 'array'
     ];
 
     public function properties()
