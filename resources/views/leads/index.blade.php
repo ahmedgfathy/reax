@@ -9,7 +9,7 @@
 
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-6">
-        <!-- Active Leads -->
+        <!-- Active Leads Card -->
         <div class="bg-gradient-to-br from-blue-900 to-blue-800 overflow-hidden shadow-lg rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
@@ -22,7 +22,7 @@
                         <h3 class="text-lg font-medium text-blue-100">{{ __('Active Leads') }}</h3>
                         <p class="text-sm text-blue-300">{{ __('Current active leads') }}</p>
                         <div class="mt-3">
-                            <span class="text-2xl font-bold text-white">{{ $activeLeadsCount ?? 0 }}</span>
+                            <span class="text-2xl font-bold text-white">{{ $stats['active'] }}</span>
                             <span class="text-blue-300 text-sm ml-2">{{ __('Active') }}</span>
                         </div>
                     </div>
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <!-- Converted Leads -->
+        <!-- Converted/Won Leads Card -->
         <div class="bg-gradient-to-br from-blue-800 to-blue-700 overflow-hidden shadow-lg rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
@@ -40,18 +40,18 @@
                         </div>
                     </div>
                     <div class="ml-5 w-0 flex-1">
-                        <h3 class="text-lg font-medium text-blue-100">{{ __('Converted Leads') }}</h3>
+                        <h3 class="text-lg font-medium text-blue-100">{{ __('Won Leads') }}</h3>
                         <p class="text-sm text-blue-300">{{ __('Successfully converted') }}</p>
                         <div class="mt-3">
-                            <span class="text-2xl font-bold text-white">{{ $convertedLeadsCount ?? 0 }}</span>
-                            <span class="text-blue-300 text-sm ml-2">{{ __('Converted') }}</span>
+                            <span class="text-2xl font-bold text-white">{{ $stats['won'] }}</span>
+                            <span class="text-blue-300 text-sm ml-2">{{ __('Won') }}</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Total Pipeline -->
+        <!-- Pipeline Value Card -->
         <div class="bg-gradient-to-br from-blue-900 to-blue-800 overflow-hidden shadow-lg rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
@@ -62,10 +62,10 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <h3 class="text-lg font-medium text-blue-100">{{ __('Pipeline Value') }}</h3>
-                        <p class="text-sm text-blue-300">{{ __('Total lead value') }}</p>
+                        <p class="text-sm text-blue-300">{{ __('Total budget value') }}</p>
                         <div class="mt-3">
-                            <span class="text-2xl font-bold text-white">${{ number_format($pipelineValue ?? 0) }}</span>
-                            <span class="text-blue-300 text-sm ml-2">{{ __('Total value') }}</span>
+                            <span class="text-2xl font-bold text-white">{{ number_format($stats['pipeline_value']) }}</span>
+                            <span class="text-blue-300 text-sm ml-2">{{ __('EGP') }}</span>
                         </div>
                     </div>
                 </div>
@@ -74,66 +74,95 @@
     </div>
 
     <!-- Lead Filters -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+    <div class="bg-white rounded-lg shadow-sm">
         <div class="p-6">
-            <form action="{{ route('leads.index') }}" method="GET">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="flex-grow">
-                        <input type="text" name="search" placeholder="{{ __('Search leads...') }}" 
-                               value="{{ request('search') }}"
-                               class="w-full p-2 border rounded-md">
-                    </div>
+            <form action="{{ route('leads.index') }}" method="GET" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Search Input -->
                     <div>
-                        <select name="status" class="p-2 border rounded-md" onchange="this.form.submit()">
+                        <div class="relative">
+                            <input type="text" 
+                                   name="search" 
+                                   value="{{ request('search') }}" 
+                                   class="w-full px-4 py-3 pl-12 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="{{ __('Search leads...') }}">
+                            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="relative">
+                        <select name="status" 
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
                             <option value="">{{ __('All Status') }}</option>
                             <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>{{ __('New') }}</option>
                             <option value="contacted" {{ request('status') == 'contacted' ? 'selected' : '' }}>{{ __('Contacted') }}</option>
                             <option value="qualified" {{ request('status') == 'qualified' ? 'selected' : '' }}>{{ __('Qualified') }}</option>
-                            <option value="proposal" {{ request('status') == 'proposal' ? 'selected' : '' }}>{{ __('Proposal') }}</option>
-                            <option value="negotiation" {{ request('status') == 'negotiation' ? 'selected' : '' }}>{{ __('Negotiation') }}</option>
-                            <option value="won" {{ request('status') == 'won' ? 'selected' : '' }}>{{ __('Won') }}</option>
-                            <option value="lost" {{ request('status') == 'lost' ? 'selected' : '' }}>{{ __('Lost') }}</option>
+                            <option value="unqualified" {{ request('status') == 'unqualified' ? 'selected' : '' }}>{{ __('Unqualified') }}</option>
                         </select>
+                        <i class="fas fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                     </div>
-                    <div>
-                        <select name="source" class="p-2 border rounded-md" onchange="this.form.submit()">
+
+                    <!-- Source Filter -->
+                    <div class="relative">
+                        <select name="source" 
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
                             <option value="">{{ __('All Sources') }}</option>
-                            @foreach($sources as $source)
-                                <option value="{{ $source }}" {{ request('source') == $source ? 'selected' : '' }}>{{ __(ucfirst($source)) }}</option>
-                            @endforeach
+                            <option value="website" {{ request('source') == 'website' ? 'selected' : '' }}>{{ __('Website') }}</option>
+                            <option value="referral" {{ request('source') == 'referral' ? 'selected' : '' }}>{{ __('Referral') }}</option>
+                            <option value="social" {{ request('source') == 'social' ? 'selected' : '' }}>{{ __('Social Media') }}</option>
+                            <option value="other" {{ request('source') == 'other' ? 'selected' : '' }}>{{ __('Other') }}</option>
                         </select>
+                        <i class="fas fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                     </div>
-                    <div>
-                        <select name="order_by" class="p-2 border rounded-md" onchange="this.form.submit()">
-                            <option value="created_at" {{ request('order_by') == 'created_at' ? 'selected' : '' }}>{{ __('Date Created') }}</option>
-                            <option value="first_name" {{ request('order_by') == 'first_name' ? 'selected' : '' }}>{{ __('Name') }}</option>
-                            <option value="status" {{ request('order_by') == 'status' ? 'selected' : '' }}>{{ __('Status') }}</option>
-                            <option value="budget" {{ request('order_by') == 'budget' ? 'selected' : '' }}>{{ __('Budget') }}</option>
+
+                    <!-- Sort By Filter -->
+                    <div class="relative">
+                        <select name="sort" 
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
+                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>{{ __('Newest First') }}</option>
+                            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>{{ __('Oldest First') }}</option>
+                            <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>{{ __('Name A-Z') }}</option>
+                            <option value="priority" {{ request('sort') == 'priority' ? 'selected' : '' }}>{{ __('Priority') }}</option>
                         </select>
+                        <i class="fas fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                     </div>
-                    <div>
-                        <select name="order_direction" class="p-2 border rounded-md" onchange="this.form.submit()">
-                            <option value="desc" {{ request('order_direction') == 'desc' ? 'selected' : '' }}>{{ __('Descending') }}</option>
-                            <option value="asc" {{ request('order_direction') == 'asc' ? 'selected' : '' }}>{{ __('Ascending') }}</option>
-                        </select>
-                    </div>
-                    <!-- New per_page selector -->
-                    <div>
-                        <select name="per_page" class="p-2 border rounded-md" onchange="this.form.submit()">
-                            <option value="25" {{ request('per_page') == '25' || !request('per_page') ? 'selected' : '' }}>{{ __('25 per page') }}</option>
-                            <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>{{ __('50 per page') }}</option>
-                            <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>{{ __('100 per page') }}</option>
-                        </select>
-                    </div>
-                    <div>
-                        <button type="submit" class="bg-blue-600 text-white p-2 rounded-md">
-                            <i class="fas fa-search mr-1"></i> {{ __('Search') }}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between items-center pt-4 border-t">
+                    <div class="flex items-center space-x-2">
+                        <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2">
+                            <i class="fas fa-search"></i>
+                            {{ __('Apply Filters') }}
                         </button>
-                        @if(request('search') || request('status') || request('source') || request('order_by') || request('order_direction'))
-                            <a href="{{ route('leads.index') }}" class="bg-gray-500 text-white p-2 rounded-md inline-block ml-2">
-                                <i class="fas fa-times mr-1"></i> {{ __('Reset') }}
+                        @if(request()->anyFilled(['search', 'status', 'source', 'sort']))
+                            <a href="{{ route('leads.index') }}" class="px-6 py-2.5 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors flex items-center gap-2">
+                                <i class="fas fa-times"></i>
+                                {{ __('Clear') }}
                             </a>
                         @endif
+                    </div>
+                    <div class="flex space-x-2">
+                        <!-- Import Button -->
+                        <button type="button" onclick="document.getElementById('import-modal').classList.remove('hidden')" 
+                                class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center gap-2">
+                            <i class="fas fa-file-import"></i>
+                            {{ __('Import') }}
+                        </button>
+                        
+                        <!-- Export Button -->
+                        <button type="button" onclick="document.getElementById('export-modal').classList.remove('hidden')" 
+                                class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center gap-2">
+                            <i class="fas fa-file-export"></i>
+                            {{ __('Export') }}
+                        </button>
+                        
+                        <!-- Add Lead Button -->
+                        <a href="{{ route('leads.create') }}" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            {{ __('Add Lead') }}
+                        </a>
                     </div>
                 </div>
             </form>
@@ -145,22 +174,6 @@
         <div class="p-6">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold text-gray-800">{{ __('Leads List') }}</h2>
-                <div class="flex space-x-2">
-                    <!-- Import Button -->
-                    <button onclick="document.getElementById('import-modal').classList.remove('hidden')" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md flex items-center">
-                        <i class="fas fa-file-import mr-2"></i> {{ __('Import') }}
-                    </button>
-                    
-                    <!-- Export Button -->
-                    <button onclick="document.getElementById('export-modal').classList.remove('hidden')" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md flex items-center">
-                        <i class="fas fa-file-export mr-2"></i> {{ __('Export') }}
-                    </button>
-                    
-                    <!-- Add Lead Button -->
-                    <a href="{{ route('leads.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md flex items-center">
-                        <i class="fas fa-plus mr-2"></i> {{ __('Add Lead') }}
-                    </a>
-                </div>
             </div>
 
             <div class="overflow-x-auto">

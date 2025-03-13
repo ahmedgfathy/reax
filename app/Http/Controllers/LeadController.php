@@ -63,8 +63,16 @@ class LeadController extends Controller
         // Store the filters in session for export functionality
         $filters = $request->only(['search', 'status', 'source', 'order_by', 'order_direction']);
         session(['lead_filters' => $filters]);
+
+        // Calculate stats
+        $stats = [
+            'active' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])->count(),
+            'won' => Lead::where('status', 'won')->count(),
+            'pipeline_value' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])
+                               ->sum('budget'),
+        ];
         
-        return view('leads.index', compact('leads', 'sources', 'users', 'perPage'));
+        return view('leads.index', compact('leads', 'sources', 'users', 'perPage', 'stats'));
     }
 
     /**
