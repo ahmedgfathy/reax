@@ -88,39 +88,67 @@
             margin-right: 0.5rem !important;
             margin-left: 0 !important;
         }
+
+        /* Custom select styling */
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+
+        /* Custom scrollbar for dropdowns */
+        select::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        select::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        select::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        /* Hover effect for filter inputs */
+        .filter-hover-effect:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
     </style>
 </head>
-<body class="bg-gray-50" dir="{{ in_array(app()->getLocale(), ['ar']) ? 'rtl' : 'ltr' }}">
-    <!-- Header with solid background -->
-    <header id="main-header" class="w-full z-50 bg-blue-600 shadow-md">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="/" class="flex items-center">
-                <span class="text-2xl font-bold text-white">REAX <span class="text-sm font-normal opacity-80">CRM</span></span>
-            </a>
+<body class="antialiased bg-gray-100">
+    <header class="absolute top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="text-white text-2xl font-bold">{{ __('REAX') }}</a>
             
             <!-- Desktop Navigation -->
-            <nav class="hidden md:flex space-x-6 items-center">
-                <a href="/" class="text-white hover:text-blue-200 font-medium">{{ __('Home') }}</a>
-                <a href="{{ route('sale') }}" class="text-white hover:text-blue-200 font-medium">{{ __('Sale') }}</a>
-                <a href="{{ route('rent') }}" class="text-white hover:text-blue-200 font-medium">{{ __('Rent') }}</a>
-                <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Primary') }}</a>
-                <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('About Us') }}</a>
-                <a href="#" class="text-white hover:text-blue-200 font-medium">{{ __('Contact Us') }}</a>
-                
-                <!-- Replace Language Dropdown with Icon Button -->
-                <form method="POST" action="{{ route('locale.switch') }}" class="inline-flex items-center">
+            <nav class="hidden md:flex items-center">
+                <!-- Main Navigation Links -->
+                <div class="flex space-x-6 items-center mr-6">
+                    <a href="/" class="text-white hover:text-gray-200 font-medium">{{ __('Home') }}</a>
+                    <a href="{{ route('sale') }}" class="text-white hover:text-gray-200 font-medium">{{ __('Sale') }}</a>
+                    <a href="{{ route('rent') }}" class="text-white hover:text-gray-200 font-medium">{{ __('Rent') }}</a>
+                    <a href="#" class="text-white hover:text-gray-200 font-medium">{{ __('Primary') }}</a>
+                    <a href="#" class="text-white hover:text-gray-200 font-medium">{{ __('About Us') }}</a>
+                    <a href="#" class="text-white hover:text-gray-200 font-medium">{{ __('Contact Us') }}</a>
+                </div>
+
+                <!-- Language Switcher -->
+                <form method="POST" action="{{ route('locale.switch') }}" class="inline-flex items-center mr-6">
                     @csrf
                     <input type="hidden" name="locale" value="{{ app()->getLocale() == 'en' ? 'ar' : 'en' }}">
-                    <button type="submit" class="text-white hover:text-blue-200 flex items-center">
+                    <button type="submit" class="text-white hover:text-gray-200 flex items-center">
                         <i class="fas fa-globe mr-2"></i>
                         <span>{{ app()->getLocale() == 'en' ? 'عربي' : 'ENG' }}</span>
                     </button>
                 </form>
-                
-                <!-- Conditional Login/Register or Dashboard link based on authentication -->
+
+                <!-- Auth Buttons -->
                 @auth
                     <div class="flex space-x-4 items-center">
-                        <a href="{{ route('dashboard') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md font-medium transition-colors flex items-center">
+                        <a href="{{ route('dashboard') }}" class="bg-white text-blue-600 hover:bg-gray-100 px-4 py-2 rounded-md font-medium transition-colors flex items-center">
                             <i class="fas fa-tachometer-alt mr-2"></i> {{ __('Dashboard') }}
                         </a>
                         <div class="relative" x-data="{ open: false }">
@@ -129,34 +157,21 @@
                                     {{ substr(Auth::user()->name, 0, 1) }}
                                 </span>
                                 {{ Auth::user()->name }}
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
+                                <i class="fas fa-chevron-down ml-2 text-xs"></i>
                             </button>
-                            <div x-show="open" 
-                                 @click.away="open = false"
-                                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
-                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">
-                                    {{ __('Profile') }}
-                                </a>
+                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">{{ __('Profile') }}</a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">
-                                        {{ __('Logout') }}
-                                    </button>
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">{{ __('Logout') }}</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 @else
-                    <!-- Login/Register Buttons -->
                     <div class="flex space-x-4 items-center">
-                        <a href="{{ route('login') }}" class="text-white hover:text-blue-200">
-                            {{ __('Login') }}
-                        </a>
-                        <a href="{{ route('register') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md font-medium transition-colors">
-                            {{ __('Register') }}
-                        </a>
+                        <a href="{{ route('login') }}" class="text-white hover:text-gray-200">{{ __('Login') }}</a>
+                        <a href="{{ route('register') }}" class="bg-white text-blue-600 hover:bg-gray-100 px-4 py-2 rounded-md font-medium transition-colors">{{ __('Register') }}</a>
                     </div>
                 @endauth
             </nav>
@@ -290,250 +305,365 @@
             </div>
             <div class="swiper-pagination"></div>
         </div>
-    </section>
-    
-    <!-- Featured Properties Section -->
-    <section class="py-16">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Featured Properties') }}</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">{{ __('Discover our hand-picked selection of featured properties') }}</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @forelse($featuredProperties as $property)
-                <!-- Property Card -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <div class="relative">
-                        @php
-                            $imageUrl = null;
-                            // Try to find a featured media file
-                            if ($property->mediaFiles && $property->mediaFiles->count() > 0) {
-                                $featuredMedia = $property->mediaFiles->where('is_featured', true)->first();
-                                if ($featuredMedia) {
-                                    $imageUrl = asset('storage/' . $featuredMedia->file_path);
-                                } else {
-                                    // If no featured image, use the first one
-                                    $imageUrl = asset('storage/' . $property->mediaFiles->first()->file_path);
-                                }
-                            }
 
-                            // If no media files, use a default image based on property type
-                            if (!$imageUrl) {
-                                $type = strtolower($property->type ?? 'default');
-                                if ($type == 'apartment') {
-                                    $imageUrl = 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
-                                } elseif ($type == 'villa') {
-                                    $imageUrl = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
-                                } elseif ($type == 'office') {
-                                    $imageUrl = 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
-                                } else {
-                                    // Default fallback
-                                    $imageUrl = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
-                                }
-                            }
-                        @endphp
-                        <img src="{{ $imageUrl }}" alt="{{ $property->name }}" class="w-full h-56 object-cover">
-                        
-                        <!-- Featured Heart Icon indication -->
-                        <div class="absolute top-4 left-4">
-                            <span class="bg-red-500 text-white p-1.5 rounded-full flex items-center justify-center">
-                                <i class="fas fa-heart"></i>
-                            </span>
-                        </div>
-                        
-                        <div class="absolute top-4 right-4">
-                            <span class="bg-{{ $property->unit_for == 'sale' ? 'blue' : 'green' }}-600 text-white px-3 py-1 rounded-full text-sm">
-                                {{ $property->unit_for == 'sale' ? __('For Sale') : __('For Rent') }}
-                            </span>
-                        </div>
-                        <div class="absolute bottom-4 right-4">
-                            <span class="bg-white/80 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-semibold">
-                                {{ number_format($property->price) }} {{ $property->currency ?? 'USD' }}
-                            </span>
+        <!-- Search Filters Bar -->
+        <div class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-lg transform translate-y-1/2 z-20">
+            <div class="container mx-auto px-4 py-6">
+                <div class="flex flex-col lg:flex-row gap-4 items-center">
+                    <!-- Search Input -->
+                    <div class="w-full lg:w-1/3">
+                        <div class="relative">
+                            <input type="text" 
+                                   placeholder="{{ __('Search by location, compound name...') }}" 
+                                   class="w-full px-4 py-3 pl-12 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                         </div>
                     </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $property->name }}</h3>
-                        <p class="text-gray-600 mb-4 flex items-center">
-                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
-                            {{ $property->area ?? $property->location ?? __('Location not specified') }}
-                        </p>
-                        <div class="flex justify-between text-gray-600 border-t pt-4">
-                            <div class="flex items-center">
-                                <i class="fas fa-bed mr-1"></i>
-                                <span>{{ $property->rooms ?? $property->bedrooms ?? 0 }} {{ __('Beds') }}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-bath mr-1"></i>
-                                <span>{{ $property->bathrooms ?? 0 }} {{ __('Baths') }}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-ruler-combined mr-1"></i>
-                                <span>{{ $property->unit_area ?? $property->area_size ?? 0 }} {{ __('m²') }}</span>
-                            </div>
-                        </div>
-                        <!-- View Details Button -->
-                        <div class="mt-4">
-                            <a href="{{ route('properties.show', $property->id) }}" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
-                                {{ __('View Details') }}
-                            </a>
-                        </div>
+
+                    <!-- Unit Type Dropdown -->
+                    <div class="w-full lg:w-1/6">
+                        <select class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
+                            <option value="">{{ __('Unit Type') }}</option>
+                            <option value="apartment">{{ __('Apartment') }}</option>
+                            <option value="villa">{{ __('Villa') }}</option>
+                            <option value="duplex">{{ __('Duplex') }}</option>
+                            <option value="penthouse">{{ __('Penthouse') }}</option>
+                            <option value="studio">{{ __('Studio') }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Region Dropdown -->
+                    <div class="w-full lg:w-1/6">
+                        <select class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
+                            <option value="">{{ __('Region') }}</option>
+                            <option value="new-cairo">{{ __('New Cairo') }}</option>
+                            <option value="6th-october">{{ __('6th October') }}</option>
+                            <option value="maadi">{{ __('Maadi') }}</option>
+                            <option value="sheikh-zayed">{{ __('Sheikh Zayed') }}</option>
+                            <option value="north-coast">{{ __('North Coast') }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Payment Method Dropdown -->
+                    <div class="w-full lg:w-1/6">
+                        <select class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
+                            <option value="">{{ __('Payment Method') }}</option>
+                            <option value="cash">{{ __('Cash') }}</option>
+                            <option value="installment">{{ __('Installment') }}</option>
+                            <option value="financing">{{ __('Bank Financing') }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Search Button -->
+                    <div class="w-full lg:w-auto">
+                        <button class="w-full lg:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-search-location"></i>
+                            {{ __('Search') }}
+                        </button>
                     </div>
                 </div>
-                @empty
-                <!-- Fallback content for when there are no featured properties -->
-                <!-- Property Card 1 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Property" class="w-full h-56 object-cover">
-                        <div class="absolute top-4 left-4">
-                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">{{ __('For Sale') }}</span>
-                        </div>
-                        <div class="absolute bottom-4 right-4">
-                            <span class="bg-white/80 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-semibold">$2,500,000</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Modern Villa with Pool') }}</h3>
-                        <p class="text-gray-600 mb-4 flex items-center">
-                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
-                            {{ __('Palm Hills, New Cairo') }}
-                        </p>
-                        <div class="flex justify-between text-gray-600 border-t pt-4">
-                            <div class="flex items-center">
-                                <i class="fas fa-bed mr-1"></i>
-                                <span>4 {{ __('Beds') }}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-bath mr-1"></i>
-                                <span>3 {{ __('Baths') }}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-ruler-combined mr-1"></i>
-                                <span>350 {{ __('m²') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Property Card 2 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Property" class="w-full h-56 object-cover">
-                        <div class="absolute top-4 left-4">
-                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">{{ __('For Rent') }}</span>
-                        </div>
-                        <div class="absolute bottom-4 right-4">
-                            <span class="bg-white/80 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-semibold">$1,800/{{ __('month') }}</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Luxury Apartment') }}</h3>
-                        <p class="text-gray-600 mb-4 flex items-center">
-                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
-                            {{ __('Zamalek, Cairo') }}
-                        </p>
-                        <div class="flex justify-between text-gray-600 border-t pt-4">
-                            <div class="flex items-center">
-                                <i class="fas fa-bed mr-1"></i>
-                                <span>3 {{ __('Beds') }}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-bath mr-1"></i>
-                                <span>2 {{ __('Baths') }}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-ruler-combined mr-1"></i>
-                                <span>180 {{ __('m²') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Property Card 3 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Property" class="w-full h-56 object-cover">
-                        <div class="absolute top-4 left-4">
-                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">{{ __('For Sale') }}</span>
-                        </div>
-                        <div class="absolute bottom-4 right-4">
-                            <span class="bg-white/80 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-semibold">$850,000</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Modern Office Space') }}</h3>
-                        <p class="text-gray-600 mb-4 flex items-center">
-                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
-                            {{ __('Downtown, Alexandria') }}
-                        </p>
-                        <div class="flex justify-between text-gray-600 border-t pt-4">
-                            <div class="flex items-center">
-                                <i class="fas fa-door-open mr-1"></i>
-                                <span>8 {{ __('Rooms') }}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-bath mr-1"></i>
-                                <span>2 {{ __('Baths') }}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-ruler-combined mr-1"></i>
-                                <span>220 {{ __('m²') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforelse
-            </div>
-            
-            <div class="text-center mt-10">
-                <a href="{{ route('featured.properties') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg px-6 py-3 transition-colors">
-                    {{ __('View All Properties') }} <i class="fas fa-arrow-right ml-2"></i>
-                </a>
             </div>
         </div>
     </section>
-    
-    <!-- Top Compounds Section -->
-    <section class="py-16 bg-gray-100">
+
+    <!-- Add margin top to next section to account for filter bar -->
+    <section class="py-12 bg-gray-50 mt-16">
         <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Top Compounds') }}</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">{{ __('Explore the top compounds in New Cairo') }}</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Compound Card 1 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Compound" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Mountain View Hyde Park') }}</h3>
-                        <p class="text-gray-600">{{ __('Location: New Cairo') }}</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Column: Featured Properties -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ __('Featured Properties') }}</h2>
+                        <p class="text-sm text-gray-600 max-w-xl mx-auto">{{ __('Discover our hand-picked selection of featured properties') }}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        @forelse($featuredProperties as $property)
+                            <!-- Property Card -->
+                            <div class="bg-white rounded-lg border border-gray-100 hover:border-blue-200 transition-all duration-300 hover:shadow-md">
+                                <div class="relative h-40">
+                                    <!-- Same image handling logic -->
+                                    @php
+                                        $imageUrl = null;
+                                        // Try to find a featured media file
+                                        if ($property->mediaFiles && $property->mediaFiles->count() > 0) {
+                                            $featuredMedia = $property->mediaFiles->where('is_featured', true)->first();
+                                            if ($featuredMedia) {
+                                                $imageUrl = asset('storage/' . $featuredMedia->file_path);
+                                            } else {
+                                                // If no featured image, use the first one
+                                                $imageUrl = asset('storage/' . $property->mediaFiles->first()->file_path);
+                                            }
+                                        }
+
+                                        // If no media files, use a default image based on property type
+                                        if (!$imageUrl) {
+                                            $type = strtolower($property->type ?? 'default');
+                                            if ($type == 'apartment') {
+                                                $imageUrl = 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                                            } elseif ($type == 'villa') {
+                                                $imageUrl = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                                            } elseif ($type == 'office') {
+                                                $imageUrl = 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                                            } else {
+                                                // Default fallback
+                                                $imageUrl = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                                            }
+                                        }
+                                    @endphp
+                                    <img src="{{ $imageUrl }}" alt="{{ $property->name }}" class="w-full h-40 object-cover rounded-t-lg">
+                                    
+                                    <!-- Heart Icon - Made Smaller -->
+                                    <div class="absolute top-2 left-2">
+                                        <span class="bg-red-500 text-white p-1 rounded-full flex items-center justify-center text-xs">
+                                            <i class="fas fa-heart"></i>
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Status Badge - Made Smaller -->
+                                    <div class="absolute top-2 right-2">
+                                        <span class="bg-{{ $property->unit_for == 'sale' ? 'blue' : 'green' }}-600 text-white px-2 py-0.5 rounded-full text-xs">
+                                            {{ $property->unit_for == 'sale' ? __('For Sale') : __('For Rent') }}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-4">
+                                    <h3 class="text-sm font-bold text-gray-900 mb-1 truncate">{{ $property->name }}</h3>
+                                    <p class="text-xs text-gray-600 mb-2 flex items-center">
+                                        <i class="fas fa-map-marker-alt mr-1 text-blue-500"></i>
+                                        {{ $property->area ?? $property->location ?? __('Location not specified') }}
+                                    </p>
+                                    
+                                    <!-- Property Details - Compact Layout -->
+                                    <div class="grid grid-cols-3 gap-2 mb-3 text-xs text-gray-500">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-bed mr-1"></i>
+                                            <span>{{ $property->rooms ?? 0 }}</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-bath mr-1"></i>
+                                            <span>{{ $property->bathrooms ?? 0 }}</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-ruler-combined mr-1"></i>
+                                            <span>{{ $property->unit_area ?? 0 }}m²</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Price Tag -->
+                                    <div class="text-sm font-semibold text-blue-600 mb-2">
+                                        {{ number_format($property->price) }} {{ $property->currency ?? 'EGP' }}
+                                    </div>
+                                    
+                                    <!-- View Details Link -->
+                                    <a href="{{ route('properties.show', $property->id) }}" 
+                                       class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                                        {{ __('View Details') }}
+                                        <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        @empty
+                            <!-- Fallback Cards with Similar Styling -->
+                            <div class="bg-white rounded-lg border border-gray-100 hover:border-blue-200 transition-all duration-300 hover:shadow-md">
+                                <div class="relative h-40">
+                                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Property" class="w-full h-40 object-cover rounded-t-lg">
+                                    <div class="absolute top-2 left-2">
+                                        <span class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-xs">{{ __('For Sale') }}</span>
+                                    </div>
+                                    <div class="absolute bottom-2 right-2">
+                                        <span class="bg-white/80 backdrop-blur-sm text-gray-900 px-2 py-0.5 rounded-full text-xs font-semibold">$2,500,000</span>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-sm font-bold text-gray-900 mb-1 truncate">{{ __('Modern Villa with Pool') }}</h3>
+                                    <p class="text-xs text-gray-600 mb-2 flex items-center">
+                                        <i class="fas fa-map-marker-alt mr-1 text-blue-500"></i>
+                                        {{ __('Palm Hills, New Cairo') }}
+                                    </p>
+                                    <div class="grid grid-cols-3 gap-2 mb-3 text-xs text-gray-500">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-bed mr-1"></i>
+                                            <span>4</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-bath mr-1"></i>
+                                            <span>3</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-ruler-combined mr-1"></i>
+                                            <span>350m²</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm font-semibold text-blue-600 mb-2">
+                                        $2,500,000
+                                    </div>
+                                    <a href="#" class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                                        {{ __('View Details') }}
+                                        <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg border border-gray-100 hover:border-blue-200 transition-all duration-300 hover:shadow-md">
+                                <div class="relative h-40">
+                                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Property" class="w-full h-40 object-cover rounded-t-lg">
+                                    <div class="absolute top-2 left-2">
+                                        <span class="bg-green-600 text-white px-2 py-0.5 rounded-full text-xs">{{ __('For Rent') }}</span>
+                                    </div>
+                                    <div class="absolute bottom-2 right-2">
+                                        <span class="bg-white/80 backdrop-blur-sm text-gray-900 px-2 py-0.5 rounded-full text-xs font-semibold">$1,800/{{ __('month') }}</span>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-sm font-bold text-gray-900 mb-1 truncate">{{ __('Luxury Apartment') }}</h3>
+                                    <p class="text-xs text-gray-600 mb-2 flex items-center">
+                                        <i class="fas fa-map-marker-alt mr-1 text-blue-500"></i>
+                                        {{ __('Zamalek, Cairo') }}
+                                    </p>
+                                    <div class="grid grid-cols-3 gap-2 mb-3 text-xs text-gray-500">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-bed mr-1"></i>
+                                            <span>3</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-bath mr-1"></i>
+                                            <span>2</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-ruler-combined mr-1"></i>
+                                            <span>180m²</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm font-semibold text-blue-600 mb-2">
+                                        $1,800/{{ __('month') }}
+                                    </div>
+                                    <a href="#" class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                                        {{ __('View Details') }}
+                                        <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
-                
-                <!-- Additional compound cards with different images -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Compound" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Madinaty') }}</h3>
-                        <p class="text-gray-600">{{ __('Location: New Cairo') }}</p>
+
+                <!-- Right Column: Top Compounds -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ __('Top Compounds') }}</h2>
+                        <p class="text-sm text-gray-600 max-w-xl mx-auto">{{ __('Explore the top compounds in New Cairo') }}</p>
                     </div>
-                </div>
-                
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Compound" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Madinaty') }}</h3>
-                        <p class="text-gray-600">{{ __('Location: New Cairo') }}</p>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Compound" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Madinaty') }}</h3>
-                        <p class="text-gray-600">{{ __('Location: New Cairo') }}</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Compound Card 1 -->
+                        <div class="bg-white rounded-lg border border-gray-100 hover:border-blue-200 transition-all duration-300 hover:shadow-md">
+                            <div class="relative h-40">
+                                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                                     alt="Compound" 
+                                     class="w-full h-40 object-cover rounded-t-lg">
+                                
+                                <div class="absolute top-2 left-2">
+                                    <span class="bg-red-500 text-white p-1 rounded-full flex items-center justify-center text-xs">
+                                        <i class="fas fa-heart"></i>
+                                    </span>
+                                </div>
+                                
+                                <div class="absolute top-2 right-2">
+                                    <span class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-xs">
+                                        {{ __('Premium') }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <h3 class="text-sm font-bold text-gray-900 mb-1 truncate">{{ __('Mountain View Hyde Park') }}</h3>
+                                <p class="text-xs text-gray-600 mb-2 flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-1 text-blue-500"></i>
+                                    {{ __('New Cairo') }}
+                                </p>
+                                
+                                <div class="grid grid-cols-3 gap-2 mb-3 text-xs text-gray-500">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-building mr-1"></i>
+                                        <span>120 {{ __('Units') }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-tree mr-1"></i>
+                                        <span>75% {{ __('Green') }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-ruler-combined mr-1"></i>
+                                        <span>1.2M {{ __('m²') }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-sm font-semibold text-blue-600 mb-2">
+                                    {{ __('Starting from') }} 2.5M {{ __('EGP') }}
+                                </div>
+                                
+                                <a href="#" class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                                    {{ __('View Details') }}
+                                    <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Compound Card 2 -->
+                        <div class="bg-white rounded-lg border border-gray-100 hover:border-blue-200 transition-all duration-300 hover:shadow-md">
+                            <div class="relative h-40">
+                                <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                                     alt="Compound" 
+                                     class="w-full h-40 object-cover rounded-t-lg">
+                                
+                                <div class="absolute top-2 left-2">
+                                    <span class="bg-red-500 text-white p-1 rounded-full flex items-center justify-center text-xs">
+                                        <i class="fas fa-heart"></i>
+                                    </span>
+                                </div>
+                                
+                                <div class="absolute top-2 right-2">
+                                    <span class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-xs">
+                                        {{ __('Premium') }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <h3 class="text-sm font-bold text-gray-900 mb-1 truncate">{{ __('Madinaty') }}</h3>
+                                <p class="text-xs text-gray-600 mb-2 flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-1 text-blue-500"></i>
+                                    {{ __('New Cairo') }}
+                                </p>
+                                
+                                <div class="grid grid-cols-3 gap-2 mb-3 text-xs text-gray-500">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-building mr-1"></i>
+                                        <span>200 {{ __('Units') }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-tree mr-1"></i>
+                                        <span>80% {{ __('Green') }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-ruler-combined mr-1"></i>
+                                        <span>2.1M {{ __('m²') }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-sm font-semibold text-blue-600 mb-2">
+                                    {{ __('Starting from') }} 1.8M {{ __('EGP') }}
+                                </div>
+                                
+                                <a href="#" class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                                    {{ __('View Details') }}
+                                    <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Additional Compound Cards... -->
+                        <!-- Add more compound cards following the same pattern -->
                     </div>
                 </div>
             </div>
@@ -811,6 +941,88 @@
             </div>
         </div>
     </section>
+
+    <!-- Add Footer Section before closing body tag -->
+    <footer class="bg-gray-900 text-white">
+        <!-- Main Footer -->
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">{{ __('REAX') }}</h3>
+                    <p class="text-gray-400 mb-4">{{ __('Your trusted partner in real estate. Find your perfect property with us.') }}</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">{{ __('Quick Links') }}</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{{ route('sale') }}" class="text-gray-400 hover:text-white">{{ __('Properties for Sale') }}</a></li>
+                        <li><a href="{{ route('rent') }}" class="text-gray-400 hover:text-white">{{ __('Properties for Rent') }}</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">{{ __('New Projects') }}</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">{{ __('About Us') }}</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">{{ __('Contact Us') }}</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">{{ __('Contact Us') }}</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-map-marker-alt mt-1 text-gray-400"></i>
+                            <span class="text-gray-400">123 {{ __('Street Name, City, Country') }}</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i class="fas fa-phone-alt text-gray-400"></i>
+                            <span class="text-gray-400">+20 123 456 7890</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i class="fas fa-envelope text-gray-400"></i>
+                            <span class="text-gray-400">info@reax.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">{{ __('Newsletter') }}</h4>
+                    <p class="text-gray-400 mb-4">{{ __('Subscribe to our newsletter for updates and exclusive offers.') }}</p>
+                    <form class="flex">
+                        <input type="email" 
+                               placeholder="{{ __('Your email address') }}" 
+                               class="bg-gray-800 text-white px-4 py-2 rounded-l-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="submit" 
+                                class="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Footer -->
+        <div class="border-t border-gray-800">
+            <div class="container mx-auto px-4 py-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-gray-400 text-sm mb-4 md:mb-0">
+                        © {{ date('Y') }} {{ __('REAX. All rights reserved.') }}
+                    </div>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">{{ __('Privacy Policy') }}</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">{{ __('Terms of Service') }}</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">{{ __('Cookie Policy') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <!-- AlpineJS for dropdowns -->
     <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"></script>
