@@ -75,6 +75,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/profile/avatar', 'updateAvatar')->name('profile.avatar.update');
         Route::delete('/profile/avatar', 'removeAvatar')->name('profile.avatar.remove');
     });
+
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
 });
 
 // Remove or comment out the old locale route
