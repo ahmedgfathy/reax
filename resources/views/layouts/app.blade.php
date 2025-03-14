@@ -29,11 +29,6 @@
     <meta name="msapplication-TileImage" content="{{ asset('images/brand/icon-144.png') }}">
 </head>
 <body class="bg-gray-50 {{ app()->getLocale() == 'ar' ? 'rtl' : '' }} font-{{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}">
-    <!-- Mobile Sidebar Toggle Button -->
-    <button id="sidebarToggle" class="fixed bottom-4 left-4 z-50 lg:hidden bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700 transition-colors">
-        <i class="fas fa-bars"></i>
-    </button>
-
     @include('components.layouts.alert-scripts')
     
     <!-- Add PWA Install Button -->
@@ -66,17 +61,17 @@
         <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" 
              onclick="toggleSidebar()"></div>
 
-        <!-- Fixed Sidebar - Updated z-index and transition -->
-        <div id="sidebar" class="fixed left-0 top-28 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-50 w-64">
+        <!-- Mobile Toggle Button -->
+        <button id="sidebarToggle" 
+                class="fixed top-20 right-4 z-50 lg:hidden bg-white p-2 rounded-lg shadow-lg hover:bg-gray-100 transition-all duration-300 ease-in-out flex items-center justify-center"
+                onclick="toggleSidebar()">
+            <i class="fas fa-ellipsis-v text-gray-600"></i>
+        </button>
+
+        <!-- Fixed Sidebar -->
+        <div id="sidebar" class="fixed left-0 top-28 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:z-30">
             @include('layouts.sidebar')
         </div>
-
-        <!-- Mobile Toggle Button - Updated position and style -->
-        <button id="sidebarToggle" 
-                class="fixed top-20 left-4 z-50 lg:hidden bg-white p-2 rounded-lg shadow-lg hover:bg-gray-100 transition-all duration-300 ease-in-out"
-                onclick="toggleSidebar()">
-            <i class="fas fa-bars text-gray-600"></i>
-        </button>
 
         <!-- Scrollable Main Content -->
         <div class="flex-1 lg:ml-64 p-6 overflow-y-auto">
@@ -90,7 +85,7 @@
     <!-- PWA Scripts -->
     <script src="{{ asset('js/pwa.js') }}" defer></script>
 
-    <!-- Updated Sidebar Toggle Script -->
+    <!-- Sidebar Toggle Script -->
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -101,14 +96,14 @@
             sidebar.classList.toggle('-translate-x-full');
             overlay.classList.toggle('hidden');
             
-            // Toggle icon between bars and times
-            if (icon.classList.contains('fa-bars')) {
-                icon.classList.remove('fa-bars');
+            // Toggle icon between ellipsis-v and times
+            if (icon.classList.contains('fa-ellipsis-v')) {
+                icon.classList.remove('fa-ellipsis-v');
                 icon.classList.add('fa-times');
                 toggleBtn.classList.add('bg-gray-100');
             } else {
                 icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+                icon.classList.add('fa-ellipsis-v');
                 toggleBtn.classList.remove('bg-gray-100');
             }
         }
@@ -124,7 +119,7 @@
                 sidebar.classList.add('-translate-x-full');
                 overlay.classList.add('hidden');
                 icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+                icon.classList.add('fa-ellipsis-v');
                 toggleBtn.classList.remove('bg-gray-100');
             }
         });
@@ -142,7 +137,7 @@
                     sidebar.classList.add('-translate-x-full');
                     overlay.classList.add('hidden');
                     icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
+                    icon.classList.add('fa-ellipsis-v');
                     toggleBtn.classList.remove('bg-gray-100');
                 }
             }
