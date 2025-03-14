@@ -4,10 +4,10 @@
         <i class="fas fa-times"></i>
     </button>
 
-    <div class="p-4 space-y-6"> <!-- Added space-y-6 for more spacing between sections -->
-        <div class="space-y-4">
+    <div class="p-6 space-y-8"> <!-- Increased padding from p-4 to p-6 and space-y from 6 to 8 -->
+        <div class="space-y-6">
             <!-- Clients & Contact Management -->
-            <div class="pb-4 border-b border-gray-200">
+            <div class="pb-6 border-b border-gray-200"> <!-- Increased padding bottom from 4 to 6 -->
                 <h3 class="flex items-center text-sm font-medium mb-2 text-gray-700">
                     <i class="fas fa-users mr-3 text-blue-600"></i>
                     {{ __('Clients & Contact Management') }}

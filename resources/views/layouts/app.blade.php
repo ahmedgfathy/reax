@@ -56,7 +56,7 @@
     </div>
 
     <!-- Main Content with Sidebar -->
-    <div class="flex pt-32"> <!-- Increased padding top from 28 to 32 -->
+    <div class="flex pt-36"> <!-- Increased padding top from 32 to 36 -->
         <!-- Sidebar Overlay -->
         <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" 
              onclick="toggleSidebar()"></div>
@@ -69,7 +69,7 @@
         </button>
 
         <!-- Fixed Sidebar - Updated top position -->
-        <div id="sidebar" class="fixed left-0 top-32 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:z-30">
+        <div id="sidebar" class="fixed left-0 top-36 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:z-30"> <!-- Updated top from 32 to 36 -->
             @include('layouts.sidebar')
         </div>
 
