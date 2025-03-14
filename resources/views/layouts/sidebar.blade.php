@@ -1,4 +1,9 @@
 <div class="w-64 bg-white text-gray-800 shadow-lg h-full">
+    <!-- Close button for mobile -->
+    <button onclick="toggleSidebar()" class="lg:hidden absolute right-4 top-4 text-gray-500 hover:text-gray-700">
+        <i class="fas fa-times"></i>
+    </button>
+
     <div class="p-4">
         <div class="space-y-4">
             <!-- Clients & Contact Management -->

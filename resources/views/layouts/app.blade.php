@@ -29,6 +29,11 @@
     <meta name="msapplication-TileImage" content="{{ asset('images/brand/icon-144.png') }}">
 </head>
 <body class="bg-gray-50 {{ app()->getLocale() == 'ar' ? 'rtl' : '' }} font-{{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}">
+    <!-- Mobile Sidebar Toggle Button -->
+    <button id="sidebarToggle" class="fixed bottom-4 left-4 z-50 lg:hidden bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700 transition-colors">
+        <i class="fas fa-bars"></i>
+    </button>
+
     @include('components.layouts.alert-scripts')
     
     <!-- Add PWA Install Button -->
@@ -57,13 +62,17 @@
 
     <!-- Main Content with Sidebar -->
     <div class="flex pt-28"> <!-- Added padding top to account for fixed header -->
+        <!-- Sidebar Overlay -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" 
+             onclick="toggleSidebar()"></div>
+
         <!-- Fixed Sidebar -->
-        <div class="fixed left-0 top-28 bottom-0"> <!-- Positioned below fixed header -->
+        <div id="sidebar" class="fixed left-0 top-28 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:z-30">
             @include('layouts.sidebar')
         </div>
 
         <!-- Scrollable Main Content -->
-        <div class="flex-1 ml-64 p-6 overflow-y-auto">
+        <div class="flex-1 lg:ml-64 p-6 overflow-y-auto">
             {{ $slot }}
         </div>
     </div>
@@ -73,5 +82,31 @@
     
     <!-- PWA Scripts -->
     <script src="{{ asset('js/pwa.js') }}" defer></script>
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggleBtn = document.getElementById('sidebarToggle');
+
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+            toggleBtn.classList.toggle('rotate-180');
+        }
+
+        // Close sidebar on window resize if screen becomes large
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) { // lg breakpoint
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                const toggleBtn = document.getElementById('sidebarToggle');
+
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+                toggleBtn.classList.remove('rotate-180');
+            }
+        });
+    </script>
 </body>
 </html>
