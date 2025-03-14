@@ -63,9 +63,9 @@
 
         <!-- Mobile Toggle Button -->
         <button id="sidebarToggle" 
-                class="fixed top-20 right-4 z-50 lg:hidden bg-white p-2 rounded-lg shadow-lg hover:bg-gray-100 transition-all duration-300 ease-in-out flex items-center justify-center"
+                class="fixed top-20 right-4 z-50 lg:hidden bg-blue-600 p-2.5 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 ease-in-out flex items-center justify-center"
                 onclick="toggleSidebar()">
-            <i class="fas fa-ellipsis-v text-gray-600"></i>
+            <i class="fas fa-ellipsis-v text-white text-lg"></i>
         </button>
 
         <!-- Fixed Sidebar -->
@@ -100,11 +100,13 @@
             if (icon.classList.contains('fa-ellipsis-v')) {
                 icon.classList.remove('fa-ellipsis-v');
                 icon.classList.add('fa-times');
-                toggleBtn.classList.add('bg-gray-100');
+                toggleBtn.classList.add('bg-red-600');
+                toggleBtn.classList.remove('bg-blue-600');
             } else {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-ellipsis-v');
-                toggleBtn.classList.remove('bg-gray-100');
+                toggleBtn.classList.add('bg-blue-600');
+                toggleBtn.classList.remove('bg-red-600');
             }
         }
 
