@@ -56,20 +56,20 @@
     </div>
 
     <!-- Main Content with Sidebar -->
-    <div class="flex pt-28"> <!-- Added padding top to account for fixed header -->
+    <div class="flex pt-32"> <!-- Increased padding top from 28 to 32 -->
         <!-- Sidebar Overlay -->
         <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" 
              onclick="toggleSidebar()"></div>
 
-        <!-- Mobile Toggle Button -->
+        <!-- Mobile Toggle Button - Updated position and design -->
         <button id="sidebarToggle" 
-                class="fixed top-20 right-4 z-50 lg:hidden bg-blue-600 p-2.5 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 ease-in-out flex items-center justify-center"
+                class="fixed bottom-6 left-6 z-50 lg:hidden bg-gradient-to-r from-blue-600 to-blue-700 p-3.5 rounded-full shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 ease-in-out flex items-center justify-center"
                 onclick="toggleSidebar()">
-            <i class="fas fa-ellipsis-v text-white text-lg"></i>
+            <i class="fas fa-bars text-white text-lg"></i>
         </button>
 
-        <!-- Fixed Sidebar -->
-        <div id="sidebar" class="fixed left-0 top-28 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:z-30">
+        <!-- Fixed Sidebar - Updated top position -->
+        <div id="sidebar" class="fixed left-0 top-32 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:z-30">
             @include('layouts.sidebar')
         </div>
 
@@ -85,7 +85,7 @@
     <!-- PWA Scripts -->
     <script src="{{ asset('js/pwa.js') }}" defer></script>
 
-    <!-- Sidebar Toggle Script -->
+    <!-- Updated Sidebar Toggle Script -->
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -96,17 +96,17 @@
             sidebar.classList.toggle('-translate-x-full');
             overlay.classList.toggle('hidden');
             
-            // Toggle icon between ellipsis-v and times
-            if (icon.classList.contains('fa-ellipsis-v')) {
-                icon.classList.remove('fa-ellipsis-v');
+            // Toggle icon and button styles
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
-                toggleBtn.classList.add('bg-red-600');
-                toggleBtn.classList.remove('bg-blue-600');
+                toggleBtn.classList.remove('from-blue-600', 'to-blue-700');
+                toggleBtn.classList.add('from-red-600', 'to-red-700');
             } else {
                 icon.classList.remove('fa-times');
-                icon.classList.add('fa-ellipsis-v');
-                toggleBtn.classList.add('bg-blue-600');
-                toggleBtn.classList.remove('bg-red-600');
+                icon.classList.add('fa-bars');
+                toggleBtn.classList.remove('from-red-600', 'to-red-700');
+                toggleBtn.classList.add('from-blue-600', 'to-blue-700');
             }
         }
 
