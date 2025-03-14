@@ -66,10 +66,17 @@
         <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" 
              onclick="toggleSidebar()"></div>
 
-        <!-- Fixed Sidebar -->
-        <div id="sidebar" class="fixed left-0 top-28 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:z-30">
+        <!-- Fixed Sidebar - Updated z-index and transition -->
+        <div id="sidebar" class="fixed left-0 top-28 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-50 w-64">
             @include('layouts.sidebar')
         </div>
+
+        <!-- Mobile Toggle Button - Updated position and style -->
+        <button id="sidebarToggle" 
+                class="fixed top-20 left-4 z-50 lg:hidden bg-white p-2 rounded-lg shadow-lg hover:bg-gray-100 transition-all duration-300 ease-in-out"
+                onclick="toggleSidebar()">
+            <i class="fas fa-bars text-gray-600"></i>
+        </button>
 
         <!-- Scrollable Main Content -->
         <div class="flex-1 lg:ml-64 p-6 overflow-y-auto">
@@ -83,28 +90,61 @@
     <!-- PWA Scripts -->
     <script src="{{ asset('js/pwa.js') }}" defer></script>
 
-    <!-- Sidebar Toggle Script -->
+    <!-- Updated Sidebar Toggle Script -->
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
             const toggleBtn = document.getElementById('sidebarToggle');
+            const icon = toggleBtn.querySelector('i');
 
             sidebar.classList.toggle('-translate-x-full');
             overlay.classList.toggle('hidden');
-            toggleBtn.classList.toggle('rotate-180');
+            
+            // Toggle icon between bars and times
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+                toggleBtn.classList.add('bg-gray-100');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+                toggleBtn.classList.remove('bg-gray-100');
+            }
         }
 
         // Close sidebar on window resize if screen becomes large
         window.addEventListener('resize', () => {
-            if (window.innerWidth >= 1024) { // lg breakpoint
+            if (window.innerWidth >= 1024) {
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('sidebarOverlay');
                 const toggleBtn = document.getElementById('sidebarToggle');
+                const icon = toggleBtn.querySelector('i');
 
                 sidebar.classList.add('-translate-x-full');
                 overlay.classList.add('hidden');
-                toggleBtn.classList.remove('rotate-180');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+                toggleBtn.classList.remove('bg-gray-100');
+            }
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('sidebarToggle');
+            
+            if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && window.innerWidth < 1024) {
+                const overlay = document.getElementById('sidebarOverlay');
+                const icon = toggleBtn.querySelector('i');
+                
+                if (!sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.add('-translate-x-full');
+                    overlay.classList.add('hidden');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                    toggleBtn.classList.remove('bg-gray-100');
+                }
             }
         });
     </script>
