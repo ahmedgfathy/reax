@@ -1,5 +1,6 @@
 <nav class="bg-gradient-to-r from-blue-700 to-blue-600 text-white shadow-lg w-full">
-    <div class="container mx-auto px-4 md:px-6 w-full">
+    <!-- Update container class to be wider -->
+    <div class="max-w-full mx-4 xl:max-w-[1920px] xl:mx-auto px-4 md:px-6 w-full">
         <div class="flex items-center h-14">
             <!-- Logo -->
             <div class="flex items-center mr-4">
@@ -11,7 +12,7 @@
             </div>
 
             <!-- Navigation Links -->
-            <div class="hidden md:flex items-center space-x-1">
+            <div class="hidden md:flex items-center space-x-2">
                 <!-- Home Link with New Tab -->
                 <a href="{{ url('/') }}" 
                    target="_blank"
@@ -103,6 +104,16 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             <span>{{ __('Systems') }}</span>
+                        </div>
+                    </a>
+
+                    <!-- Management -->
+                    <a href="#" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('management.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                            </svg>
+                            <span>{{ __('Management') }}</span>
                         </div>
                     </a>
                 </div>
