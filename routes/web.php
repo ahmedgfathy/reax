@@ -181,6 +181,11 @@ Route::prefix('systems')->group(function () {
     Route::get('/', [\App\Http\Controllers\SystemController::class, 'index'])->name('systems.index');
 });
 
+// Add Management Routes
+Route::prefix('management')->group(function () {
+    Route::get('/', [\App\Http\Controllers\ManagementController::class, 'index'])->name('management.index');
+});
+
 // Employee Routes
 Route::resource('employees', App\Http\Controllers\EmployeeController::class);
 
