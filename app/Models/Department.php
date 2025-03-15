@@ -15,13 +15,21 @@ class Department extends Model
         'name',
         'code',
         'description',
-        'manager_id',
-        'parent_id'
+        'parent_id',
+        'manager_name',
+        'manager_phone',
+        'manager_email',
+        'is_active',
+        'notes'
     ];
 
-    public function manager()
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
+
+    public function company()
     {
-        return $this->belongsTo(User::class, 'manager_id');
+        return $this->belongsTo(Company::class);
     }
 
     public function parent()
@@ -32,10 +40,5 @@ class Department extends Model
     public function children()
     {
         return $this->hasMany(Department::class, 'parent_id');
-    }
-
-    public function employees()
-    {
-        return $this->hasMany(User::class);
     }
 }

@@ -16,6 +16,7 @@ use App\Http\Controllers\LeadImportExportController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request; // Import Request at the top of the file
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\BranchController; // Import BranchController at the top with other use statements
 
 // Public routes - place these before any auth routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -90,6 +91,13 @@ Route::middleware(['auth'])->group(function () {
     // Contact Management Routes with full namespace
     Route::resource('contacts', \App\Http\Controllers\ContactController::class);
     Route::resource('companies', \App\Http\Controllers\CompanyController::class);
+
+    Route::resource('branches', BranchController::class); // Add this line inside middleware auth group
+
+    Route::resource('departments', DepartmentController::class);
+
+    // Management Routes
+    Route::get('/management', [\App\Http\Controllers\ManagementController::class, 'index'])->name('management.index');
 });
 
 // Remove or comment out the old locale route

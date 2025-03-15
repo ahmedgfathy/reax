@@ -11,29 +11,28 @@ class Branch extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'company_id',  // Add this
+        'company_id',
         'name',
         'code',
         'address',
         'city',
+        'state',
         'country',
         'phone',
         'email',
+        'manager_name',
+        'manager_phone',
+        'manager_email',
         'is_active',
-        'manager_id'
+        'notes'
     ];
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
-    public function manager()
+    public function company()
     {
-        return $this->belongsTo(User::class, 'manager_id');
-    }
-
-    public function employees()
-    {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(Company::class);
     }
 }

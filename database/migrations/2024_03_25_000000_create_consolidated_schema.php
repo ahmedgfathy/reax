@@ -9,6 +9,20 @@ return new class extends Migration
 {
     public function up()
     {
+        // Create companies table first as it's referenced by others
+        Schema::create('companies', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->string('logo')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         // Base Tables (Level 1 - No Dependencies)
         $this->createCacheTable();
         $this->createUsersTable();
@@ -106,6 +120,7 @@ return new class extends Migration
     {
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('code')->unique()->nullable();
             $table->string('address')->nullable();
@@ -366,16 +381,23 @@ return new class extends Migration
 
     public function down()
     {
-        // Drop tables in reverse order
-        $tables = [
-            'sessions', 'report_schedules', 'reports', 'activity_logs',
-            'tasks', 'events', 'leads', 'property_media', 'properties',
-            'projects', 'branches', 'departments', 'teams', 'companies',
-            'users', 'cache_locks', 'cache'
-        ];
-
-        foreach ($tables as $table) {
-            Schema::dropIfExists($table);
-        }
+        // Drop tables in reverse order to avoid foreign key constraints
+        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('report_schedules');
+        Schema::dropIfExists('reports');
+        Schema::dropIfExists('activity_logs');
+        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('events');
+        Schema::dropIfExists('leads');
+        Schema::dropIfExists('property_media');
+        Schema::dropIfExists('properties');
+        Schema::dropIfExists('projects');
+        Schema::dropIfExists('branches');
+        Schema::dropIfExists('departments');
+        Schema::dropIfExists('teams');
+        Schema::dropIfExists('companies');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('cache_locks');
+        Schema::dropIfExists('cache');
     }
 };
