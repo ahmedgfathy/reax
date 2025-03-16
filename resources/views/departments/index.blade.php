@@ -7,7 +7,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Add Department Button -->
             <div class="mb-2 flex justify-end">
-                // ...similar button code as branches...
+            // ...similar button code as branches...
             </div>
 
             <!-- Search and Filters -->
