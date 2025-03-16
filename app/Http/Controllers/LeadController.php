@@ -6,6 +6,7 @@ use App\Models\Lead;
 use App\Models\User;
 use App\Models\Property;
 use App\Models\ActivityLog;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
@@ -16,7 +17,14 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Lead::with(['assignedUser', 'interestedProperty']);
+        $company = Company::first();
+        
+        if (!$company) {
+            return redirect()->route('companies.create')
+                ->with('error', 'Please create a company first');
+        }
+
+        $query = Lead::with(['assignedUser', 'interestedProperty'])->where('company_id', $company->id);
         
         // Search functionality
         if ($request->has('search') && $request->search != '') {
@@ -57,7 +65,7 @@ class LeadController extends Controller
         // Get unique sources for the filter dropdown
         $sources = Lead::distinct()->pluck('source')->filter()->values();
         
-        // Get all users for the transfer dropdown
+        // Get all active users, regardless of company for now
         $users = User::all();
         
         // Store the filters in session for export functionality
@@ -66,13 +74,13 @@ class LeadController extends Controller
 
         // Calculate stats
         $stats = [
-            'active' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])->count(),
-            'won' => Lead::where('status', 'won')->count(),
-            'pipeline_value' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])
+            'active' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])->where('company_id', $company->id)->count(),
+            'won' => Lead::where('status', 'won')->where('company_id', $company->id)->count(),
+            'pipeline_value' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])->where('company_id', $company->id)
                                ->sum('budget'),
         ];
         
-        return view('leads.index', compact('leads', 'sources', 'users', 'perPage', 'stats'));
+        return view('leads.index', compact('leads', 'sources', 'users', 'perPage', 'stats', 'company'));
     }
 
     /**

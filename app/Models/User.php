@@ -28,6 +28,7 @@ class User extends Authenticatable
         'avatar',
         'is_admin',
         'is_active',
+        'company_id',  // Add this line
     ];
 
     /**
