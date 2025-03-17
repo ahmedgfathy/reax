@@ -90,9 +90,9 @@
                         <!-- Search Input -->
                         <div>
                             <div class="relative">
-                                <input type="text" 
-                                    name="search" 
-                                    value="{{ request('search') }}" 
+                                <input type="text"
+                                    name="search"
+                                    value="{{ request('search') }}"
                                     class="w-full px-4 py-3 pl-12 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     placeholder="{{ __('Search leads...') }}">
                                 <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
@@ -101,7 +101,7 @@
 
                         <!-- Status Filter -->
                         <div class="relative">
-                            <select name="status" 
+                            <select name="status"
                                     class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
                                 <option value="">{{ __('All Status') }}</option>
                                 <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>{{ __('New') }}</option>
@@ -114,7 +114,7 @@
 
                         <!-- Source Filter -->
                         <div class="relative">
-                            <select name="source" 
+                            <select name="source"
                                     class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
                                 <option value="">{{ __('All Sources') }}</option>
                                 <option value="website" {{ request('source') == 'website' ? 'selected' : '' }}>{{ __('Website') }}</option>
@@ -127,7 +127,7 @@
 
                         <!-- Sort By Filter -->
                         <div class="relative">
-                            <select name="sort" 
+                            <select name="sort"
                                     class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
                                 <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>{{ __('Newest First') }}</option>
                                 <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>{{ __('Oldest First') }}</option>
@@ -154,19 +154,19 @@
                         </div>
                         <div class="flex space-x-2">
                             <!-- Import Button -->
-                            <button type="button" onclick="document.getElementById('import-modal').classList.remove('hidden')" 
+                            <button type="button" onclick="document.getElementById('import-modal').classList.remove('hidden')"
                                     class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center gap-2">
                                 <i class="fas fa-file-import"></i>
                                 {{ __('Import') }}
                             </button>
-                            
+
                             <!-- Export Button -->
-                            <button type="button" onclick="document.getElementById('export-modal').classList.remove('hidden')" 
+                            <button type="button" onclick="document.getElementById('export-modal').classList.remove('hidden')"
                                     class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center gap-2">
                                 <i class="fas fa-file-export"></i>
                                 {{ __('Export') }}
                             </button>
-                            
+
                             <!-- Add Lead Button -->
                             <a href="{{ route('leads.create') }}" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2">
                                 <i class="fas fa-plus"></i>
@@ -201,14 +201,14 @@
                         @if(session('warning'))
                             <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
                                 <p>{{ session('warning') }}</p>
-                                
+
                                 @if(session('import_errors'))
                                     <div class="mt-2">
-                                        <button type="button" class="text-yellow-800 underline" 
+                                        <button type="button" class="text-yellow-800 underline"
                                                 onclick="document.getElementById('import-errors').classList.toggle('hidden')">
                                             {{ __('Show/Hide Errors') }}
                                         </button>
-                                        
+
                                         <ul id="import-errors" class="list-disc list-inside mt-2 text-sm text-yellow-800 hidden">
                                             @foreach(session('import_errors') as $error)
                                                 <li>{{ $error }}</li>
@@ -283,7 +283,7 @@
                                                     </div>
                                                 </td>
                                                 <td class="py-3 px-4">
-                                                    <span class="px-2 py-1 text-xs rounded-full 
+                                                    <span class="px-2 py-1 text-xs rounded-full
                                                         {{ $lead->status == 'new' ? 'bg-blue-100 text-blue-700' : '' }}
                                                         {{ $lead->status == 'contacted' ? 'bg-indigo-100 text-indigo-700' : '' }}
                                                         {{ $lead->status == 'qualified' ? 'bg-purple-100 text-purple-700' : '' }}
@@ -485,7 +485,7 @@
                                 <span class="text-xs text-gray-500">{{ __('Comma separated') }}</span>
                                 <div class="w-full h-1 bg-blue-600 rounded-full mt-1"></div>
                             </label>
-                            
+
                             <label class="border rounded-md p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50">
                                 <input type="radio" name="format" value="xlsx" class="sr-only">
                                 <i class="fas fa-file-excel text-gray-700 text-2xl"></i>
@@ -493,7 +493,7 @@
                                 <span class="text-xs text-gray-500">{{ __('XLSX format') }}</span>
                                 <div class="w-full h-1 bg-blue-600 rounded-full mt-1"></div>
                             </label>
-                            
+
                             <label class="border rounded-md p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50">
                                 <input type="radio" name="format" value="pdf" class="sr-only">
                                 <i class="fas fa-file-pdf text-gray-700 text-2xl"></i>
@@ -503,7 +503,7 @@
                             </label>
                         </div>
                     </div>
-                    
+
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('What to export') }}</label>
                         <div class="mt-2 space-y-2">
@@ -522,7 +522,7 @@
                             <div class="flex items-center">
                                 <input type="radio" id="export_selected" name="export_scope" value="selected" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
                                 <label for="export_selected" class="ml-2 block text-sm text-gray-700">
-                                    {{ __('Only selected leads') }} 
+                                    {{ __('Only selected leads') }}
                                     <span id="selected-count-export" class="text-blue-600">(<span id="selected-count-number">0</span>)</span>
                                 </label>
                             </div>
@@ -555,25 +555,25 @@
                     });
                 }
 
-                // Checkbox handling
+                // Checkbox handling for bulk actions
                 const selectAll = document.getElementById('select-all');
                 const leadCheckboxes = document.querySelectorAll('.lead-checkbox');
                 const bulkActionsToolbar = document.getElementById('bulk-actions-toolbar');
                 const selectedCountElement = document.getElementById('selected-count');
-                
+
                 // Select all checkbox functionality
                 if (selectAll) {
                     selectAll.addEventListener('click', function() {
                         const isChecked = this.checked;
-                        
+
                         leadCheckboxes.forEach(checkbox => {
                             checkbox.checked = isChecked;
                         });
-                        
+
                         updateBulkActionToolbar();
                     });
                 }
-                
+
                 // Individual checkboxes
                 leadCheckboxes.forEach(checkbox => {
                     checkbox.addEventListener('click', function() {
@@ -581,38 +581,38 @@
                         updateBulkActionToolbar();
                     });
                 });
-                
+
                 // Function to update select all checkbox
                 function updateSelectAllCheckbox() {
                     if (leadCheckboxes.length > 0) {
                         const allChecked = Array.from(leadCheckboxes).every(cb => cb.checked);
                         const someChecked = Array.from(leadCheckboxes).some(cb => cb.checked);
-                        
+
                         selectAll.checked = allChecked;
                         selectAll.indeterminate = someChecked && !allChecked;
                     }
                 }
-                
+
                 // Function to update the bulk actions toolbar
                 function updateBulkActionToolbar() {
                     const checkedCount = document.querySelectorAll('.lead-checkbox:checked').length;
-                    
+
                     // Update counter
-                    selectedCountElement.textContent = checkedCount + ' ' + 
+                    selectedCountElement.textContent = checkedCount + ' ' +
                         (checkedCount === 1 ? '{{ __("selected") }}' : '{{ __("selected") }}');
-                    
+
                     // Show/hide toolbar
                     if (checkedCount > 0) {
                         bulkActionsToolbar.classList.remove('hidden');
                     } else {
                         bulkActionsToolbar.classList.add('hidden');
                     }
-                    
+
                     // Also update the count in the export modal
                     if (document.getElementById('selected-count-number')) {
                         document.getElementById('selected-count-number').textContent = checkedCount;
                     }
-                    
+
                     // Update hidden field with selected IDs for export
                     if (document.getElementById('selected_leads_export')) {
                         const selectedIds = Array.from(document.querySelectorAll('.lead-checkbox:checked'))
@@ -620,24 +620,24 @@
                         document.getElementById('selected_leads_export').value = selectedIds;
                     }
                 }
-                
+
                 // Make functions accessible globally
                 window.deselectAll = function() {
                     selectAll.checked = false;
                     selectAll.indeterminate = false;
-                    
+
                     leadCheckboxes.forEach(checkbox => {
                         checkbox.checked = false;
                     });
-                    
+
                     updateBulkActionToolbar();
                 };
-                
+
                 // Confirm delete function - Make sure this is being called correctly
                 window.confirmDelete = function() {
                     const checkboxes = document.querySelectorAll('.lead-checkbox:checked');
                     const count = checkboxes.length;
-                    
+
                     if (count === 0) {
                         // Use a nicer alert for the warning
                         Swal.fire({
@@ -649,7 +649,7 @@
                         });
                         return;
                     }
-                    
+
                     // Use our sweet alert confirmation
                     window.confirmBulkDelete(count, {
                         text: '{{ __("Are you sure you want to delete") }} ' + count + ' {{ __("selected leads? This action cannot be undone.") }}'
@@ -660,21 +660,21 @@
                             form.method = 'POST';
                             form.action = '{{ route("leads.bulk-action") }}';
                             form.style.display = 'none';
-                            
+
                             // Add CSRF token
                             const csrfToken = document.createElement('input');
                             csrfToken.type = 'hidden';
                             csrfToken.name = '_token';
                             csrfToken.value = '{{ csrf_token() }}';
                             form.appendChild(csrfToken);
-                            
+
                             // Add action type
                             const actionInput = document.createElement('input');
                             actionInput.type = 'hidden';
                             actionInput.name = 'action';
                             actionInput.value = 'delete';
                             form.appendChild(actionInput);
-                            
+
                             // Add each selected lead ID
                             checkboxes.forEach(function(checkbox) {
                                 const input = document.createElement('input');
@@ -683,7 +683,7 @@
                                 input.value = checkbox.value;
                                 form.appendChild(input);
                             });
-                            
+
                             // Show loading state
                             Swal.fire({
                                 title: '{{ __("Deleting...") }}',
@@ -693,18 +693,18 @@
                                     Swal.showLoading();
                                 }
                             });
-                            
+
                             // Append form to document and submit
                             document.body.appendChild(form);
                             form.submit();
                         }
                     });
                 };
-                
+
                 // Transfer leads functions
                 window.showTransferModal = function() {
                     const count = document.querySelectorAll('.lead-checkbox:checked').length;
-                    
+
                     if (count === 0) {
                         Swal.fire({
                             title: '{{ __("No Leads Selected") }}',
@@ -715,15 +715,15 @@
                         });
                         return;
                     }
-                    
+
                     document.getElementById('transfer-modal').classList.remove('hidden');
                 };
-                
+
                 window.transferLeads = function() {
                     const checkboxes = document.querySelectorAll('.lead-checkbox:checked');
                     const count = checkboxes.length;
                     const userId = document.getElementById('transfer-to-user').value;
-                    
+
                     if (count === 0) {
                         Swal.fire({
                             title: '{{ __("No Leads Selected") }}',
@@ -734,7 +734,7 @@
                         });
                         return;
                     }
-                    
+
                     if (!userId) {
                         Swal.fire({
                             title: '{{ __("No User Selected") }}',
@@ -745,11 +745,11 @@
                         });
                         return;
                     }
-                    
+
                     // Get user name from the select element
                     const userSelect = document.getElementById('transfer-to-user');
                     const userName = userSelect.options[userSelect.selectedIndex].text;
-                    
+
                     // Confirm transfer
                     window.confirmDialog({
                         title: '{{ __("Confirm Transfer") }}',
@@ -764,28 +764,28 @@
                             form.method = 'POST';
                             form.action = '{{ route("leads.bulk-action") }}';
                             form.style.display = 'none';
-                            
+
                             // Add CSRF token
                             const csrfToken = document.createElement('input');
                             csrfToken.type = 'hidden';
                             csrfToken.name = '_token';
                             csrfToken.value = '{{ csrf_token() }}';
                             form.appendChild(csrfToken);
-                            
+
                             // Add action type
                             const actionInput = document.createElement('input');
                             actionInput.type = 'hidden';
                             actionInput.name = 'action';
                             actionInput.value = 'transfer';
                             form.appendChild(actionInput);
-                            
+
                             // Add user ID to transfer to
                             const userInput = document.createElement('input');
                             userInput.type = 'hidden';
                             userInput.name = 'assigned_to';
                             userInput.value = userId;
                             form.appendChild(userInput);
-                            
+
                             // Add each selected lead ID
                             checkboxes.forEach(function(checkbox) {
                                 const input = document.createElement('input');
@@ -794,7 +794,7 @@
                                 input.value = checkbox.value;
                                 form.appendChild(input);
                             });
-                            
+
                             // Show loading state
                             Swal.fire({
                                 title: '{{ __("Transferring...") }}',
@@ -804,7 +804,7 @@
                                     Swal.showLoading();
                                 }
                             });
-                            
+
                             // Append form to document and submit
                             document.body.appendChild(form);
                             form.submit();
@@ -814,7 +814,7 @@
                         }
                     });
                 };
-                
+
                 // Initialize on page load
                 updateSelectAllCheckbox();
                 updateBulkActionToolbar();
@@ -829,9 +829,9 @@
                 document.querySelectorAll('form[action^="{{ route("leads.destroy", "") }}"]').forEach(form => {
                     form.addEventListener('submit', function(event) {
                         event.preventDefault();
-                        
+
                         const leadName = this.closest('tr').querySelector('a[href^="{{ route("leads.show", "") }}"]').textContent.trim();
-                        
+
                         window.confirmDelete({
                             title: '{{ __("Delete Lead") }}',
                             text: `{{ __("Are you sure you want to delete") }} ${leadName}? {{ __("This action cannot be undone.") }}`,
@@ -846,7 +846,7 @@
                                         Swal.showLoading();
                                     }
                                 });
-                                
+
                                 this.submit();
                             }
                         });
