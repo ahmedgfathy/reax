@@ -12,12 +12,12 @@
     
     <!-- Twitter Card (Optional) -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Real Estate CRM - E-Gar">
-    <meta name="twitter:description" content="Discover the best real estate deals with our powerful CRM!">
+    <meta name="twitter:title" content="REAX Real Estate CRM - E-Gar">
+    <meta name="twitter:description" content="REAX CRM Discover the best real estate deals with our powerful CRM!">
     <meta name="twitter:image" content="https://real.e-egar.com/images/og-image.jpg">
 
     <!-- Standard meta -->
-    <meta name="description" content="Discover the best real estate deals with our powerful CRM!">
+    <meta name="description" content="REAX CRM Discover the best real estate deals with our powerful CRM!">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

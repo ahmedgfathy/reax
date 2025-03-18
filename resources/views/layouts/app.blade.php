@@ -2,17 +2,17 @@
 <html lang="{{ app()->getLocale() }}">
 <head>
 <meta property="og:title" content="Real Estate CRM - E-Gar" />
-    <meta property="og:description" content="Discover the best real estate deals with our powerful CRM!" />
+    <meta property="og:description" content="REAX Discover the best real estate deals with our powerful CRM!" />
     <meta property="og:image" content="https://real.e-egar.com/images/og-image.webp" />
     <meta property="og:url" content="https://real.e-egar.com" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="E-Gar Real Estate" />
+    <meta property="og:site_name" content="REAX E-Gar Real Estate" />
     <meta property="og:locale" content="en_US" />
     
     <!-- Twitter Card (Optional) -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Real Estate CRM - E-Gar">
-    <meta name="twitter:description" content="Discover the best real estate deals with our powerful CRM!">
+    <meta name="twitter:title" content="REAX Real Estate CRM from E-Gar">
+    <meta name="twitter:description" content="REAX Discover the best real estate deals with our powerful CRM!">
     <meta name="twitter:image" content="https://real.e-egar.com/images/og-image.jpg">
 
     <!-- Standard meta -->
