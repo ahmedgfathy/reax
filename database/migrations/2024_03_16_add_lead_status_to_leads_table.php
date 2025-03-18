@@ -8,19 +8,11 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::table('leads', function (Blueprint $table) {
-            $table->string('lead_status')->nullable()->after('status');
-            $table->string('lead_source')->nullable()->after('source');
-            $table->string('type_of_request')->nullable();
-        });
+        // This migration is no longer needed and can be removed
     }
 
     public function down()
     {
-        Schema::table('leads', function (Blueprint $table) {
-            $table->dropColumn('lead_status');
-            $table->dropColumn('lead_source');
-            $table->dropColumn('type_of_request');
-        });
+        // This migration is no longer needed and can be removed
     }
 };

@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
         $company = Company::first();
 
         // Create admin user if doesn't exist
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin User',
@@ -29,16 +29,18 @@ class UserSeeder extends Seeder
             $positions = ['Sales Agent', 'Property Manager', 'Sales Manager', 'Customer Service'];
             
             foreach (range(1, 5) as $i) {
-                User::create([
-                    'name' => fake()->name(),
-                    'email' => fake()->unique()->safeEmail(),
-                    'password' => Hash::make('password'),
-                    'phone' => fake()->phoneNumber(),
-                    'mobile' => fake()->phoneNumber(),
-                    'position' => fake()->randomElement($positions),
-                    'address' => fake()->address(),
-                    'is_active' => true
-                ]);
+                User::updateOrCreate(
+                    ['email' => fake()->unique()->safeEmail()],
+                    [
+                        'name' => fake()->name(),
+                        'password' => Hash::make('password'),
+                        'phone' => fake()->phoneNumber(),
+                        'mobile' => fake()->phoneNumber(),
+                        'position' => fake()->randomElement($positions),
+                        'address' => fake()->address(),
+                        'is_active' => true
+                    ]
+                );
             }
         }
     }

@@ -25,10 +25,12 @@
                 <div class="mb-4">
                     <label for="email" class="block text-gray-700">{{ __('Email') }}</label>
                     <input type="email" id="email" name="email" value="{{ old('email') }}" class="w-full p-2 border rounded-md" required autofocus>
+                    <label>username it's : admin@example.com</label>
                 </div>
                 <div class="mb-4">
                     <label for="password" class="block text-gray-700">{{ __('Password') }}</label>
                     <input type="password" id="password" name="password" class="w-full p-2 border rounded-md" required>
+                    <label>password it's : password</label>
                 </div>
                 <div class="mb-4 flex items-center justify-between">
                     <div>

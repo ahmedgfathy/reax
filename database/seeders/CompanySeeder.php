@@ -2,21 +2,30 @@
 
 namespace Database\Seeders;
 
-use App\Models\Company;
 use Illuminate\Database\Seeder;
+use App\Models\Company;
 
 class CompanySeeder extends Seeder
 {
     public function run()
     {
-        Company::firstOrCreate(
-            ['slug' => 'default-company'],
+        $companies = [
             [
-                'name' => 'Default Company',
-                'email' => 'info@defaultcompany.com',
-                'phone' => '1234567890',
+                'name' => 'Huel PLC',
+                'slug' => 'huel-plc',
+                'email' => 'ucummings@yost.net',
+                'phone' => '567-795-0916',
+                'address' => '3802 Murray Drive Penelopefurt, KS 48189-9851',
                 'is_active' => true,
-            ]
-        );
+            ],
+            // ...other companies...
+        ];
+
+        foreach ($companies as $company) {
+            Company::updateOrCreate(
+                ['slug' => $company['slug']],
+                $company
+            );
+        }
     }
 }
