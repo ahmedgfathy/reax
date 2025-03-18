@@ -104,7 +104,9 @@ Route::middleware(['auth'])->group(function () {
 // Route::post('/locale', function () { ... });
 
 // Fix the language switch route
-Route::post('/locale/switch', [LocaleController::class, 'switchLocale'])->name('locale.switch');
+Route::post('/locale/switch', [LocaleController::class, 'switchLocale'])
+    ->name('locale.switch')
+    ->middleware('web');
 
 Route::get('/locale-debug', function () {
     return [

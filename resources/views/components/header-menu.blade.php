@@ -120,18 +120,39 @@
             <!-- Right Side Items -->
             <div class="flex items-center ml-auto space-x-2">
                 <!-- Language Switcher - Smaller size -->
-                <form method="POST" action="{{ route('locale.switch') }}" class="hidden md:inline-flex items-center">
+                <form method="POST" 
+                      action="{{ route('locale.switch') }}" 
+                      class="hidden md:inline-flex items-center"
+                      id="langSwitcher">
                     @csrf
-                    <select name="locale" onchange="this.form.submit()" class="text-sm bg-blue-800/30 border border-blue-600 rounded px-1 py-0.5 text-white">
+                    <select name="locale" 
+                            onchange="submitLanguageForm(this)" 
+                            class="text-sm bg-blue-800/30 border border-blue-600 rounded px-1 py-0.5 text-white">
                         <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>English</option>
                         <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>العربية</option>
                     </select>
-                    <noscript>
-                        <button type="submit" class="mt-2 w-full bg-blue-600 text-white rounded-md px-2 py-1 text-xs">
-                            {{ __('Change Language') }}
-                        </button>
-                    </noscript>
                 </form>
+
+                <script>
+                function submitLanguageForm(select) {
+                    const form = document.getElementById('langSwitcher');
+                    const formData = new FormData(form);
+
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.locale) {
+                            window.location.reload();
+                        }
+                    });
+                }
+                </script>
 
                 <!-- User Menu - Smaller size -->
                 <div class="relative" x-data="{ isOpen: false }">
