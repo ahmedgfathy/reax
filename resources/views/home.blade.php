@@ -116,6 +116,40 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
+
+        /* Updated pulsating login button animation */
+        @keyframes pulsate {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            }
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
+        }
+        
+        .login-button {
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white !important;
+            transition: all 0.3s ease;
+            animation: pulsate 2s infinite;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2), 0 2px 4px -1px rgba(59, 130, 246, 0.1);
+        }
+        
+        .login-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 8px 12px -1px rgba(59, 130, 246, 0.3), 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+        }
     </style>
 </head>
 <body class="antialiased bg-gray-100">
@@ -170,7 +204,7 @@
                     </div>
                 @else
                     <div class="flex space-x-4 items-center">
-                        <a href="{{ route('login') }}" class="text-white hover:text-gray-200">{{ __('Login') }}</a>
+                        <a href="{{ route('login') }}" class="login-button">{{ __('Login') }}</a>
                         <a href="{{ route('register') }}" class="bg-white text-blue-600 hover:bg-gray-100 px-4 py-2 rounded-md font-medium transition-colors">{{ __('Register') }}</a>
                     </div>
                 @endauth
@@ -223,7 +257,7 @@
                             
                             <!-- Login/Register -->
                             <div class="flex space-x-4">
-                                <a href="{{ route('login') }}" class="text-gray-800 hover:text-blue-600">{{ __('Login') }}</a>
+                                <a href="{{ route('login') }}" class="login-button">{{ __('Login') }}</a>
                                 <a href="{{ route('register') }}" class="bg-blue-600 text-white px-3 py-1 rounded-md">{{ __('Register') }}</a>
                             </div>
                         </div>

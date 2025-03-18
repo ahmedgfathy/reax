@@ -10,6 +10,16 @@
 <body class="bg-gray-100 {{ app()->getLocale() == 'ar' ? 'rtl' : '' }} font-{{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}">
     <div class="min-h-screen flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <div class="flex justify-center mb-6">
+                <div class="text-center mx-2">
+                    <img src="https://img.icons8.com/color/48/000000/android-os.png" alt="Android" class="w-8 h-8 mx-auto">
+                    <p class="text-xs text-gray-700 mt-1">{{ __('Install on Android') }}</p>
+                </div>
+                <div class="text-center mx-2">
+                    <img src="https://img.icons8.com/color/48/000000/windows-10.png" alt="Windows" class="w-8 h-8 mx-auto">
+                    <p class="text-xs text-gray-700 mt-1">{{ __('Install on Windows') }}</p>
+                </div>
+            </div>
             <h2 class="text-2xl font-bold mb-6 text-center">{{ __('Login') }}</h2>
             
             @if ($errors->any())
@@ -42,6 +52,7 @@
                 <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">{{ __('Login') }}</button>
             </form>
             <p class="mt-4 text-center text-gray-700">{{ __("Don't have an account?") }} <a href="{{ route('register') }}" class="text-blue-600 hover:underline">{{ __('Register') }}</a></p>
+            <p class="mt-2 text-center text-gray-700">{{ __("Or") }} <a href="{{ url('/') }}" class="text-blue-600 hover:underline">{{ __('Go to Home') }}</a></p>
         </div>
     </div>
 </body>
