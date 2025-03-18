@@ -117,19 +117,19 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
-        /* Updated pulsating login button animation */
+        /* Updated pulsating login button animation with white circular shadow */
         @keyframes pulsate {
             0% {
                 transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
             }
             70% {
                 transform: scale(1.1);
-                box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+                box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
             }
             100% {
                 transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
             }
         }
         
@@ -142,13 +142,13 @@
             color: white !important;
             transition: all 0.3s ease;
             animation: pulsate 2s infinite;
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2), 0 2px 4px -1px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.2), 0 2px 4px -1px rgba(255, 255, 255, 0.1);
         }
         
         .login-button:hover {
             transform: translateY(-2px) scale(1.05);
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            box-shadow: 0 8px 12px -1px rgba(59, 130, 246, 0.3), 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 8px 12px -1px rgba(255, 255, 255, 0.3), 0 4px 6px -1px rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
