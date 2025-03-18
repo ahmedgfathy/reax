@@ -3,7 +3,7 @@
 <head>
 <meta property="og:title" content="Real Estate CRM - E-Gar" />
     <meta property="og:description" content="REAX Discover the best real estate deals with our powerful CRM!" />
-    <meta property="og:image" content="https://real.e-egar.com/images/og-image.webp" />
+    <meta property="og:image" content="https://real.e-egar.com/images/og-image.jpg" />
     <meta property="og:url" content="https://real.e-egar.com" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="REAX E-Gar Real Estate" />
