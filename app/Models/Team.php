@@ -15,7 +15,18 @@ class Team extends Model
         'name',
         'code',
         'leader_id',
-        'department_id'
+        'department_id',
+        'can_share_externally',
+        'shared_companies',
+        'visibility_settings',
+        'public_listing_allowed'
+    ];
+
+    protected $casts = [
+        'can_share_externally' => 'boolean',
+        'shared_companies' => 'array',
+        'visibility_settings' => 'array',
+        'public_listing_allowed' => 'boolean'
     ];
 
     public function company()
@@ -36,5 +47,20 @@ class Team extends Model
     public function members()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function sharedProperties()
+    {
+        return $this->hasMany(Property::class)->where('is_shared', true);
+    }
+
+    public function sharedWithCompanies()
+    {
+        return $this->belongsToMany(Company::class, 'team_company_shares');
+    }
+
+    public function publicListings()
+    {
+        return $this->hasMany(Property::class)->where('is_public', true);
     }
 }

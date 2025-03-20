@@ -2,7 +2,6 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <div>
-                <h2 class="text-xl font-semibold text-gray-800">{{ __('Management') }}</h2>
                 <!-- Breadcrumbs -->
                 <div class="flex items-center text-sm text-gray-500 mt-1">
                     <a href="{{ route('dashboard') }}" class="hover:text-gray-700">
@@ -30,7 +29,9 @@
                         <h3 class="text-lg font-medium text-blue-100">{{ __('Total Teams') }}</h3>
                         <p class="text-sm text-blue-300">{{ __('Active teams') }}</p>
                         <div class="mt-3">
-                            <span class="text-2xl font-bold text-white">12</span>
+                            <span class="text-2xl font-bold text-white">
+                                {{ Auth::user()->company->teams()->count() }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -50,7 +51,9 @@
                         <h3 class="text-lg font-medium text-blue-100">{{ __('Departments') }}</h3>
                         <p class="text-sm text-blue-300">{{ __('Active departments') }}</p>
                         <div class="mt-3">
-                            <span class="text-2xl font-bold text-white">8</span>
+                            <span class="text-2xl font-bold text-white">
+                                {{ App\Models\Department::where('company_id', Auth::user()->company_id)->count() }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -70,7 +73,9 @@
                         <h3 class="text-lg font-medium text-blue-100">{{ __('Branch Offices') }}</h3>
                         <p class="text-sm text-blue-300">{{ __('Active locations') }}</p>
                         <div class="mt-3">
-                            <span class="text-2xl font-bold text-white">5</span>
+                            <span class="text-2xl font-bold text-white">
+                                {{ App\Models\Branch::where('company_id', Auth::user()->company_id)->count() }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -90,7 +95,9 @@
                         <h3 class="text-lg font-medium text-blue-100">{{ __('Total Staff') }}</h3>
                         <p class="text-sm text-blue-300">{{ __('Active employees') }}</p>
                         <div class="mt-3">
-                            <span class="text-2xl font-bold text-white">42</span>
+                            <span class="text-2xl font-bold text-white">
+                                {{ App\Models\User::where('company_id', Auth::user()->company_id)->count() }}
+                            </span>
                         </div>
                     </div>
                 </div>

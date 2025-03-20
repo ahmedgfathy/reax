@@ -28,7 +28,9 @@ class User extends Authenticatable
         'avatar',
         'is_admin',
         'is_active',
-        'company_id',  // Add this line
+        'company_id',
+        'team_id',
+        'role_id'
     ];
 
     /**
@@ -121,5 +123,25 @@ class User extends Authenticatable
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    public function hasPermission($permission)
+    {
+        return $this->role->permissions->contains('name', $permission);
+    }
+
+    public function isCompanyOwner()
+    {
+        return $this->company && $this->company->owner_id === $this->id;
     }
 }

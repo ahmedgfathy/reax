@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Branch;
 use App\Models\Company;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 
 class BranchController extends Controller
@@ -53,20 +54,35 @@ class BranchController extends Controller
             'notes' => 'nullable|string'
         ]);
 
-        // Get the first company (or handle company selection based on your needs)
-        $company = Company::first();
-        
-        if (!$company) {
-            return redirect()->route('companies.create')
-                ->with('error', 'Please create a company first');
+        $user = auth()->user();
+        $company = $user->company;
+
+        // Check if user is company admin/CEO
+        if (!$user->is_company_admin && !$user->isCompanyOwner()) {
+            return redirect()->route('branches.index')
+                ->with('error', 'You do not have permission to create branches');
         }
 
         $validated['company_id'] = $company->id;
+        $branch = Branch::create($validated);
 
-        Branch::create($validated);
+        // Log activity with required fields
+        ActivityLog::create([
+            'company_id' => $company->id,
+            'user_id' => $user->id,
+            'event_type' => 'branch_created',
+            'action_type' => 'create', // Add required field
+            'module_name' => 'branches', // Add required field
+            'description' => "Created new branch: {$branch->name}",
+            'loggable_type' => Branch::class,
+            'loggable_id' => $branch->id,
+            'ip_address' => request()->ip(),
+            'old_values' => null,
+            'new_values' => $validated
+        ]);
 
         return redirect()->route('branches.index')
-            ->with('success', 'Branch created successfully');
+            ->with('success', __('Branch created successfully'));
     }
 
     public function show(Branch $branch)

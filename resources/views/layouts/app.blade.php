@@ -66,7 +66,9 @@
             <div class="container mx-auto py-4 px-6">
                 <div class="flex justify-between items-center">
                     <h1 class="text-2xl font-bold text-gray-800">{{ $header ?? __('Dashboard') }}</h1>
-                    <div class="text-gray-600">{{ __('Welcome back, System Admin!') }}</div>
+                    <div class="text-gray-600">
+                        {{ Auth::user()->name }} - {{ Auth::user()->role->name }} {{ __('at') }} {{ Auth::user()->company->name }}
+                    </div>
                 </div>
             </div>
         </div>

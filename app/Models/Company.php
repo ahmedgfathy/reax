@@ -17,7 +17,8 @@ class Company extends Model
         'phone',
         'address',
         'logo',
-        'is_active'
+        'is_active',
+        'owner_id'  // Add company owner/CEO
     ];
 
     protected $casts = [
@@ -27,5 +28,25 @@ class Company extends Model
     public function contacts()
     {
         return $this->hasMany(Contact::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function administrators()
+    {
+        return $this->hasMany(User::class)->where('is_company_admin', true);
+    }
+
+    public function teams()
+    {
+        return $this->hasMany(Team::class);
+    }
+
+    public function roles()
+    {
+        return $this->hasMany(Role::class);
     }
 }

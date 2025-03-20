@@ -68,75 +68,91 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     {{ __('Branch Name') }}
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     {{ __('Code') }}
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     {{ __('Location') }}
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    {{ __('Contact') }}
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     {{ __('Manager') }}
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     {{ __('Status') }}
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     {{ __('Actions') }}
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($branches as $branch)
-                                <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('branches.show', $branch) }}'">
+                                <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">
-                                            <a href="{{ route('branches.show', $branch) }}" class="hover:text-blue-600">
-                                                {{ $branch->name }}
-                                            </a>
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-blue-100">
+                                                <i class="fas fa-building text-blue-600"></i>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">{{ $branch->name }}</div>
+                                                <div class="text-sm text-gray-500">{{ $branch->created_at->format('M d, Y') }}</div>
+                                            </div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-500">
-                                            {{ $branch->code }}
-                                        </div>
+                                        <div class="text-sm text-gray-900">{{ $branch->code }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">
-                                            {{ $branch->city }}, {{ $branch->country }}
-                                        </div>
+                                        <div class="text-sm text-gray-900">{{ $branch->city }}</div>
+                                        <div class="text-sm text-gray-500">{{ $branch->country }}</div>
+                                        <div class="text-xs text-gray-400">{{ $branch->address }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">
-                                            {{ $branch->manager_name }}
-                                        </div>
+                                        <div class="text-sm text-gray-900">{{ $branch->phone }}</div>
+                                        <div class="text-sm text-gray-500">{{ $branch->email }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($branch->manager_name)
+                                            <div class="text-sm text-gray-900">{{ $branch->manager_name }}</div>
+                                            <div class="text-sm text-gray-500">{{ $branch->manager_phone }}</div>
+                                            <div class="text-xs text-gray-400">{{ $branch->manager_email }}</div>
+                                        @else
+                                            <span class="text-sm text-gray-500">{{ __('No manager assigned') }}</span>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $branch->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                             {{ $branch->is_active ? __('Active') : __('Inactive') }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium" onclick="event.stopPropagation()">
-                                        <a href="{{ route('branches.show', $branch) }}" class="text-blue-600 hover:text-blue-900 mr-3">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('branches.edit', $branch) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('branches.destroy', $branch) }}" method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('Are you sure you want to delete this branch?') }}')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex items-center space-x-3">
+                                            <a href="{{ route('branches.show', $branch) }}" class="text-blue-600 hover:text-blue-900">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ route('branches.edit', $branch) }}" class="text-yellow-600 hover:text-yellow-900">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('branches.destroy', $branch) }}" method="POST" class="inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900" 
+                                                        onclick="return confirm('{{ __('Are you sure you want to delete this branch?') }}')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                    <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                         {{ __('No branches found.') }}
                                     </td>
                                 </tr>
@@ -144,9 +160,11 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="px-6 py-4 border-t border-gray-200">
-                    {{ $branches->links() }}
-                </div>
+                @if($branches->hasPages())
+                    <div class="px-6 py-4 border-t border-gray-200">
+                        {{ $branches->links() }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>

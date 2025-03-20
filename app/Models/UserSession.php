@@ -21,6 +21,12 @@ class UserSession extends Model
         'payload',
         'last_activity',
         'logged_out_at',
+        'device_name',
+        'location',
+        'latitude',
+        'longitude',
+        'login_time',
+        'session_duration'
     ];
 
     /**
@@ -32,6 +38,9 @@ class UserSession extends Model
         'payload' => 'array',
         'last_activity' => 'datetime',
         'logged_out_at' => 'datetime',
+        'location' => 'array',
+        'login_time' => 'datetime',
+        'session_duration' => 'integer'
     ];
 
     /**
@@ -50,5 +59,22 @@ class UserSession extends Model
     public function isActive(): bool
     {
         return is_null($this->logged_out_at);
+    }
+
+    /**
+     * Get location details of the session.
+     *
+     * @return array
+     */
+    public function getLocationDetails()
+    {
+        return [
+            'ip' => $this->ip_address,
+            'location' => $this->location,
+            'coordinates' => [
+                'lat' => $this->latitude,
+                'lng' => $this->longitude
+            ]
+        ];
     }
 }

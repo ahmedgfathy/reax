@@ -85,7 +85,8 @@
                             <span>{{ __('Reports') }}</span>
                         </div>
                     </a>
-                    <!-- Management - Update href to point to management route -->
+
+                    <!-- Management - Available to all authenticated users -->
                     <a href="{{ route('management.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('management.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
                         <div class="flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -94,6 +95,9 @@
                             <span>{{ __('Management') }}</span>
                         </div>
                     </a>
+
+                    <!-- Only show Administration and Systems tabs for super admin -->
+                    @if(Auth::user()->is_admin)
                     <!-- Administration -->
                     <a href="{{ route('administration.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('administration.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
                         <div class="flex items-center">
@@ -114,6 +118,7 @@
                             <span>{{ __('Systems') }}</span>
                         </div>
                     </a>
+                    @endif
                 </div>
             </div>
 
@@ -160,7 +165,6 @@
                         <div class="h-7 w-7 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
                             {{ substr(Auth::user()->name, 0, 1) }}
                         </div>
-                        <span class="font-medium">{{ Auth::user()->name }}</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-200" :class="{'rotate-180': isOpen}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
@@ -277,7 +281,7 @@
                                 </div>
                             </a>
                             
-                            <!-- Mobile Reports Module - Update with the correct route -->
+                            <!-- Mobile Reports Module -->
                             <a href="{{ route('reports.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('reports.*') ? 'bg-blue-800 text-white' : '' }}">
                                 <div class="flex items-center space-x-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -286,7 +290,19 @@
                                     <span>{{ __('Reports') }}</span>
                                 </div>
                             </a>
+
+                            <!-- Mobile Management Module - Available to all authenticated users -->
+                            <a href="{{ route('management.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('management.*') ? 'bg-blue-800 text-white' : '' }}">
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                    </svg>
+                                    <span>{{ __('Management') }}</span>
+                                </div>
+                            </a>
                             
+                            <!-- Only show Administration and Systems in mobile menu for super admin -->
+                            @if(Auth::user()->is_admin)
                             <!-- Mobile Administration Module -->
                             <a href="{{ route('administration.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('administration.*') ? 'bg-blue-800 text-white' : '' }}">
                                 <div class="flex items-center space-x-2">
@@ -307,6 +323,7 @@
                                     <span>{{ __('Systems') }}</span>
                                 </div>
                             </a>
+                            @endif
 
                             <!-- Mobile Documentation Link - Keep text for mobile -->
                             <a href="{{ url('/documentation.html') }}" target="_blank" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->is('documentation*') ? 'bg-blue-800 text-white' : '' }}" title="{{ __('Documentation') }}">

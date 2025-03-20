@@ -8,19 +8,13 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::dropIfExists('branches'); // Drop first to avoid conflicts
-        
-        Schema::create('branches', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('company_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('code')->unique();
-            $table->string('address');
-            $table->string('city');
-            $table->string('state')->nullable();
-            $table->string('country');
-            $table->string('phone');
-            $table->string('email')->nullable();
+            $table->text('description')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('manager_name')->nullable();
             $table->string('manager_phone')->nullable();
             $table->string('manager_email')->nullable();
@@ -28,11 +22,16 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('parent_id')
+                  ->references('id')
+                  ->on('departments')
+                  ->onDelete('set null');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('branches');
+        Schema::dropIfExists('departments');
     }
 };

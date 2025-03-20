@@ -12,6 +12,7 @@ class Opportunity extends Model
 
     protected $fillable = [
         'title',
+        'company_id',
         'lead_id',
         'property_id',
         'assigned_to',
@@ -60,5 +61,11 @@ class Opportunity extends Model
     public function activities()
     {
         return $this->morphMany(ActivityLog::class, 'loggable');
+    }
+
+    // Add company relationship
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }
