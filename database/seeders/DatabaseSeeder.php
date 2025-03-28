@@ -12,11 +12,21 @@ class DatabaseSeeder extends Seeder
         DB::beginTransaction();
         
         try {
-            // Run CompanySeeder first and get the created company
-            $company = $this->call(CompanySeeder::class);
-            
-            // Pass company to UserSeeder
-            $this->call(UserSeeder::class, false, ['company' => $company]);
+            // Create base data first
+            $this->call([
+                CompanySeeder::class,
+                UserSeeder::class,
+            ]);
+
+            // Wait briefly to ensure primary data is committed
+            sleep(1);
+
+            // Create dependent data
+            $this->call([
+                PropertySeeder::class,
+                LeadSeeder::class,
+                OpportunitySeeder::class
+            ]);
             
             DB::commit();
         } catch (\Exception $e) {

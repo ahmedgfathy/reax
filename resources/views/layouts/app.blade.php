@@ -66,13 +66,43 @@
             <div class="container mx-auto py-4 px-6">
                 <div class="flex justify-between items-center">
                     <h1 class="text-2xl font-bold text-gray-800">{{ $header ?? __('Dashboard') }}</h1>
-                    <div class="text-gray-600">
-                        {{ Auth::user()->name }} - {{ Auth::user()->role->name }} {{ __('at') }} {{ Auth::user()->company->name }}
-                    </div>
+                    @auth
+                        <div class="text-gray-600">
+                            {{ Auth::user()->name ?? 'Guest' }} 
+                            @if(Auth::user()->role)
+                                - {{ Auth::user()->role->name }}
+                            @endif
+                            @if(Auth::user()->company)
+                                {{ __('at') }} {{ Auth::user()->company->name }}
+                            @endif
+                        </div>
+                    @else
+                        <div class="text-gray-600">
+                            {{ __('Welcome Guest') }}
+                        </div>
+                    @endauth
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- User Profile Section -->
+    @auth
+        <div class="relative">
+            <button type="button" class="flex items-center space-x-3">
+                <img src="{{ auth()->user()->avatar ?? asset('images/default-avatar.png') }}" 
+                     alt="{{ auth()->user()->name ?? 'User' }}" 
+                     class="h-8 w-8 rounded-full">
+                <span class="text-gray-700">{{ auth()->user()->name ?? 'Guest' }}</span>
+            </button>
+        </div>
+    @else
+        <div>
+            <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900">
+                {{ __('Login') }}
+            </a>
+        </div>
+    @endauth
 
     <!-- Main Content with Sidebar -->
     <div class="flex pt-36"> <!-- Increased padding top from 32 to 36 -->

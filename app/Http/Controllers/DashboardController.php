@@ -55,14 +55,13 @@ class DashboardController extends Controller
             ->pluck('count', 'status')
             ->toArray();
             
-        // Get lead distribution by source for chart
-        $lead_sources = Lead::whereNotNull('source')
-            ->selectRaw('source, count(*) as count')
-            ->groupBy('source')
-            ->get()
-            ->pluck('count', 'source')
-            ->toArray();
-        
+        // Update the leads by source query
+        $leadsBySource = Lead::query()
+            ->selectRaw('lead_source as source, count(*) as count') // Change source to lead_source
+            ->whereNotNull('lead_source')
+            ->groupBy('lead_source')
+            ->get();
+
         // Add "Unknown" or "Not specified" category for leads without source
         $not_specified_count = Lead::whereNull('source')->count();
         if ($not_specified_count > 0) {

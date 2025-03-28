@@ -1,18 +1,44 @@
-<div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-    <div class="relative">
-        <img src="{{ $property->getImageUrlAttribute() }}" alt="{{ $property->name }}" 
-             class="w-full h-56 object-cover">
-        <div class="absolute top-4 right-4">
-            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
-                {{ __('For Sale') }}
+<div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-300">
+    <!-- Top Section - Image and Primary Info -->
+    <div class="relative h-48">
+        <img src="{{ $property->media->where('is_featured', true)->first()?->file_path ?? 'https://source.unsplash.com/800x600/?property' }}" 
+             class="w-full h-full object-cover property-image"
+             onerror="this.src='https://source.unsplash.com/800x600/?property'"
+             alt="{{ $property->property_name }}"
+             loading="lazy">
+        
+        <!-- Status Tags -->
+        <div class="absolute top-4 left-4 flex gap-2">
+            <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                {{ $property->unit_for === 'sale' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">
+                {{ __(ucfirst($property->unit_for)) }}
+            </span>
+            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-{{ $property->getStatusColor() }}-100 text-{{ $property->getStatusColor() }}-800">
+                {{ __(ucfirst($property->status)) }}
             </span>
         </div>
+
+        <!-- Price -->
         <div class="absolute bottom-4 right-4">
-            <span class="bg-white/80 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-semibold">
-                {{ number_format($property->price) }} {{ $property->currency ?? 'USD' }}
+            <span class="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-bold text-gray-900">
+                {{ number_format($property->total_price) }} {{ $property->currency }}
             </span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="absolute top-4 right-4 flex space-x-2">
+            <a href="{{ route('properties.show', $property) }}" 
+               class="bg-blue-500/80 hover:bg-blue-600 text-white p-2 rounded-lg transition-all duration-200 backdrop-blur-sm">
+                <i class="fas fa-eye"></i>
+            </a>
+            <a href="{{ route('properties.edit', $property) }}" 
+               class="bg-yellow-500/80 hover:bg-yellow-600 text-white p-2 rounded-lg transition-all duration-200 backdrop-blur-sm">
+                <i class="fas fa-edit"></i>
+            </a>
         </div>
     </div>
+
+    <!-- Content Section -->
     <div class="p-6">
         <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $property->name }}</h3>
         <p class="text-gray-600 mb-4 flex items-center">

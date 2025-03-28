@@ -11,9 +11,11 @@ return new class extends Migration
         Schema::create('property_media', function (Blueprint $table) {
             $table->id();
             $table->foreignId('property_id')->constrained()->onDelete('cascade');
-            $table->string('type'); // image, video, document
+            $table->enum('type', ['image', 'video', 'document', '3d_tour']);
             $table->string('file_path');
             $table->string('thumbnail_path')->nullable();
+            $table->string('title')->nullable();
+            $table->text('description')->nullable();
             $table->boolean('is_featured')->default(false);
             $table->integer('sort_order')->default(0);
             $table->timestamps();

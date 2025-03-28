@@ -112,7 +112,9 @@ class User extends Authenticatable
     // Add relationships
     public function company()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class)->withDefault([
+            'name' => 'No Company'
+        ]);
     }
 
     public function branch()
@@ -127,7 +129,9 @@ class User extends Authenticatable
 
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class)->withDefault([
+            'name' => 'Guest'
+        ]);
     }
 
     public function team()

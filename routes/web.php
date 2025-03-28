@@ -197,11 +197,12 @@ Route::prefix('management')->group(function () {
 });
 
 // Employee Routes
-Route::resource('employees', App\Http\Controllers\EmployeeController::class);
+Route::middleware(['auth'])->group(function () {
+    Route::resource('employees', App\Http\Controllers\EmployeeController::class);
 
-// Property Routes  
-Route::resource('properties', \App\Http\Controllers\PropertyController::class)
-    ->middleware(['auth']);
+    // Property Routes  
+    Route::resource('properties', \App\Http\Controllers\PropertyController::class);
+});
 
 // Report Routes
 Route::prefix('reports')->group(function () {
