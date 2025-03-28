@@ -13,16 +13,32 @@ class UserSeeder extends Seeder
     {
         $company = Company::first();
 
-        // Create admin user if doesn't exist
-        User::updateOrCreate(
-            ['email' => 'admin@example.com'],
-            [
-                'name' => 'Admin User',
-                'password' => Hash::make('password'),
-                'is_admin' => true,
+        if (!$company) {
+            $company = Company::create([
+                'name' => 'Default Company',
+                'slug' => 'default-company',
+                'email' => 'company@example.com',
                 'is_active' => true
+            ]);
+        }
+
+        // Create admin user
+        $admin = User::updateOrCreate(
+            ['email' => 'admin@realestate.com'],
+            [
+                'name' => 'System Admin',
+                'password' => Hash::make('Admin@123'),
+                'is_admin' => true,
+                'is_company_admin' => true,
+                'is_active' => true,
+                'company_id' => $company->id,
+                'position' => 'System Administrator'
             ]
         );
+
+        // Set company owner
+        $company->owner_id = $admin->id;
+        $company->save();
 
         // Create some regular users if we have less than 5
         if (User::count() < 6) {
