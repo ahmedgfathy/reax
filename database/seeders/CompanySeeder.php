@@ -27,5 +27,14 @@ class CompanySeeder extends Seeder
                 $company
             );
         }
+
+        Company::updateOrCreate(
+            ['email' => 'company@example.com'],
+            [
+                'name' => 'Default Company',
+                'slug' => 'default-company',
+                'is_active' => true
+            ]
+        );
     }
 }

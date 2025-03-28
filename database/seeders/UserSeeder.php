@@ -11,15 +11,11 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        $company = Company::first();
-
+        $company = Company::where('email', 'company@example.com')->first();
+        
         if (!$company) {
-            $company = Company::create([
-                'name' => 'Default Company',
-                'slug' => 'default-company',
-                'email' => 'company@example.com',
-                'is_active' => true
-            ]);
+            $this->command->error('Company not found. Please run CompanySeeder first.');
+            return;
         }
 
         // Create admin user
@@ -36,28 +32,27 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // Set company owner
+        // Update company owner
         $company->owner_id = $admin->id;
         $company->save();
 
-        // Create some regular users if we have less than 5
-        if (User::count() < 6) {
-            $positions = ['Sales Agent', 'Property Manager', 'Sales Manager', 'Customer Service'];
-            
-            foreach (range(1, 5) as $i) {
-                User::updateOrCreate(
-                    ['email' => fake()->unique()->safeEmail()],
-                    [
-                        'name' => fake()->name(),
-                        'password' => Hash::make('password'),
-                        'phone' => fake()->phoneNumber(),
-                        'mobile' => fake()->phoneNumber(),
-                        'position' => fake()->randomElement($positions),
-                        'address' => fake()->address(),
-                        'is_active' => true
-                    ]
-                );
-            }
+        // Create regular users
+        $positions = ['Sales Agent', 'Property Manager', 'Sales Manager', 'Customer Service'];
+        
+        foreach (range(1, 5) as $i) {
+            User::updateOrCreate(
+                ['email' => "user{$i}@realestate.com"],
+                [
+                    'name' => "Test User {$i}",
+                    'password' => Hash::make('User@123'),
+                    'phone' => fake()->phoneNumber(),
+                    'mobile' => fake()->phoneNumber(),
+                    'position' => $positions[array_rand($positions)],
+                    'address' => fake()->address(),
+                    'is_active' => true,
+                    'company_id' => $company->id
+                ]
+            );
         }
     }
 }
