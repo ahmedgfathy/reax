@@ -9,32 +9,18 @@ class CompanySeeder extends Seeder
 {
     public function run()
     {
-        $companies = [
-            [
-                'name' => 'Huel PLC',
-                'slug' => 'huel-plc',
-                'email' => 'ucummings@yost.net',
-                'phone' => '567-795-0916',
-                'address' => '3802 Murray Drive Penelopefurt, KS 48189-9851',
-                'is_active' => true,
-            ],
-            // ...other companies...
-        ];
-
-        foreach ($companies as $company) {
-            Company::updateOrCreate(
-                ['slug' => $company['slug']],
-                $company
-            );
-        }
-
-        Company::updateOrCreate(
+        // Create default company first
+        $defaultCompany = Company::updateOrCreate(
             ['email' => 'company@example.com'],
             [
                 'name' => 'Default Company',
                 'slug' => 'default-company',
+                'phone' => '123-456-7890',
+                'address' => '123 Main Street',
                 'is_active' => true
             ]
         );
+
+        $this->command->info('Default company created successfully.');
     }
 }
