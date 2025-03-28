@@ -12,19 +12,25 @@ class UserSeeder extends Seeder
     public function run()
     {
         try {
-            $company = Company::where('email', 'company@example.com')->firstOrFail();
+            $company = Company::first();
             
+            if (!$company) {
+                throw new \Exception('Company not found. Please ensure CompanySeeder runs first.');
+            }
+
             // Create admin user with company_id
-            $admin = User::create([
-                'name' => 'System Admin',
-                'email' => 'admin@realestate.com',
-                'password' => Hash::make('Admin@123'),
-                'is_admin' => true,
-                'is_company_admin' => true,
-                'is_active' => true,
-                'company_id' => $company->id,
-                'position' => 'System Administrator'
-            ]);
+            $admin = User::firstOrCreate(
+                ['email' => 'admin@realestate.com'],
+                [
+                    'name' => 'System Admin',
+                    'password' => Hash::make('Admin@123'),
+                    'is_admin' => true,
+                    'is_company_admin' => true,
+                    'is_active' => true,
+                    'company_id' => $company->id,
+                    'position' => 'System Administrator'
+                ]
+            );
 
             // Update company owner
             $company->owner_id = $admin->id;

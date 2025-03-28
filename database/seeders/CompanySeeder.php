@@ -9,8 +9,7 @@ class CompanySeeder extends Seeder
 {
     public function run()
     {
-        // Create default company first
-        $defaultCompany = Company::updateOrCreate(
+        $company = Company::firstOrCreate(
             ['email' => 'company@example.com'],
             [
                 'name' => 'Default Company',
@@ -22,5 +21,7 @@ class CompanySeeder extends Seeder
         );
 
         $this->command->info('Default company created successfully.');
+        
+        return $company;
     }
 }
