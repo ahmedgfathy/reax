@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Property;
 use App\Models\ActivityLog;
 use App\Models\Company;
+use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
@@ -139,15 +140,16 @@ class LeadController extends Controller
      */
     public function show(Lead $lead)
     {
-        // Load relationships
-        $lead->load(['assignedUser', 'interestedProperty', 'events' => function($q) {
-            $q->orderBy('event_date', 'desc');
-        }, 'activityLogs.user']);
-        
-        // Get users for assigning events
-        $users = User::all();
-        
-        return view('leads.show', compact('lead', 'users'));
+        $events = Event::where('lead_id', $lead->id)
+            ->orderBy('start_date', 'desc')
+            ->get();
+
+        $activityLogs = $lead->activityLogs()
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('leads.show', compact('lead', 'events', 'activityLogs'));
     }
 
     /**

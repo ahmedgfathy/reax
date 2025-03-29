@@ -10,7 +10,7 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $company = Company::first();
+        $company = auth()->user()->company;
         
         if (!$company) {
             return redirect()->route('companies.create')
@@ -30,7 +30,7 @@ class DepartmentController extends Controller
 
     public function create()
     {
-        $departments = Department::all(); // For parent department selection
+        $departments = Department::where('company_id', auth()->user()->company_id)->get();
         return view('departments.create', compact('departments'));
     }
 
@@ -48,13 +48,7 @@ class DepartmentController extends Controller
             'notes' => 'nullable|string'
         ]);
 
-        $company = Company::first();
-        if (!$company) {
-            return redirect()->route('companies.create')
-                ->with('error', 'Please create a company first');
-        }
-
-        $validated['company_id'] = $company->id;
+        $validated['company_id'] = auth()->user()->company_id;
         Department::create($validated);
 
         return redirect()->route('departments.index')
@@ -68,7 +62,9 @@ class DepartmentController extends Controller
 
     public function edit(Department $department)
     {
-        $departments = Department::where('id', '!=', $department->id)->get();
+        $departments = Department::where('company_id', auth()->user()->company_id)
+            ->where('id', '!=', $department->id)
+            ->get();
         return view('departments.edit', compact('department', 'departments'));
     }
 

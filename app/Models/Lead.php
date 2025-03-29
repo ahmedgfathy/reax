@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Schema; // Add this import
 
 class Lead extends Model
 {
@@ -18,26 +18,21 @@ class Lead extends Model
      */
     protected $fillable = [
         'company_id',
-        'team_id',
+        'assigned_to', // Changed from user_id
         'first_name',
         'last_name',
         'email',
         'phone',
         'mobile',
         'status',
-        'lead_status',
-        'lead_class',
-        'agent_follow_up',
         'source',
         'lead_source',
-        'type_of_request',
-        'property_interest',
+        'lead_type',
         'budget',
-        'description',
+        'requirements',
         'notes',
-        'assigned_to',
-        'last_modified_by',
-        'last_follow_up'
+        'last_contact',
+        'next_follow_up'
     ];
 
     /**
@@ -46,7 +41,9 @@ class Lead extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'last_follow_up' => 'datetime',
+        'budget' => 'decimal:2',
+        'last_contact' => 'datetime',
+        'next_follow_up' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -58,21 +55,13 @@ class Lead extends Model
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
-    
-    /**
-     * Get the user that last modified the lead.
-     */
-    public function lastModifiedBy()
-    {
-        return $this->belongsTo(User::class, 'last_modified_by');
-    }
 
     /**
-     * Get the property that the lead is interested in.
+     * Get the company associated with the lead.
      */
-    public function interestedProperty()
+    public function company()
     {
-        return $this->belongsTo(Property::class, 'property_interest');
+        return $this->belongsTo(Company::class);
     }
 
     /**
@@ -88,23 +77,16 @@ class Lead extends Model
      */
     public function activityLogs()
     {
-        // Check which columns exist in the activity_logs table
-        $columns = Schema::getColumnListing('activity_logs');
-        
-        if (in_array('entity_id', $columns) && in_array('entity_type', $columns)) {
-            // Modern structure with entity_id and entity_type
-            return $this->hasMany(ActivityLog::class, 'entity_id')
-                ->where('entity_type', 'lead')
-                ->orderBy('created_at', 'desc');
-        } elseif (in_array('lead_id', $columns)) {
-            // Old structure with just lead_id column
-            return $this->hasMany(ActivityLog::class, 'lead_id')
-                ->orderBy('created_at', 'desc');
-        }
-        
-        // Fallback to empty collection
-        return $this->hasMany(ActivityLog::class, 'entity_id')
-            ->whereRaw('1=0'); // Always false condition to return empty set
+        return $this->morphMany(ActivityLog::class, 'loggable')
+            ->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Get the property that the lead is interested in.
+     */
+    public function interestedProperty()
+    {
+        return $this->belongsTo(Property::class, 'property_id');
     }
 
     /**

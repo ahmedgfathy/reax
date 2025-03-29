@@ -15,9 +15,10 @@ class Event extends Model
         'title',
         'description',
         'event_type',
-        'start_date',
+        'start_date', // Updated from event_date
         'end_date',
         'status',
+        'is_completed',  // Add this line
         'lead_id',
         'property_id',
         'created_by',
@@ -26,9 +27,10 @@ class Event extends Model
     ];
 
     protected $casts = [
-        'start_date' => 'datetime',
+        'start_date' => 'datetime', // Updated from event_date
         'end_date' => 'datetime',
-        'attendees' => 'array'
+        'attendees' => 'array',
+        'is_completed' => 'boolean'  // Add this line
     ];
 
     public function lead()

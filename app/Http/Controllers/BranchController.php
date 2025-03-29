@@ -11,11 +11,9 @@ class BranchController extends Controller
 {
     public function index()
     {
-        // Get the first company for now (we can modify this based on your requirements)
-        $company = Company::first();
+        $company = auth()->user()->company;
         
         if (!$company) {
-            // Handle case when no company exists
             return redirect()->route('companies.create')
                 ->with('error', 'Please create a company first');
         }

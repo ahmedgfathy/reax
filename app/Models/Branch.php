@@ -35,4 +35,9 @@ class Branch extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function scopeForCompany($query, $companyId)
+    {
+        return $query->where('company_id', $companyId);
+    }
 }

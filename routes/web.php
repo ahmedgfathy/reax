@@ -94,10 +94,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('branches', BranchController::class); // Add this line inside middleware auth group
 
-    Route::resource('departments', DepartmentController::class);
+    Route::resource('departments', \App\Http\Controllers\DepartmentController::class);
 
     // Management Routes
     Route::get('/management', [\App\Http\Controllers\ManagementController::class, 'index'])->name('management.index');
+
+    Route::resource('teams', \App\Http\Controllers\TeamController::class); // Add team routes
 });
 
 // Remove or comment out the old locale route

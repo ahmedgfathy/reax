@@ -34,7 +34,7 @@ class DashboardController extends Controller
         $recent_properties = Property::latest()->take(5)->get();
         
         // Get recent leads with more details
-        $recent_leads = Lead::with(['assignedUser', 'interestedProperty'])
+        $recent_leads = Lead::with(['assignedUser'])  // Remove interestedProperty if not needed
             ->latest()
             ->take(4)
             ->get();

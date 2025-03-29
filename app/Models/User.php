@@ -72,9 +72,16 @@ class User extends Authenticatable
         return asset('images/default-avatar.png');
     }
 
+    // Update the leads relationship to use assigned_to
     public function leads()
     {
-        return $this->hasMany(Lead::class);
+        return $this->hasMany(Lead::class, 'assigned_to');
+    }
+
+    // Update relationship name to match leads table
+    public function assignedLeads()
+    {
+        return $this->hasMany(Lead::class, 'assigned_to');
     }
     
     /**
