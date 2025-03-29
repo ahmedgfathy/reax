@@ -63,4 +63,20 @@ class ActivityLog extends Model
     {
         return $query->where('module_name', $moduleName);
     }
+
+    public static function log($loggableId, $eventType, $description, $details = [])
+    {
+        return static::create([
+            'company_id' => auth()->user()->company_id,
+            'user_id' => auth()->id(),
+            'loggable_type' => Lead::class,
+            'loggable_id' => $loggableId,
+            'event_type' => $eventType,
+            'action_type' => 'create',
+            'module_name' => 'events',
+            'description' => $description,
+            'new_values' => $details,
+            'ip_address' => request()->ip()
+        ]);
+    }
 }

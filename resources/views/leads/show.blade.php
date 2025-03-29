@@ -104,7 +104,7 @@
                                     <h3 class="font-medium text-gray-800">{{ $event->title }}</h3>
                                     <p class="text-xs text-gray-500 mt-1">
                                         <i class="far fa-clock mr-1"></i> 
-                                        {{ $event->event_date->format('M d, Y g:i A') }}
+                                        {{ $event->start_date->format('M d, Y g:i A') }}
                                     </p>
                                     <p class="text-xs mt-1">
                                         <span class="px-2 py-0.5 rounded-full text-xs 
@@ -353,7 +353,7 @@
                 </div>
                 <div class="mb-4">
                     <label for="event_date" class="block text-sm font-medium text-gray-700">{{ __('Event Date') }}</label>
-                    <input type="text" name="event_date" id="event_date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm flatpickr" required>
+                    <input type="text" name="start_date" id="event_date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm flatpickr" required>
                 </div>
                 <div class="mb-4">
                     <label for="event_type" class="block text-sm font-medium text-gray-700">{{ __('Event Type') }}</label>
