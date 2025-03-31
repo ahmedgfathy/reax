@@ -13,7 +13,7 @@
             </div>
         </div>
     </x-slot>
-
+<!-- comment -->
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <!-- Total Teams -->
@@ -122,7 +122,7 @@
                     </div>
                 </div>
                 <div class="mt-4 space-y-2">
-                    <a href="{{ route('teams.index') }}" class="block px-4 py-2 bg-gray-50 text-sm text-gray-700 rounded-md hover:bg-gray-100">
+                    <a href="{{ route('') }}" class="block px-4 py-2 bg-gray-50 text-sm text-gray-700 rounded-md hover:bg-gray-100">
                         <i class="fas fa-users-cog mr-2 text-indigo-500"></i>
                         {{ __('Team List') }}
                     </a>
