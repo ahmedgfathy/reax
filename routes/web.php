@@ -17,6 +17,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request; // Import Request at the top of the file
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\BranchController; // Import BranchController at the top with other use statements
+use App\Http\Controllers\TeamController; // Import TeamController at the top
 
 // Public routes - place these before any auth routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -99,7 +100,7 @@ Route::middleware(['auth'])->group(function () {
     // Management Routes
     Route::get('/management', [\App\Http\Controllers\ManagementController::class, 'index'])->name('management.index');
 
-    Route::resource('teams', \App\Http\Controllers\TeamController::class); // Add team routes
+    Route::resource('teams', TeamController::class); // Add team routes
 });
 
 // Remove or comment out the old locale route
