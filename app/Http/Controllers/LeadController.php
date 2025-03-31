@@ -141,7 +141,7 @@ class LeadController extends Controller
     public function show(Lead $lead)
     {
         $events = Event::where('lead_id', $lead->id)
-            ->orderBy('start_date', 'desc')
+            ->orderBy('start_date', 'desc')  // Changed from event_date to start_date
             ->get();
 
         $activityLogs = $lead->activityLogs()

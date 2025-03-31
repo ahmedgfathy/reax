@@ -41,10 +41,10 @@ class DashboardController extends Controller
 
         // Simplified upcoming events query using start_date
         $upcoming_events = Event::with('lead')
-            ->where('start_date', '>=', Carbon::now())
-            ->where('start_date', '<=', Carbon::now()->addHours(48))
+            ->where('start_date', '>=', Carbon::now())  // Changed from event_date to start_date
+            ->where('start_date', '<=', Carbon::now()->addHours(48))  // Changed from event_date to start_date
             ->where('status', '!=', 'cancelled')
-            ->orderBy('start_date', 'asc')
+            ->orderBy('start_date', 'asc')  // Changed from event_date to start_date
             ->take(5)
             ->get();
         
