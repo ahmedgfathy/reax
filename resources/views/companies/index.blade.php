@@ -1,6 +1,17 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">{{ __('Companies Management') }}</h2>
+        <div class="flex justify-between items-center">
+            <div>
+                <!-- Breadcrumbs -->
+                <div class="flex items-center text-sm text-gray-500 mt-1">
+                    <a href="{{ route('dashboard') }}" class="hover:text-gray-700">
+                        {{ __('Dashboard') }}
+                    </a>
+                    <span class="px-2">/</span>
+                    <span class="text-gray-700">{{ __('Companies') }}</span>
+                </div>
+            </div>
+        </div>
     </x-slot>
 
     <!-- Stats Overview -->

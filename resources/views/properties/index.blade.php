@@ -1,23 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col space-y-2">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">{{ __('Properties') }}</h2>
-                    <!-- Breadcrumbs -->
-                    <div class="flex items-center text-sm text-gray-500 mt-1">
-                        <a href="{{ route('dashboard') }}" class="hover:text-gray-700">{{ __('Dashboard') }}</a>
-                        <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                        <span class="text-gray-700">{{ __('Properties') }}</span>
-                        @if(request()->has('type'))
-                            <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                            <span class="text-gray-700">{{ __(ucfirst(request('type'))) }}</span>
-                        @endif
-                    </div>
+        <div class="flex justify-between items-center">
+            <div>
+                <!-- Breadcrumbs -->
+                <div class="flex items-center text-sm text-gray-500 mt-1">
+                    <a href="{{ route('dashboard') }}" class="hover:text-gray-700">
+                        {{ __('Dashboard') }}
+                    </a>
+                    <span class="px-2">/</span>
+                    <span class="text-gray-700">{{ __('Properties') }}</span>
+                    @if(request()->has('type'))
+                        <span class="px-2">/</span>
+                        <span class="text-gray-700">{{ __(ucfirst(request('type'))) }}</span>
+                    @endif
                 </div>
             </div>
         </div>
