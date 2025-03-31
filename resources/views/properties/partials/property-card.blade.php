@@ -1,9 +1,18 @@
 <div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-300">
     <!-- Top Section - Image and Primary Info -->
     <div class="relative h-48">
-        <img src="{{ $property->media->where('is_featured', true)->first()?->file_path ?? 'https://source.unsplash.com/800x600/?property' }}" 
-             class="w-full h-full object-cover property-image"
-             onerror="this.src='https://source.unsplash.com/800x600/?property'"
+        @php
+            $demoImages = [
+                'https://images.unsplash.com/photo-1570129477492-45c003edd2be',
+                'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2',
+                'https://images.unsplash.com/photo-1512917774080-9991f1c4c750',
+                'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea'
+            ];
+            $imageUrl = $demoImages[$property->id % count($demoImages)] . '?auto=format&fit=crop&w=800&q=80';
+        @endphp
+        
+        <img src="{{ $imageUrl }}" 
+             class="w-full h-full object-cover"
              alt="{{ $property->property_name }}"
              loading="lazy">
         
