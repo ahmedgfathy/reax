@@ -2,46 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Property;
-use Illuminate\Support\Facades\DB;
+use App\Models\Company;
+use App\Models\User;
+use Illuminate\Support\Facades\Schema;
 
 class HomeController extends Controller
 {
-    /**
-     * Show the application home page.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        // Get featured properties for the home page - with error handling
-        try {
-            $featuredProperties = Property::where('is_published', true)
-                ->where('is_featured', true)
-                ->orderBy('created_at', 'desc')
-                ->take(3)
-                ->get();
-        } catch (\Exception $e) {
-            // If there's any error, return empty collection
-            $featuredProperties = collect([]);
-        }
-            
-        return view('home', compact('featuredProperties'));
-    }
-
-    /**
-     * Display all featured properties.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function featuredProperties()
-    {
-        $featuredProperties = Property::where('is_featured', true)
+        // Get super deals - properties with installment plans
+        $superDeals = Property::with(['media', 'company'])
             ->where('is_published', true)
+            ->where('has_installments', true)
             ->latest()
-            ->paginate(12);
-            
-        return view('featured-properties', compact('featuredProperties'));
+            ->take(12)
+            ->get();
+
+        $featuredProperties = Property::with(['media', 'company'])
+            ->where('is_published', true)
+            ->where('is_featured', true)
+            ->latest()
+            ->take(4)
+            ->get();
+
+        $topAgents = User::withCount('properties')
+            ->where('is_active', true)
+            ->has('properties')
+            ->orderByDesc('properties_count')
+            ->take(4)
+            ->get();
+
+        // Updated query with error handling
+        $topCompanies = Company::query()
+            ->when(Schema::hasColumn('properties', 'company_id'), function($query) {
+                return $query->withCount('properties')
+                            ->has('properties');
+            })
+            ->where('is_active', true)
+            ->orderBy(
+                Schema::hasColumn('properties', 'company_id') ? 'properties_count' : 'created_at',
+                'desc'
+            )
+            ->take(4)
+            ->get();
+
+        return view('home', compact(
+            'superDeals',
+            'featuredProperties',
+            'topAgents',
+            'topCompanies'
+        ));
     }
 }

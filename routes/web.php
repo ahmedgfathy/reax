@@ -24,6 +24,8 @@ use App\Http\Controllers\CalendarController; // Import CalendarController
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sale', [PropertyController::class, 'sale'])->name('sale');
 Route::get('/rent', [PropertyController::class, 'rent'])->name('rent');
+Route::get('/primary', [PropertyController::class, 'primary'])->name('primary');
+
 Route::get('/featured-properties', [HomeController::class, 'featuredProperties'])->name('featured.properties');
 
 // Move these routes BEFORE the auth middleware group

@@ -723,46 +723,17 @@
     </section>
     
     <!-- Super Deal Installments Section -->
-    <section class="py-16">
+    <section class="py-16 bg-gray-100">
         <div class="container mx-auto px-4">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('Super Deal Installments') }}</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">{{ __('Get the best deals on real estate units with easy installments') }}</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Deal Card 1 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Deal" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Deal Name 1') }}</h3>
-                        <p class="text-gray-600">{{ __('Installment Plan: 5 years') }}</p>
-                    </div>
-                </div>
-                
-                <!-- Additional deal cards with different images -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Deal" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Deal Name 2') }}</h3>
-                        <p class="text-gray-600">{{ __('Installment Plan: 7 years') }}</p>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Deal" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Deal Name 3') }}</h3>
-                        <p class="text-gray-600">{{ __('Installment Plan: 10 years') }}</p>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <img src="https://images.unsplash.com/photo-1600047509782-20d39509f26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Deal" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Deal Name 4') }}</h3>
-                        <p class="text-gray-600">{{ __('Installment Plan: 15 years') }}</p>
-                    </div>
-                </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                @foreach($superDeals as $property)
+                    @include('properties.partials.property-card', ['property' => $property])
+                @endforeach
             </div>
         </div>
     </section>

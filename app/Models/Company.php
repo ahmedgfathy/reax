@@ -49,4 +49,12 @@ class Company extends Model
     {
         return $this->hasMany(Role::class);
     }
+
+    /**
+     * Get all properties belonging to this company
+     */
+    public function properties()
+    {
+        return $this->hasMany(Property::class);
+    }
 }

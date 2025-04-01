@@ -81,6 +81,48 @@ class PropertyController extends Controller
         ));
     }
 
+    public function sale()
+    {
+        $properties = Property::with(['media', 'company'])
+            ->where('is_published', true)
+            ->where('unit_for', 'sale')
+            ->latest()
+            ->paginate(12);
+
+        return view('properties.sale', [
+            'properties' => $properties,
+            'title' => __('Properties for Sale')
+        ]);
+    }
+
+    public function rent()
+    {
+        $properties = Property::with(['media', 'company'])
+            ->where('is_published', true)
+            ->where('unit_for', 'rent')
+            ->latest()
+            ->paginate(12);
+
+        return view('properties.rent', [
+            'properties' => $properties,
+            'title' => __('Properties for Rent')
+        ]);
+    }
+
+    public function primary()
+    {
+        $properties = Property::with(['media', 'company'])
+            ->where('is_published', true)
+            ->where('is_primary', true)
+            ->latest()
+            ->paginate(12);
+
+        return view('properties.primary', [
+            'properties' => $properties,
+            'title' => __('Primary Properties')
+        ]);
+    }
+
     private function handleImageUrl($imagePath)
     {
         // إذا كان المسار URL كامل

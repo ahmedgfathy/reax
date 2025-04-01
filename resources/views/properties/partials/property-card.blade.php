@@ -1,77 +1,70 @@
-<div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-300">
-    <!-- Top Section - Image and Primary Info -->
-    <div class="relative h-48">
-        @php
-            $demoImages = [
-                'https://images.unsplash.com/photo-1570129477492-45c003edd2be',
-                'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2',
-                'https://images.unsplash.com/photo-1512917774080-9991f1c4c750',
-                'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea'
-            ];
-            $imageUrl = $demoImages[$property->id % count($demoImages)] . '?auto=format&fit=crop&w=800&q=80';
-        @endphp
+<div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
+    <div class="relative">
+        <img src="{{ $property->image_url }}" 
+             alt="{{ $property->property_name }}" 
+             class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105">
         
-        <img src="{{ $imageUrl }}" 
-             class="w-full h-full object-cover"
-             alt="{{ $property->property_name }}"
-             loading="lazy">
-        
-        <!-- Status Tags -->
-        <div class="absolute top-4 left-4 flex gap-2">
-            <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                {{ $property->unit_for === 'sale' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">
-                {{ __(ucfirst($property->unit_for)) }}
-            </span>
-            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-{{ $property->getStatusColor() }}-100 text-{{ $property->getStatusColor() }}-800">
-                {{ __(ucfirst($property->status)) }}
-            </span>
+        <!-- Badges -->
+        <div class="absolute top-4 left-4 flex flex-col gap-2">
+            @if($property->has_installments)
+                <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                    {{ __('Installment') }}
+                </span>
+            @endif
+            @if($property->is_featured)
+                <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                    {{ __('Featured') }}
+                </span>
+            @endif
         </div>
-
-        <!-- Price -->
+        
+        <!-- Price Badge -->
         <div class="absolute bottom-4 right-4">
-            <span class="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-bold text-gray-900">
+            <span class="bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-1.5 rounded-full text-sm font-semibold">
                 {{ number_format($property->total_price) }} {{ $property->currency }}
             </span>
         </div>
-
-        <!-- Action Buttons -->
-        <div class="absolute top-4 right-4 flex space-x-2">
-            <a href="{{ route('properties.show', $property) }}" 
-               class="bg-blue-500/80 hover:bg-blue-600 text-white p-2 rounded-lg transition-all duration-200 backdrop-blur-sm">
-                <i class="fas fa-eye"></i>
-            </a>
-            <a href="{{ route('properties.edit', $property) }}" 
-               class="bg-yellow-500/80 hover:bg-yellow-600 text-white p-2 rounded-lg transition-all duration-200 backdrop-blur-sm">
-                <i class="fas fa-edit"></i>
-            </a>
-        </div>
     </div>
 
-    <!-- Content Section -->
-    <div class="p-6">
-        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $property->name }}</h3>
-        <p class="text-gray-600 mb-4 flex items-center">
-            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
-            {{ $property->area ?? $property->location ?? __('Location not specified') }}
-        </p>
-        <div class="flex justify-between text-gray-600 border-t pt-4">
+    <div class="p-4">
+        <!-- Content -->
+        <div class="mb-3">
+            <h3 class="font-semibold text-gray-900 mb-1">{{ $property->property_name }}</h3>
+            <p class="text-sm text-gray-600 flex items-center">
+                <i class="fas fa-map-marker-alt text-blue-500 mr-1"></i>
+                {{ $property->location ?? $property->area ?? __('Location not specified') }}
+            </p>
+        </div>
+
+        <!-- Details -->
+        <div class="grid grid-cols-3 gap-2 mb-4 text-xs text-gray-600">
             <div class="flex items-center">
-                <i class="fas fa-bed mr-1"></i>
-                <span>{{ $property->rooms ?? $property->bedrooms ?? 0 }} {{ __('Beds') }}</span>
+                <i class="fas fa-bed mr-1.5 text-blue-500"></i>
+                <span>{{ $property->rooms }} {{ __('Beds') }}</span>
             </div>
             <div class="flex items-center">
-                <i class="fas fa-bath mr-1"></i>
-                <span>{{ $property->bathrooms ?? 0 }} {{ __('Baths') }}</span>
+                <i class="fas fa-bath mr-1.5 text-blue-500"></i>
+                <span>{{ $property->bathrooms }} {{ __('Baths') }}</span>
             </div>
             <div class="flex items-center">
-                <i class="fas fa-ruler-combined mr-1"></i>
-                <span>{{ $property->unit_area ?? 0 }} {{ __('m²') }}</span>
+                <i class="fas fa-ruler-combined mr-1.5 text-blue-500"></i>
+                <span>{{ $property->total_area }}m²</span>
             </div>
         </div>
-        <div class="mt-4">
-            <a href="{{ route('properties.show', $property->id) }}" 
-               class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
-                {{ __('View Details') }}
+
+        <!-- Footer -->
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+            <div class="text-sm">
+                @if($property->has_installments)
+                    <span class="text-gray-500">{{ __('Starting from') }}</span>
+                    <span class="font-semibold text-blue-600 ml-1">
+                        {{ number_format($property->monthly_installment) }}/{{ __('mo') }}
+                    </span>
+                @endif
+            </div>
+            <a href="{{ route('properties.show', $property) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                {{ __('Details') }}
+                <i class="fas fa-arrow-right text-xs"></i>
             </a>
         </div>
     </div>

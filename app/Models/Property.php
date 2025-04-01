@@ -73,7 +73,13 @@ class Property extends Model
         'next_follow_up',
         'priority_level',
         'source',
-        'reference_number'
+        'reference_number',
+        'has_installments',
+        'monthly_installment',
+        'installment_years',
+        'down_payment',
+        'installment_details',
+        'is_primary',
     ];
 
     protected $casts = [
@@ -100,6 +106,11 @@ class Property extends Model
         'sharing_expiry' => 'datetime',
         'next_follow_up' => 'datetime',
         'access_restrictions' => 'array',
+        'has_installments' => 'boolean',
+        'monthly_installment' => 'decimal:2',
+        'down_payment' => 'decimal:2',
+        'installment_details' => 'json',
+        'is_primary' => 'boolean',
     ];
 
     protected static function boot()
@@ -291,15 +302,65 @@ class Property extends Model
 
     public function getFeaturedImageUrlAttribute()
     {
-        $featuredMedia = $this->media->where('is_featured', true)->first();
-        
-        if ($featuredMedia && $featuredMedia->file_path) {
-            if (filter_var($featuredMedia->file_path, FILTER_VALIDATE_URL)) {
-                return $featuredMedia->file_path;
+        if ($this->media->isNotEmpty()) {
+            $featuredMedia = $this->media->where('is_featured', true)->first() ?? $this->media->first();
+            if ($featuredMedia && Storage::disk('public')->exists($featuredMedia->file_path)) {
+                return Storage::url($featuredMedia->file_path);
             }
-            return Storage::disk('public')->url($featuredMedia->file_path);
         }
+
+        // Fallback images based on property type
+        $type = strtolower($this->type ?? 'default');
+        return match($type) {
+            'apartment' => 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            'villa' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            'duplex' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            'penthouse' => 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            'studio' => 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            default => 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
+        };
+    }
+
+    public function getImageUrlAttribute()
+    {
+        $media = $this->media()->where('is_featured', true)->first() 
+            ?? $this->media()->first();
+
+        if ($media && Storage::disk('public')->exists($media->file_path)) {
+            return Storage::url($media->file_path);
+        }
+
+        return $this->getDefaultImage();
+    }
+
+    protected function getDefaultImage()
+    {
+        $type = strtolower($this->type ?? 'default');
         
-        return 'https://source.unsplash.com/800x600/?property=' . $this->id;
+        return match($type) {
+            'apartment' => 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267',
+            'villa' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750',
+            'duplex' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c',
+            'penthouse' => 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde',
+            'studio' => 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea',
+            default => 'https://images.unsplash.com/photo-1560518883-ce09059eeffa'
+        } . '?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+    }
+
+    public function getMonthlyInstallmentAttribute()
+    {
+        if (!$this->has_installments || !$this->installment_details) {
+            return 0;
+        }
+
+        $details = json_decode($this->installment_details, true);
+        return $details['monthly_payment'] ?? ($this->total_price / ($details['months'] ?? 60));
+    }
+
+    public function getSuperDealAttribute()
+    {
+        return $this->has_installments && 
+               $this->monthly_installment && 
+               $this->is_published;
     }
 }
