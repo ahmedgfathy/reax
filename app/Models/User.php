@@ -54,6 +54,7 @@ class User extends Authenticatable
         'is_admin' => 'boolean',
         'is_company_admin' => 'boolean',
         'is_active' => 'boolean',
+        'roles' => 'array', // Add this line
     ];
     
     /**
@@ -154,5 +155,18 @@ class User extends Authenticatable
     public function isCompanyOwner()
     {
         return $this->company && $this->company->owner_id === $this->id;
+    }
+
+    public function hasRole($roles)
+    {
+        if (is_array($roles)) {
+            return !empty(array_intersect($this->getRoles(), $roles));
+        }
+        return in_array($roles, $this->getRoles());
+    }
+
+    public function getRoles()
+    {
+        return $this->roles ?? [];
     }
 }

@@ -18,6 +18,7 @@ use Illuminate\Http\Request; // Import Request at the top of the file
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\BranchController; // Import BranchController at the top with other use statements
 use App\Http\Controllers\TeamController; // Import TeamController at the top
+use App\Http\Controllers\CalendarController; // Import CalendarController
 
 // Public routes - place these before any auth routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -64,6 +65,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::put('/events/{event}/complete', [EventController::class, 'complete'])->name('events.complete');
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
+    
+    // Calendar Routes
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
     
     // Report routes
     Route::resource('reports', \App\Http\Controllers\ReportController::class);

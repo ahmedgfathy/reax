@@ -31,7 +31,8 @@
                     {{ __('Task & Calendar Management') }}
                 </h3>
                 <div class="ml-6 space-y-2">
-                    <a href="#" class="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                    <a href="{{ route('calendar.index') }}" 
+                       class="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors {{ request()->routeIs('calendar.*') ? 'text-blue-600 font-medium' : '' }}">
                         <i class="fas fa-calendar-check w-4 mr-2"></i>
                         {{ __('Calendar') }}
                     </a>

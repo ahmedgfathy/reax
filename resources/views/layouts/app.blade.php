@@ -44,6 +44,13 @@
     <!-- Microsoft PWA Meta Tags -->
     <meta name="msapplication-TileColor" content="#2563EB">
     <meta name="msapplication-TileImage" content="{{ asset('images/brand/icon-144.png') }}">
+
+    <!-- FullCalendar -->
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css' rel='stylesheet' />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js'></script>
+    <script src='https://cdn.fullcalendar.com/core/6.1.9/index.global.min.js'></script>
+    <script src='https://cdn.fullcalendar.com/daygrid/6.1.9/index.global.min.js'></script>
+    <script src='https://cdn.fullcalendar.com/timegrid/6.1.9/index.global.min.js'></script>
 </head>
 <body class="bg-gray-50 {{ app()->getLocale() == 'ar' ? 'rtl' : '' }} font-{{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}">
     @include('components.layouts.alert-scripts')
@@ -194,5 +201,7 @@
             }
         });
     </script>
+    <!-- Stack Scripts -->
+    @stack('scripts')
 </body>
 </html>
