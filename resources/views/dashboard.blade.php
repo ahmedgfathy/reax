@@ -664,7 +664,7 @@
                 statusBackgroundColors.push(statusColorMap[status]);
             });
             
-            new Chart(statusCtx, {
+            const leadStatusChart = new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
                     labels: statusLabelsArray,
@@ -682,7 +682,19 @@
                             position: 'bottom',
                             labels: {
                                 boxWidth: 12
+                            },
+                            onClick: (e, legendItem, legend) => {
+                                const status = Object.keys(statusLabels).find(
+                                    key => statusLabels[key] === legendItem.text
+                                );
+                                window.location.href = `{{ route('leads.index') }}?status=${status}`;
                             }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const status = Object.keys(statusLabels)[elements[0].index];
+                            window.location.href = `{{ route('leads.index') }}?status=${status}`;
                         }
                     }
                 }
@@ -718,7 +730,7 @@
                 sourceColors[index % sourceColors.length]
             );
             
-            new Chart(sourceCtx, {
+            const leadSourceChart = new Chart(sourceCtx, {
                 type: 'doughnut',
                 data: {
                     labels: sourceLabels,
@@ -736,7 +748,16 @@
                             position: 'bottom',
                             labels: {
                                 boxWidth: 12
+                            },
+                            onClick: (e, legendItem, legend) => {
+                                window.location.href = `{{ route('leads.index') }}?source=${legendItem.text}`;
                             }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const source = sourceLabels[elements[0].index];
+                            window.location.href = `{{ route('leads.index') }}?source=${source}`;
                         }
                     }
                 }
@@ -759,7 +780,7 @@
                 '#F97316', // orange-500
             ];
             
-            new Chart(propertyTypeCtx, {
+            const propertyTypeChart = new Chart(propertyTypeCtx, {
                 type: 'pie',
                 data: {
                     labels: propertyTypeLabels,
@@ -777,6 +798,10 @@
                             position: 'right',
                             labels: {
                                 boxWidth: 12
+                            },
+                            onClick: (e, legendItem, legend) => {
+                                const type = legendItem.text.toLowerCase();
+                                window.location.href = `{{ route('properties.index') }}?type=${type}`;
                             }
                         },
                         tooltip: {
@@ -790,6 +815,12 @@
                                 }
                             }
                         }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const type = propertyTypeLabels[elements[0].index].toLowerCase();
+                            window.location.href = `{{ route('properties.index') }}?type=${type}`;
+                        }
                     }
                 }
             });
@@ -800,7 +831,7 @@
             const saleRentLabels = Object.keys(saleRentData).map(type => type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Other');
             const saleRentValues = Object.values(saleRentData);
             
-            new Chart(saleRentCtx, {
+            const saleRentChart = new Chart(saleRentCtx, {
                 type: 'doughnut',
                 data: {
                     labels: saleRentLabels,
@@ -818,6 +849,10 @@
                             position: 'right',
                             labels: {
                                 boxWidth: 12
+                            },
+                            onClick: (e, legendItem, legend) => {
+                                const label = legendItem.text.toLowerCase();
+                                window.location.href = `{{ route('properties.index') }}?unit_for=${label}`;
                             }
                         },
                         tooltip: {
@@ -831,6 +866,12 @@
                                 }
                             }
                         }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const label = saleRentLabels[elements[0].index].toLowerCase();
+                            window.location.href = `{{ route('properties.index') }}?unit_for=${label}`;
+                        }
                     }
                 }
             });
@@ -839,7 +880,7 @@
             const salePriceCtx = document.getElementById('salePriceChart').getContext('2d');
             const salePriceRanges = @json($salePriceRanges);
             
-            new Chart(salePriceCtx, {
+            const salePriceChart = new Chart(salePriceCtx, {
                 type: 'bar',
                 data: {
                     labels: Object.keys(salePriceRanges),
@@ -865,6 +906,12 @@
                     plugins: {
                         legend: {
                             display: false
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const range = Object.keys(salePriceRanges)[elements[0].index];
+                            window.location.href = `{{ route('properties.index') }}?unit_for=sale&price_range=${range}`;
                         }
                     }
                 }

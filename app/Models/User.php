@@ -147,6 +147,11 @@ class User extends Authenticatable
         return $this->belongsTo(Team::class);
     }
 
+    public function managedTeams()
+    {
+        return $this->hasMany(Team::class, 'leader_id');
+    }
+
     public function hasPermission($permission)
     {
         return $this->role->permissions->contains('name', $permission);

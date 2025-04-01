@@ -122,18 +122,16 @@
                     </div>
                 </div>
                 <div class="mt-4 space-y-2">
-                    @can('view', App\Models\Team::class)
-                        <a href="{{ route('teams.index') }}" class="block px-4 py-2 bg-gray-50 text-sm text-gray-700 rounded-md hover:bg-gray-100">
-                            <i class="fas fa-users-cog mr-2 text-indigo-500"></i>
-                            {{ __('Team List') }}
-                        </a>
-                    @endcan
-                    @can('create', App\Models\Team::class)
-                        <a href="#" onclick="alert('Coming soon')" class="block px-4 py-2 bg-gray-50 text-sm text-gray-700 rounded-md hover:bg-gray-100">
-                            <i class="fas fa-user-plus mr-2 text-indigo-500"></i>
-                            {{ __('Add Team') }}
-                        </a>
-                    @endcan
+                    <a href="{{ route('teams.index') }}" 
+                       class="block px-4 py-2 bg-gray-50 text-sm text-gray-700 rounded-md hover:bg-gray-100">
+                        <i class="fas fa-users-cog mr-2 text-indigo-500"></i>
+                        {{ __('Team List') }}
+                    </a>
+                    <a href="{{ route('teams.create') }}" 
+                       class="block px-4 py-2 bg-gray-50 text-sm text-gray-700 rounded-md hover:bg-gray-100">
+                        <i class="fas fa-user-plus mr-2 text-indigo-500"></i>
+                        {{ __('Add Team') }}
+                    </a>
                 </div>
             </div>
         </div>
