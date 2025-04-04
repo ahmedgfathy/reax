@@ -1,46 +1,6 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <div>
-                <!-- Breadcrumbs -->
-                <div class="flex items-center text-sm text-gray-500 mt-1">
-                    <a href="{{ route('dashboard') }}" class="hover:text-gray-700">
-                        {{ __('Dashboard') }}
-                    </a>
-                    <span class="px-2">/</span>
-                    <span class="text-gray-700">{{ __('Properties') }}</span>
-                    @if(request()->has('type'))
-                        <span class="px-2">/</span>
-                        <span class="text-gray-700">{{ __(ucfirst(request('type'))) }}</span>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </x-slot>
-
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        @foreach([
-            ['label' => 'Total Properties', 'value' => $stats['total'], 'icon' => 'fa-building', 'color' => 'blue'],
-            ['label' => 'Available', 'value' => $stats['available'], 'icon' => 'fa-check-circle', 'color' => 'green'],
-            ['label' => 'Sold', 'value' => $stats['sold'], 'icon' => 'fa-dollar-sign', 'color' => 'yellow'],
-            ['label' => 'Rented', 'value' => $stats['rented'], 'icon' => 'fa-key', 'color' => 'purple']
-        ] as $stat)
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-500">{{ __($stat['label']) }}</p>
-                        <h3 class="text-2xl font-bold mt-2 text-{{ $stat['color'] }}-600">
-                            {{ number_format($stat['value']) }}
-                        </h3>
-                    </div>
-                    <div class="bg-{{ $stat['color'] }}-50 p-4 rounded-lg">
-                        <i class="fas {{ $stat['icon'] }} text-xl text-{{ $stat['color'] }}-500"></i>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-    </div>
+    <!-- Use the header menu component -->
+    <x-header-menu />
 
     <!-- Filters & Actions -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
