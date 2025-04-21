@@ -21,16 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'phone',
-        'mobile',
-        'position',
-        'address',
-        'avatar',
-        'is_admin',
-        'is_active',
         'company_id',
-        'team_id',
-        'role_id'
+        'role',
+        'is_active'
     ];
 
     /**
@@ -51,10 +44,47 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'is_admin' => 'boolean',
-        'is_company_admin' => 'boolean',
         'is_active' => 'boolean',
     ];
+    
+    /**
+     * Role constants
+     */
+    const ROLE_ADMIN = 'admin';
+    const ROLE_MANAGER = 'manager';
+    const ROLE_AGENT = 'agent';
+    
+    /**
+     * Get formatted role name
+     */
+    public function getRoleNameAttribute()
+    {
+        return ucfirst($this->role);
+    }
+    
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin()
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    /**
+     * Check if user is manager
+     */
+    public function isManager()
+    {
+        return $this->role === self::ROLE_MANAGER;
+    }
+
+    /**
+     * Check if user is agent
+     */
+    public function isAgent()
+    {
+        return $this->role === self::ROLE_AGENT;
+    }
     
     /**
      * Get the avatar URL

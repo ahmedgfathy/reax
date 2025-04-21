@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,10 +41,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS in production
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         // Register app-layout component
         Blade::component('layouts.app', 'app-layout');
 
-        // Share current locale with all views
+        // Share common data with views
         View::composer('*', function ($view) {
             $view->with('currentLocale', App::getLocale());
             $view->with('isRtl', App::getLocale() === 'ar');
@@ -52,10 +58,11 @@ class AppServiceProvider extends ServiceProvider
         // Set default string length for MySQL < 5.7.7
         Schema::defaultStringLength(191);
         
-        // Set locale from session if exists
-        if (Session::has('locale')) {
-            $locale = Session::get('locale');
+        // Set locale from cookie first, then session
+        $locale = request()->cookie('locale') ?? Session::get('locale');
+        if ($locale && in_array($locale, ['en', 'ar'])) {
             App::setLocale($locale);
+            Session::put('locale', $locale);
         }
     }
 }

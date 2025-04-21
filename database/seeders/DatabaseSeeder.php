@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             // Create base data first
             $this->call([
                 CompanySeeder::class,
+                AdminUserSeeder::class,
+                LeadClassificationSeeder::class,
                 UserSeeder::class,
             ]);
 

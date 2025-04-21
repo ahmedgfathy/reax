@@ -32,7 +32,8 @@ class Lead extends Model
         'requirements',
         'notes',
         'last_contact',
-        'next_follow_up'
+        'next_follow_up',
+        'lead_classification_id' // Add this line
     ];
 
     /**
@@ -87,6 +88,14 @@ class Lead extends Model
     public function interestedProperty()
     {
         return $this->belongsTo(Property::class, 'property_id');
+    }
+
+    /**
+     * Get the classification for this lead.
+     */
+    public function classification()
+    {
+        return $this->belongsTo(LeadClassification::class, 'lead_classification_id');
     }
 
     /**

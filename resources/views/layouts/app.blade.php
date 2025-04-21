@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 <head>
-<meta property="og:title" content="Real Estate CRM - E-Gar" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta property="og:title" content="Real Estate CRM - E-Gar" />
     <meta property="og:description" content="REAX Discover the best real estate deals with our powerful CRM!" />
     <meta property="og:image" content="https://real.e-egar.com/images/og-image.jpg" />
     <meta property="og:url" content="https://real.e-egar.com" />
@@ -18,9 +21,21 @@
     <!-- Standard meta -->
     <meta name="description" content="Discover the best real estate deals with our powerful CRM!">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? config('app.name') }}</title>
+    
+    <script>
+        // Set up CSRF token for all AJAX requests
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            window.csrf_token = token;
+            
+            // Set up axios defaults if using axios
+            if (window.axios) {
+                window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+            }
+        });
+    </script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -45,7 +60,7 @@
     <meta name="msapplication-TileColor" content="#2563EB">
     <meta name="msapplication-TileImage" content="{{ asset('images/brand/icon-144.png') }}">
 </head>
-<body class="bg-gray-50 {{ app()->getLocale() == 'ar' ? 'rtl' : '' }} font-{{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}">
+<body class="bg-gray-50 {{ app()->getLocale() == 'ar' ? 'rtl' : '' }} font-{{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
     @include('components.layouts.alert-scripts')
     
     <!-- Add PWA Install Button -->
@@ -70,7 +85,7 @@
                         <div class="text-gray-600">
                             {{ Auth::user()->name ?? 'Guest' }} 
                             @if(Auth::user()->role)
-                                - {{ Auth::user()->role->name }}
+                                - {{ Auth::user()->role_name }}
                             @endif
                             @if(Auth::user()->company)
                                 {{ __('at') }} {{ Auth::user()->company->name }}

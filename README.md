@@ -29,7 +29,7 @@ The name "REAX" represents the perfect fusion of real estate expertise and techn
 With its easy pronunciation in both Arabic and English, REAX offers a modern, memorable identity for a system built to transform how real estate professionals operate in Egypt and beyond.
 
 <div align="center">
-  <img src="public/images-screenshots/dashboard.png" alt="REAX Dashboard" width="800px" />
+  <img src="./public/images-screenshots/dashboard.png" alt="REAX Dashboard" width="800px" />
 </div>
 
 ## 🚀 Features
@@ -163,16 +163,16 @@ This automatically detects and removes duplicate migrations while keeping the mo
 ## Screenshots
 
 ### Home Page
-![Home Page](https://files.fm/f/33fyp98rrk)
+<img src="./public/images-screenshots/home.png" alt="REAX Home Page" width="800px" />
 
 ### Dashboard
-![Dashboard](https://files.fm/f/h9z8j3yw9p)
+<img src="./public/images-screenshots/dashboard.png" alt="REAX Dashboard" width="800px" />
 
 ### Property Details
-![Property Details](https://files.fm/f/g8dx3qpskf)
+<img src="./public/images-screenshots/property-details.png" alt="REAX Property Details" width="800px" />
 
 ### Lead Management
-![Lead Management](https://files.fm/f/f57mb4jwpn)
+<img src="./public/images-screenshots/lead-management.png" alt="REAX Lead Management" width="800px" />
 
 ## 🛠️ Support
 

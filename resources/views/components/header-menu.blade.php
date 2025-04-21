@@ -124,42 +124,20 @@
 
             <!-- Right Side Items -->
             <div class="flex items-center ml-auto space-x-2">
-                <!-- Language Switcher - Smaller size -->
+                <!-- Language Switcher - Unified Component -->
                 <form method="POST" 
                       action="{{ route('locale.switch') }}" 
-                      class="hidden md:inline-flex items-center"
+                      class="lang-switcher hidden md:inline-flex items-center"
                       id="langSwitcher">
                     @csrf
                     <select name="locale" 
-                            onchange="submitLanguageForm(this)" 
-                            class="text-sm bg-blue-800/30 border border-blue-600 rounded px-1 py-0.5 text-white">
+                            class="text-sm bg-blue-800/30 border border-blue-600 rounded px-1 py-0.5 text-white cursor-pointer">
                         <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>English</option>
                         <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>العربية</option>
                     </select>
                 </form>
 
-                <script>
-                function submitLanguageForm(select) {
-                    const form = document.getElementById('langSwitcher');
-                    const formData = new FormData(form);
-
-                    fetch(form.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.locale) {
-                            window.location.reload();
-                        }
-                    });
-                }
-                </script>
-
-                <!-- User Menu - Smaller size -->
+                <!-- User Menu Dropdown -->
                 <div class="relative" x-data="{ isOpen: false }">
                     <button @click="isOpen = !isOpen" class="flex items-center space-x-1 bg-blue-800 rounded-full pl-2 pr-2 py-1 text-sm">
                         <div class="h-7 w-7 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
@@ -181,18 +159,15 @@
                          @click.away="isOpen = false" 
                          class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 ring-1 ring-black ring-opacity-5">
                         
-                        <!-- Language Selector -->
-                        <form method="POST" action="{{ route('locale.switch') }}" class="px-4 py-2 border-b">
+                        <!-- Language Selector in Dropdown -->
+                        <form method="POST" 
+                              action="{{ route('locale.switch') }}" 
+                              class="lang-switcher px-4 py-2 border-b">
                             @csrf
-                            <select name="locale" onchange="this.form.submit()" class="w-full text-gray-800 bg-transparent focus:outline-none cursor-pointer">
+                            <select name="locale" class="w-full text-gray-800 bg-transparent focus:outline-none cursor-pointer">
                                 <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>English</option>
                                 <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>العربية</option>
                             </select>
-                            <noscript>
-                                <button type="submit" class="mt-2 w-full bg-blue-600 text-white rounded-md px-2 py-1 text-xs">
-                                    {{ __('Change Language') }}
-                                </button>
-                            </noscript>
                         </form>
                         
                         <!-- Profile Link -->
@@ -216,7 +191,7 @@
                     </div>
                 </div>
 
-                <!-- Mobile Menu Button - Aligned right -->
+                <!-- Mobile Menu -->
                 <div class="md:hidden" x-data="{ isOpen: false }">
                     <button @click="isOpen = !isOpen" class="p-2 rounded-md bg-blue-800 focus:outline-none hover:bg-blue-900 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -344,22 +319,19 @@
                                     <span class="font-medium">{{ Auth::user()->name }}</span>
                                 </div>
                                 
-                                <!-- Language Selector -->
-                                <form method="POST" action="{{ route('locale.switch') }}" class="px-3 py-2">
+                                <!-- Mobile Language Selector -->
+                                <form method="POST" 
+                                      action="{{ route('locale.switch') }}" 
+                                      class="lang-switcher px-3 py-2">
                                     @csrf
                                     <div class="flex items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
                                         </svg>
-                                        <select name="locale" onchange="this.form.submit()" class="w-full bg-blue-800 rounded text-white focus:outline-none p-1">
+                                        <select name="locale" class="w-full bg-blue-800 rounded text-white focus:outline-none p-1 cursor-pointer">
                                             <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>English</option>
                                             <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>العربية</option>
                                         </select>
-                                        <noscript>
-                                            <button type="submit" class="mt-2 w-full bg-blue-600 text-white rounded-md px-2 py-1 text-xs">
-                                                {{ __('Change Language') }}
-                                            </button>
-                                        </noscript>
                                     </div>
                                 </form>
                                 
@@ -392,3 +364,57 @@
 
 <!-- AlpineJS for dropdown functionality -->
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+
+<!-- Unified Language Switcher JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const langSwitchers = document.querySelectorAll('.lang-switcher');
+    
+    langSwitchers.forEach(form => {
+        const select = form.querySelector('select');
+        if (!select) return;
+        
+        select.addEventListener('change', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            
+            // Get CSRF token from meta tag
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': token,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin' // Important: send cookies with request
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Set HTML direction
+                    document.documentElement.dir = data.direction;
+                    document.documentElement.lang = data.locale;
+                    document.documentElement.classList.toggle('rtl', data.isRtl);
+                    
+                    // Force page reload with cache busting
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('_locale', data.locale);
+                    url.searchParams.set('_', Date.now());
+                    window.location.href = url.toString();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // On error, submit form normally
+                form.submit();
+            });
+        });
+    });
+});
+</script>
