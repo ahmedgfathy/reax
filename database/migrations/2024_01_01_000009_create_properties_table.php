@@ -49,11 +49,12 @@ return new class extends Migration
             $table->date('rent_from')->nullable();
             $table->date('rent_to')->nullable();
             
-            // Owner Information
+            // Owner contact information
             $table->string('owner_name')->nullable();
-            $table->string('owner_phone')->nullable();
             $table->string('owner_mobile')->nullable();
-            $table->enum('owner_contact_status', ['contacted', 'pending', 'no_answer'])->nullable();
+            $table->string('owner_phone')->nullable();
+            $table->string('owner_email')->nullable();
+            $table->string('owner_contact_status')->nullable();
             
             // Sales Information
             $table->string('sales_category')->nullable();

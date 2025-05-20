@@ -46,7 +46,8 @@ class Team extends Model
 
     public function members()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class, 'team_user')
+            ->withTimestamps();
     }
 
     public function sharedProperties()

@@ -12,28 +12,25 @@ class DatabaseSeeder extends Seeder
         DB::beginTransaction();
         
         try {
-            // Create base data first
             $this->call([
                 CompanySeeder::class,
-                AdminUserSeeder::class,
-                LeadClassificationSeeder::class,
+                RoleSeeder::class,
                 UserSeeder::class,
-            ]);
-
-            // Wait briefly to ensure primary data is committed
-            sleep(1);
-
-            // Create dependent data
-            $this->call([
+                TeamSeeder::class,
+                LeadClassificationSeeder::class,
                 PropertySeeder::class,
                 LeadSeeder::class,
-                OpportunitySeeder::class
+                OpportunitySeeder::class,
+                EventSeeder::class,
+                ContactSeeder::class,
             ]);
             
             DB::commit();
+            $this->command->info('Database seeded successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->command->error($e->getMessage());
+            $this->command->error('Error seeding database: ' . $e->getMessage());
+            throw $e;
         }
     }
 }

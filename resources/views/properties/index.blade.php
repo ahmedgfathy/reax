@@ -47,91 +47,117 @@
         @endforeach
     </div>
 
-    <!-- Filters & Actions -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
-        <div class="p-6">
-            <form action="{{ route('properties.index') }}" method="GET">
+    <!-- Filters Section -->
+    <div class="bg-white rounded-lg shadow mb-6">
+        <div class="p-4">
+            <form method="GET" action="{{ route('properties.index') }}" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Smart Search -->
-                    <div class="col-span-full lg:col-span-1">
-                        <div class="relative">
-                            <input type="text" name="search" value="{{ request('search') }}"
-                                   class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                   placeholder="{{ __('Search properties...') }}">
-                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <!-- Search -->
+                    <div class="relative">
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                               class="w-full px-4 py-2 pl-10 pr-4 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                               placeholder="{{ __('Search properties...') }}">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+
+                    <!-- Region/Area Filter -->
+                    <div class="relative">
+                        <select name="region" class="w-full px-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-500 appearance-none">
+                            <option value="">{{ __('All Regions') }}</option>
+                            @foreach($regions as $region)
+                                <option value="{{ $region }}" {{ request('region') == $region ? 'selected' : '' }}>
+                                    {{ __(ucfirst($region)) }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+
+                    <!-- User Filter -->
+                    <div class="relative">
+                        <select name="user_id" class="w-full px-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-500 appearance-none">
+                            <option value="">{{ __('All Users') }}</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
+                                    {{ $user->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+
+                    <!-- More Filters Dropdown -->
+                    <div class="relative" x-data="{ open: false }">
+                        <button type="button" 
+                                @click="open = !open"
+                                class="w-full px-4 py-2 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white text-left flex justify-between items-center">
+                            <span>{{ __('More Filters') }}</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        
+                        <div x-show="open" 
+                             @click.away="open = false"
+                             class="absolute z-50 mt-2 w-full bg-white rounded-lg shadow-lg border p-4 space-y-4">
+                            <!-- Price Range -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Price Range') }}</label>
+                                <select name="price_range" class="w-full rounded-md border-gray-300">
+                                    <option value="">{{ __('Any Price') }}</option>
+                                    <option value="0-100000" {{ request('price_range') == '0-100000' ? 'selected' : '' }}>0 - 100,000</option>
+                                    <option value="100000-500000" {{ request('price_range') == '100000-500000' ? 'selected' : '' }}>100,000 - 500,000</option>
+                                    <option value="500000+" {{ request('price_range') == '500000+' ? 'selected' : '' }}>500,000+</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Property Type -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Property Type') }}</label>
+                                <select name="type" class="w-full rounded-md border-gray-300">
+                                    <option value="">{{ __('All Types') }}</option>
+                                    @foreach($propertyTypes as $type)
+                                        <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
+                                            {{ __(ucfirst($type)) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <!-- Status -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Status') }}</label>
+                                <select name="status" class="w-full rounded-md border-gray-300">
+                                    <option value="">{{ __('All Status') }}</option>
+                                    @foreach($statuses as $status)
+                                        <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
+                                            {{ __(ucfirst($status)) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- Property Type Filter -->
-                    <div class="relative">
-                        <select name="type" class="form-select w-full py-3 pl-4 pr-10 appearance-none bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500">
-                            <option value="">{{ __('All Types') }}</option>
-                            @foreach($propertyTypes as $type)
-                                <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
-                                    {{ __(ucfirst($type)) }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                    </div>
-
-                    <!-- Status Filter -->
-                    <div class="relative">
-                        <select name="status" class="form-select w-full py-3 pl-4 pr-10 appearance-none bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500">
-                            <option value="">{{ __('All Status') }}</option>
-                            @foreach($statuses as $status)
-                                <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
-                                    {{ __(ucfirst($status)) }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                    </div>
-
-                    <!-- Price Range Filter -->
-                    <div class="relative">
-                        <select name="price_range" class="form-select w-full py-3 pl-4 pr-10 appearance-none bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500">
-                            <option value="">{{ __('Price Range') }}</option>
-                            <option value="0-100000">{{ __('Under 100,000') }}</option>
-                            <option value="100000-500000">{{ __('100,000 - 500,000') }}</option>
-                            <option value="500000-1000000">{{ __('500,000 - 1,000,000') }}</option>
-                            <option value="1000000+">{{ __('Over 1,000,000') }}</option>
-                        </select>
-                        <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t mt-4">
-                    <div class="flex items-center gap-2">
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg shadow-sm hover:from-blue-700 hover:to-blue-800 transition-all duration-200">
-                            <i class="fas fa-filter mr-2"></i>
-                            {{ __('Apply Filters') }}
+                <div class="flex justify-between items-center pt-4 border-t">
+                    <div class="flex items-center space-x-2">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-filter mr-2"></i>{{ __('Apply Filters') }}
                         </button>
-                        @if(request()->hasAny(['search', 'type', 'status', 'price_range']))
-                            <a href="{{ route('properties.index') }}" 
-                               class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white font-medium rounded-lg shadow-sm hover:from-gray-700 hover:to-gray-800 transition-all duration-200">
-                                <i class="fas fa-times mr-2"></i>
-                                {{ __('Clear') }}
+                        @if(request()->hasAny(['search', 'type', 'status', 'price_range', 'region', 'user_id']))
+                            <a href="{{ route('properties.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                                <i class="fas fa-times mr-2"></i>{{ __('Clear') }}
                             </a>
                         @endif
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button type="button" onclick="toggleExportModal()" 
-                                class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg shadow-sm hover:from-green-700 hover:to-green-800 transition-all duration-200">
-                            <i class="fas fa-download mr-2"></i>
-                            {{ __('Export') }}
+                    <div class="flex items-center space-x-2">
+                        <button type="button" onclick="exportProperties()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            <i class="fas fa-download mr-2"></i>{{ __('Export') }}
                         </button>
-                        <button type="button" onclick="toggleImportModal()"
-                                class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg shadow-sm hover:from-purple-700 hover:to-purple-800 transition-all duration-200">
-                            <i class="fas fa-upload mr-2"></i>
-                            {{ __('Import') }}
+                        <button type="button" onclick="importProperties()" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
+                            <i class="fas fa-upload mr-2"></i>{{ __('Import') }}
                         </button>
-                        <a href="{{ route('properties.create') }}" 
-                           class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg shadow-sm hover:from-blue-700 hover:to-blue-800 transition-all duration-200">
-                            <i class="fas fa-plus mr-2"></i>
-                            {{ __('Add Property') }}
-                        </a>
+                        <a href="{{ route('properties.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-plus mr-2"></i>{{ __('Add Property') }}
                         </a>
                     </div>
                 </div>

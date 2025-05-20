@@ -12,73 +12,84 @@ class PropertyController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth()->user();
-        
-        $query = Property::with(['media', 'handler']) // Eager load relationships
-            ->when($request->search, function($q, $search) {
-                return $q->where(function($query) use ($search) {
-                    $query->where('property_name', 'like', "%{$search}%")
-                        ->orWhere('property_number', 'like', "%{$search}%")
-                        ->orWhere('compound_name', 'like', "%{$search}%");
-                });
-            })
-            ->when($request->type, function($q, $type) {
-                return $q->where('type', $type);
-            })
-            ->when($request->status, function($q, $status) {
-                return $q->where('status', $status);
-            })
-            ->when($request->price_range, function($q, $range) {
-                $ranges = explode('-', $range);
-                if (count($ranges) == 2) {
-                    return $q->whereBetween('total_price', [$ranges[0], $ranges[1]]);
-                }
-                return $q;
+        $query = Property::query();
+
+        // Search filter
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('property_name', 'like', "%{$request->search}%")
+                  ->orWhere('property_number', 'like', "%{$request->search}%");
             });
+        }
 
-        // Calculate stats from the base query
+        // Region filter
+        if ($request->filled('region')) {
+            $query->where('region', $request->region);
+        }
+
+        // Salesman filter
+        if ($request->filled('salesman')) {
+            $query->where('handler_id', $request->salesman);
+        }
+
+        // Price range filter
+        if ($request->filled('price_range')) {
+            [$min, $max] = explode('-', $request->price_range . '+');
+            $query->when($max !== '+', function($q) use ($min, $max) {
+                $q->whereBetween('total_price', [$min, $max]);
+            }, function($q) use ($min) {
+                $q->where('total_price', '>=', $min);
+            });
+        }
+
+        // Type filter
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $properties = $query->paginate(12)->withQueryString();
+        $users = User::where('company_id', auth()->user()->company_id)
+                     ->orderBy('name')
+                     ->get();
+        $regions = ['cairo', 'giza', 'alexandria', 'north-coast']; // Add your regions
+
+        // Calculate statistics
         $stats = [
-            'total' => $query->count(),
-            'available' => $query->clone()->where('status', 'available')->count(),
-            'sold' => $query->clone()->where('status', 'sold')->count(),
-            'rented' => $query->clone()->where('status', 'rented')->count()
-        ];
-
-        // Add these variables for filters
-        $propertyTypes = [
-            'apartment' => __('Apartment'),
-            'villa' => __('Villa'),
-            'duplex' => __('Duplex'),
-            'penthouse' => __('Penthouse'),
-            'studio' => __('Studio'),
-            'office' => __('Office'),
-            'retail' => __('Retail'),
-            'land' => __('Land')
+            'total' => Property::count(),
+            'available' => Property::where('status', 'available')->count(),
+            'sold' => Property::where('status', 'sold')->count(),
+            'rented' => Property::where('status', 'rented')->count(),
         ];
 
         $statuses = [
-            'available' => __('Available'),
-            'sold' => __('Sold'),
-            'rented' => __('Rented'),
-            'reserved' => __('Reserved')
+            'available',
+            'reserved',
+            'sold',
+            'rented',
+            'under_contract',
+            'off_market'
         ];
 
-        // Get paginated results
-        $properties = $query
-            ->latest()
-            ->paginate(12)
-            ->withQueryString();
+        $propertyTypes = [
+            'apartment',
+            'villa',
+            'office',
+            'shop',
+            'land',
+            'building',
+            'warehouse',
+            'factory',
+            'chalet',
+            'farm',
+            'hotel'
+        ];
 
-        // Debug properties
-        \Log::info('Properties count: ' . $properties->count());
-        \Log::info('First property: ', $properties->first() ? $properties->first()->toArray() : ['no properties']);
-
-        return view('properties.index', compact(
-            'properties',
-            'stats',
-            'propertyTypes',
-            'statuses'
-        ));
+        return view('properties.index', compact('properties', 'users', 'regions', 'stats', 'propertyTypes', 'statuses'));
     }
 
     private function handleImageUrl($imagePath)

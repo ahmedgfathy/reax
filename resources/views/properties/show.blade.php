@@ -214,7 +214,7 @@
                     <div>
                         <h4 class="font-medium text-gray-700 mb-2">{{ __('Features') }}</h4>
                         <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-                            @foreach(json_decode($property->features) ?? [] as $feature)
+                            @foreach($property->features as $feature)
                                 <li>{{ __($feature) }}</li>
                             @endforeach
                         </ul>
@@ -225,7 +225,7 @@
                     <div>
                         <h4 class="font-medium text-gray-700 mb-2">{{ __('Amenities') }}</h4>
                         <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-                            @foreach(json_decode($property->amenities) ?? [] as $amenity)
+                            @foreach($property->amenities as $amenity)
                                 <li>{{ __($amenity) }}</li>
                             @endforeach
                         </ul>

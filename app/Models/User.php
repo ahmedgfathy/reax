@@ -65,9 +65,9 @@ class User extends Authenticatable
     /**
      * Check if user is admin
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
-        return $this->role === self::ROLE_ADMIN;
+        return $this->role === 'admin';
     }
 
     /**
@@ -176,9 +176,18 @@ class User extends Authenticatable
         return $this->belongsTo(Team::class);
     }
 
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'team_user')
+            ->withTimestamps();
+    }
+
     public function hasPermission($permission)
     {
-        return $this->role->permissions->contains('name', $permission);
+        if ($this->isAdmin()) {
+            return true;
+        }
+        return $this->role && $this->role->permissions->contains('name', $permission);
     }
 
     public function isCompanyOwner()

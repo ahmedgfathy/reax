@@ -12,10 +12,8 @@ class Role extends Model
 
     protected $fillable = [
         'name',
-        'slug',
-        'description',
-        'company_id',
-        'permissions'
+        'display_name',
+        'description'
     ];
 
     protected $casts = [

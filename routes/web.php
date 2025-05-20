@@ -100,6 +100,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/management', [\App\Http\Controllers\ManagementController::class, 'index'])->name('management.index');
 
     Route::resource('teams', \App\Http\Controllers\TeamController::class); // Add team routes
+
+    Route::get('/teams/{team}/members/assign', [TeamController::class, 'assignMembersForm'])->name('teams.members.assign');
+    Route::post('/teams/{team}/members/assign', [TeamController::class, 'assignMembers'])->name('teams.members.store');
+
+    // Team Member Management
+    Route::get('/teams/{team}/members/assign', [TeamMemberController::class, 'assignForm'])
+        ->name('teams.members.assign-form');
+    Route::post('/teams/{team}/members/store', [TeamMemberController::class, 'store'])
+        ->name('teams.members.add');
 });
 
 // Remove or comment out the old locale route
@@ -219,6 +228,26 @@ Route::prefix('reports')->group(function () {
 // Route::prefix('opportunities')->group(function () {
 //     Route::get('/', [\App\Http\Controllers\OpportunityController::class, 'index'])->name('opportunities.index');
 // });
+
+// Admin Routes
+Route::middleware(['auth', 'admin'])->prefix('administration')->name('administration.')->group(function () {
+    Route::get('/', [AdministrationController::class, 'index'])->name('index');
+    Route::resource('employees', EmployeeController::class);
+    Route::resource('teams', TeamController::class);
+    Route::resource('roles', RoleController::class);
+    Route::resource('permissions', PermissionController::class);
+    Route::resource('departments', DepartmentController::class);
+    Route::resource('branches', BranchController::class);
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+});
+
+// Add AI Debug routes in admin middleware group
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::prefix('ai')->name('ai.')->group(function () {
+        Route::get('/debug', [AIDebugController::class, 'index'])->name('debug');
+        Route::post('/analyze', [AIDebugController::class, 'analyze'])->name('analyze');
+    });
+});
 
 // Include admin routes
 require __DIR__ . '/admin.php';

@@ -27,4 +27,13 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
+
+    /**
+     * The application's route middleware.
+     *
+     * @var array<string, class-string|string>
+     */
+    protected $routeMiddleware = [
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
+    ];
 }

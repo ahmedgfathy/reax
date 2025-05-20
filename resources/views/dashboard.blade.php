@@ -918,39 +918,12 @@
                         backgroundColor: 'rgba(59, 130, 246, 0.2)',
                         borderColor: '#3B82F6',
                         borderWidth: 2,
-                        tension: 0.3,
-                        fill: true,
-                        pointBackgroundColor: '#3B82F6',
-                        pointRadius: 4,
-                        pointHoverRadius: 6
+                        tension: 0.4
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                title: function(context) {
-                                    return context[0].label;
-                                },
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.raw}`;
-                                }
-                            }
-                        }
-                    }
+                    maintainAspectRatio: false
                 }
             });
 

@@ -89,4 +89,23 @@ class TeamController extends Controller
         return redirect()->route('teams.index')
             ->with('success', 'Team deleted successfully');
     }
+
+    public function assignMembersForm(Team $team)
+    {
+        $users = User::whereNotIn('id', $team->members->pluck('id'))->get();
+        return view('teams.assign-members', compact('team', 'users'));
+    }
+
+    public function assignMembers(Request $request, Team $team)
+    {
+        $validated = $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id'
+        ]);
+
+        $team->members()->attach($validated['user_ids']);
+
+        return redirect()->route('teams.show', $team)
+            ->with('success', 'Team members assigned successfully.');
+    }
 }
