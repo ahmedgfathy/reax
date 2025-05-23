@@ -310,13 +310,14 @@
         </div>
         
         <!-- Hero Content -->
-        <div class="relative container mx-auto px-6 h-full flex items-center">
-            <div class="max-w-3xl text-white">
+        <div class="relative container mx-auto px-6 h-full flex flex-col items-center justify-center">
+            <div class="text-center text-white max-w-4xl mx-auto mb-8">
                 <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">{{ __('Discover Your Perfect Home Worldwide') }}</h1>
                 <p class="text-xl mb-12 text-white/90">{{ __('Premium properties in the world\'s most prestigious locations') }}</p>
+            </div>
                 
-                <!-- Search Box -->
-                <div class="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl transform hover:scale-[1.02] transition-transform duration-300 max-w-5xl mx-auto">
+            <!-- Search Box -->
+            <div class="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl transform hover:scale-[1.02] transition-transform duration-300 w-full max-w-6xl mx-auto">
                     <div class="flex flex-col md:flex-row gap-6">
                         <!-- Main Search Input -->
                         <div class="flex-1 relative">
