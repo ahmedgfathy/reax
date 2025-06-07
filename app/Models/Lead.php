@@ -17,6 +17,7 @@ class Lead extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'appwrite_id',
         'company_id',
         'assigned_to', // Changed from user_id
         'first_name',

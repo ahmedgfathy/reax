@@ -12,6 +12,7 @@ class Property extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'appwrite_id',
         'company_id',
         'project_id',
         'team_id',
@@ -288,6 +289,22 @@ class Property extends Model
             'reserved' => 'yellow',
             default => 'gray'
         };
+    }
+
+    // Accessor methods for backward compatibility with views
+    public function getNameAttribute()
+    {
+        return $this->property_name;
+    }
+
+    public function getPriceAttribute()
+    {
+        return $this->total_price;
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->getFeaturedImageUrlAttribute();
     }
 
     public function getFeaturedImageUrlAttribute()

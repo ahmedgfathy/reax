@@ -49,10 +49,10 @@
 
     <!-- Content Section -->
     <div class="p-6">
-        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $property->name }}</h3>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $property->property_name ?? 'Property' }}</h3>
         <p class="text-gray-600 mb-4 flex items-center">
             <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
-            {{ $property->area ?? $property->location ?? __('Location not specified') }}
+            {{ $property->compound_name ?? $property->location ?? __('Location not specified') }}
         </p>
         <div class="flex justify-between text-gray-600 border-t pt-4">
             <div class="flex items-center">
@@ -65,7 +65,7 @@
             </div>
             <div class="flex items-center">
                 <i class="fas fa-ruler-combined mr-1"></i>
-                <span>{{ $property->unit_area ?? 0 }} {{ __('m²') }}</span>
+                <span>{{ $property->total_area ?? $property->unit_area ?? 0 }} {{ __('m²') }}</span>
             </div>
         </div>
         <div class="mt-4">

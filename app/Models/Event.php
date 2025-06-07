@@ -11,6 +11,7 @@ class Event extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'appwrite_id',
         'title',
         'description',
         'event_type',
