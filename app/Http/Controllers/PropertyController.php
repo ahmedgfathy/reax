@@ -52,7 +52,7 @@ class PropertyController extends Controller
             $query->where('status', $request->status);
         }
 
-        $properties = $query->paginate(12)->withQueryString();
+        $properties = $query->with('media')->paginate(12)->withQueryString();
         $users = User::where('company_id', auth()->user()->company_id)
                      ->orderBy('name')
                      ->get();
@@ -75,19 +75,17 @@ class PropertyController extends Controller
             'off_market'
         ];
 
-        $propertyTypes = [
-            'apartment',
-            'villa',
-            'office',
-            'shop',
-            'land',
-            'building',
-            'warehouse',
-            'factory',
-            'chalet',
-            'farm',
-            'hotel'
-        ];
+        // Get property types from database
+        $propertyTypes = Property::select('type')
+            ->distinct()
+            ->whereNotNull('type')
+            ->where('type', '!=', '')
+            ->where('type', '!=', 'no selected value')
+            ->pluck('type')
+            ->filter()
+            ->sort()
+            ->values()
+            ->toArray();
 
         return view('properties.index', compact('properties', 'users', 'regions', 'stats', 'propertyTypes', 'statuses'));
     }
@@ -110,6 +108,29 @@ class PropertyController extends Controller
 
     private function getFormData()
     {
+        // Get property types from database
+        $propertyTypes = Property::select('type')
+            ->distinct()
+            ->whereNotNull('type')
+            ->where('type', '!=', '')
+            ->where('type', '!=', 'no selected value')
+            ->pluck('type')
+            ->filter()
+            ->sort()
+            ->values()
+            ->toArray();
+
+        // Get categories from database
+        $categories = Property::select('category')
+            ->distinct()
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->pluck('category')
+            ->filter()
+            ->sort()
+            ->values()
+            ->toArray();
+
         return [
             'features' => [
                 'balcony', 'built-in kitchen', 'private garden', 'security',
@@ -120,11 +141,8 @@ class PropertyController extends Controller
                 'security', 'mosque', 'shopping area', 'school', 'hospital',
                 'restaurant', 'cafe'
             ],
-            'propertyTypes' => [
-                'apartment', 'villa', 'duplex', 'penthouse', 'studio',
-                'office', 'retail', 'land'
-            ],
-            'categories' => ['residential', 'commercial', 'administrative'],
+            'propertyTypes' => $propertyTypes,
+            'categories' => $categories,
             'statuses' => ['available', 'sold', 'rented', 'reserved'],
             'currencies' => ['EGP', 'USD', 'EUR'],
             'contactStatuses' => ['contacted', 'pending', 'no_answer'],
@@ -258,5 +276,93 @@ class PropertyController extends Controller
     {
         $property->delete();
         return redirect()->route('properties.index')->with('success', 'Property deleted successfully');
+    }
+
+    public function rent(Request $request)
+    {
+        $query = Property::where('unit_for', 'rent')
+                         ->where('is_published', true);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('property_name', 'like', "%{$request->search}%")
+                  ->orWhere('compound_name', 'like', "%{$request->search}%");
+            });
+        }
+
+        // Price range filter
+        if ($request->filled('min_price')) {
+            $query->where('total_price', '>=', $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('total_price', '<=', $request->max_price);
+        }
+
+        // Type filter
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Sort
+        switch ($request->sort) {
+            case 'price_low':
+                $query->orderBy('total_price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('total_price', 'desc');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $properties = $query->with('media')->paginate(12)->withQueryString();
+
+        return view('rent', compact('properties'));
+    }
+
+    public function sale(Request $request)
+    {
+        $query = Property::where('unit_for', 'sale')
+                         ->where('is_published', true);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('property_name', 'like', "%{$request->search}%")
+                  ->orWhere('compound_name', 'like', "%{$request->search}%");
+            });
+        }
+
+        // Price range filter
+        if ($request->filled('min_price')) {
+            $query->where('total_price', '>=', $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('total_price', '<=', $request->max_price);
+        }
+
+        // Type filter
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Sort
+        switch ($request->sort) {
+            case 'price_low':
+                $query->orderBy('total_price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('total_price', 'desc');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $properties = $query->with('media')->paginate(12)->withQueryString();
+
+        return view('sale', compact('properties'));
     }
 }

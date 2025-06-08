@@ -18,7 +18,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     @forelse($property->media as $media)
                     <div class="relative group cursor-pointer">
-                        <img src="{{ $media->file_path }}" 
+                        <img src="{{ $media->image_url }}" 
                              alt="{{ $property->property_name }}"
                              class="w-full h-48 object-cover rounded"
                              onclick="openGallery({{ $loop->index }})">
@@ -258,7 +258,7 @@
                     <div class="swiper-wrapper">
                         @foreach($property->media as $media)
                             <div class="swiper-slide">
-                                <img src="{{ $media->file_path }}" 
+                                <img src="{{ $media->image_url }}" 
                                      alt="{{ $property->property_name }}"
                                      class="max-h-[80vh] mx-auto">
                             </div>

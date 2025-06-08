@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         // ...existing commands...
         Commands\CleanMigrationsCommand::class,
         Commands\InspectLeadTableCommand::class, // Add the new command
+        Commands\AssociatePropertyImages::class,
     ];
 
     // ...existing code...

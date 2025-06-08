@@ -438,8 +438,10 @@ class AppwriteMigrationService
             $propertyData
         );
         
-        // Migrate property images
-        $this->migratePropertyImages($property, $appwriteProperty, $isDryRun);
+        // Migrate images with optimized processing
+        if (!$isDryRun) {
+            $this->migratePropertyImages($property, $appwriteProperty, $isDryRun);
+        }
         
         return $property;
     }
@@ -556,16 +558,61 @@ class AppwriteMigrationService
     }
     
     /**
-     * Download and save property image
+     * Download and save property image with smart association and deduplication
      */
     private function downloadAndSavePropertyImage($property, $fileId, $bucketId, $isFeatured = false)
     {
         try {
-            // Get file metadata
+            // First, check if this image is already associated with this property
+            $existingMedia = PropertyMedia::where('property_id', $property->id)
+                ->where('appwrite_file_id', $fileId)
+                ->first();
+                
+            if ($existingMedia) {
+                Log::info("Image {$fileId} already associated with property {$property->id}");
+                return;
+            }
+            
+            // Check if this image exists for any other property (to avoid re-downloading)
+            $existingGlobalMedia = PropertyMedia::where('appwrite_file_id', $fileId)->first();
+            
+            if ($existingGlobalMedia && Storage::disk('public')->exists($existingGlobalMedia->file_path)) {
+                // Image exists locally, create a new association for this property
+                $fileName = $existingGlobalMedia->original_name;
+                $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+                $newLocalFileName = $property->id . '_' . time() . '_' . rand(1000, 9999) . '.' . $extension;
+                $newLocalPath = "companies/{$property->company_id}/properties/{$newLocalFileName}";
+                
+                // Copy existing file to new location for this property
+                Storage::disk('public')->copy($existingGlobalMedia->file_path, $newLocalPath);
+                
+                // Create new property media record
+                PropertyMedia::create([
+                    'property_id' => $property->id,
+                    'type' => 'image',
+                    'file_path' => $newLocalPath,
+                    'original_name' => $fileName,
+                    'appwrite_file_id' => $fileId,
+                    'is_featured' => $isFeatured,
+                    'sort_order' => 0
+                ]);
+                
+                Log::info("Reused existing image {$fileId} for property {$property->id}");
+                return;
+            }
+            
+            // Get file metadata to check if we can download it
             $fileMetadata = $this->appwriteService->getFileMetadata($bucketId, $fileId);
             
             if (!$fileMetadata) {
                 Log::warning("File metadata not found for file {$fileId} in bucket {$bucketId}");
+                return;
+            }
+            
+            // Skip very large files to prevent memory issues
+            $maxFileSize = 15 * 1024 * 1024; // 15MB limit
+            if (($fileMetadata['sizeOriginal'] ?? 0) > $maxFileSize) {
+                Log::warning("Skipping large file {$fileId} ({$fileMetadata['sizeOriginal']} bytes) for property {$property->id}");
                 return;
             }
             
@@ -577,11 +624,15 @@ class AppwriteMigrationService
                 return;
             }
             
-            // Generate local file path
+            // Generate unique local file path for this property
             $fileName = $fileMetadata['name'];
             $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-            $localFileName = $property->id . '_' . time() . '_' . rand(1000, 9999) . '.' . $extension;
+            $localFileName = $property->id . '_' . $fileId . '.' . $extension;
             $localPath = "companies/{$property->company_id}/properties/{$localFileName}";
+            
+            // Ensure directory exists
+            $directory = dirname($localPath);
+            Storage::disk('public')->makeDirectory($directory);
             
             // Save file to local storage
             Storage::disk('public')->put($localPath, $fileContent);
@@ -597,10 +648,16 @@ class AppwriteMigrationService
                 'sort_order' => 0
             ]);
             
-            Log::info("Successfully downloaded and saved property image {$fileId} for property {$property->id}");
+            // Force garbage collection to free memory
+            unset($fileContent);
+            if (function_exists('gc_collect_cycles')) {
+                gc_collect_cycles();
+            }
+            
+            Log::info("Successfully downloaded and saved new image {$fileId} for property {$property->id}");
             
         } catch (Exception $e) {
-            Log::error("Failed to download property image {$fileId}: " . $e->getMessage());
+            Log::error("Failed to process property image {$fileId} for property {$property->id}: " . $e->getMessage());
         }
     }
     
@@ -833,6 +890,168 @@ class AppwriteMigrationService
         );
     }
     
+    /**
+     * Verify property data consistency between Appwrite and local database
+     */
+    public function verifyPropertyConsistency($propertyId = null): array
+    {
+        $results = [
+            'total_remote' => 0,
+            'total_local' => 0,
+            'missing_local' => [],
+            'inconsistent_data' => [],
+            'missing_images' => [],
+            'orphaned_images' => []
+        ];
+        
+        try {
+            // Get remote properties count
+            $remoteResponse = $this->appwriteService->getAllProperties(1, 0);
+            $results['total_remote'] = $remoteResponse['total'] ?? 0;
+            
+            // Get local properties count
+            $localQuery = Property::query();
+            if ($propertyId) {
+                $localQuery->where('id', $propertyId);
+            }
+            $results['total_local'] = $localQuery->count();
+            
+            // Check for missing properties in local database
+            $offset = 0;
+            $limit = 100;
+            
+            do {
+                $remoteResponse = $this->appwriteService->getAllProperties($limit, $offset);
+                $remoteProperties = $remoteResponse['documents'] ?? [];
+                
+                foreach ($remoteProperties as $remoteProperty) {
+                    $appwriteId = $remoteProperty['$id'];
+                    $localProperty = Property::where('appwrite_id', $appwriteId)->first();
+                    
+                    if (!$localProperty) {
+                        $results['missing_local'][] = $appwriteId;
+                        continue;
+                    }
+                    
+                    // Check data consistency
+                    $inconsistencies = $this->checkPropertyDataConsistency($remoteProperty, $localProperty);
+                    if (!empty($inconsistencies)) {
+                        $results['inconsistent_data'][$appwriteId] = $inconsistencies;
+                    }
+                    
+                    // Check image associations
+                    $imageIssues = $this->checkPropertyImageConsistency($remoteProperty, $localProperty);
+                    if (!empty($imageIssues)) {
+                        $results['missing_images'][$appwriteId] = $imageIssues;
+                    }
+                }
+                
+                $offset += $limit;
+            } while (count($remoteProperties) == $limit && (!$propertyId || $offset < $limit));
+            
+            // Check for orphaned images
+            $orphanedImages = PropertyMedia::whereDoesntHave('property')->get();
+            $results['orphaned_images'] = $orphanedImages->pluck('id')->toArray();
+            
+        } catch (Exception $e) {
+            Log::error("Failed to verify property consistency: " . $e->getMessage());
+            $results['error'] = $e->getMessage();
+        }
+        
+        return $results;
+    }
+    
+    /**
+     * Check data consistency between remote and local property
+     */
+    private function checkPropertyDataConsistency($remoteProperty, $localProperty): array
+    {
+        $inconsistencies = [];
+        
+        // Key fields to check
+        $fieldsToCheck = [
+            'property_name' => $remoteProperty['propertyName'] ?? $remoteProperty['name'] ?? null,
+            'total_price' => $this->convertPrice($remoteProperty['totalPrice'] ?? $remoteProperty['price'] ?? 0, $remoteProperty['currency'] ?? 'EGP'),
+            'unit_area' => $this->parseNumericValue($remoteProperty['area'] ?? $remoteProperty['unitArea'] ?? null),
+            'building_area' => $this->parseNumericValue($remoteProperty['buildingArea'] ?? $remoteProperty['building'] ?? null),
+            'rooms' => $remoteProperty['rooms'] ?? $remoteProperty['bedrooms'] ?? null,
+            'bathrooms' => $remoteProperty['bathrooms'] ?? null,
+            'status' => $this->mapPropertyStatus($remoteProperty['status'] ?? 'available'),
+        ];
+        
+        foreach ($fieldsToCheck as $field => $remoteValue) {
+            $localValue = $localProperty->$field;
+            
+            // Convert both to strings for comparison to handle type differences
+            $remoteStr = is_null($remoteValue) ? '' : (string)$remoteValue;
+            $localStr = is_null($localValue) ? '' : (string)$localValue;
+            
+            if ($remoteStr !== $localStr) {
+                $inconsistencies[$field] = [
+                    'remote' => $remoteValue,
+                    'local' => $localValue
+                ];
+            }
+        }
+        
+        return $inconsistencies;
+    }
+    
+    /**
+     * Check image associations consistency
+     */
+    private function checkPropertyImageConsistency($remoteProperty, $localProperty): array
+    {
+        $issues = [];
+        
+        try {
+            $remoteImages = $remoteProperty['images'] ?? $remoteProperty['image'] ?? [];
+            
+            if (is_string($remoteImages)) {
+                $remoteImages = json_decode($remoteImages, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    return ['error' => 'Invalid JSON in remote images'];
+                }
+            }
+            
+            if (!is_array($remoteImages)) {
+                return [];
+            }
+            
+            $localImages = $localProperty->media()->where('type', 'image')->get();
+            $localImageIds = $localImages->pluck('appwrite_file_id')->toArray();
+            
+            foreach ($remoteImages as $remoteImageData) {
+                $fileId = is_string($remoteImageData) ? $remoteImageData : ($remoteImageData['id'] ?? null);
+                
+                if ($fileId && !in_array($fileId, $localImageIds)) {
+                    $issues['missing_images'][] = $fileId;
+                }
+            }
+            
+            // Check for local images not in remote
+            foreach ($localImages as $localImage) {
+                $found = false;
+                foreach ($remoteImages as $remoteImageData) {
+                    $remoteFileId = is_string($remoteImageData) ? $remoteImageData : ($remoteImageData['id'] ?? null);
+                    if ($remoteFileId === $localImage->appwrite_file_id) {
+                        $found = true;
+                        break;
+                    }
+                }
+                
+                if (!$found) {
+                    $issues['extra_local_images'][] = $localImage->appwrite_file_id;
+                }
+            }
+            
+        } catch (Exception $e) {
+            $issues['error'] = $e->getMessage();
+        }
+        
+        return $issues;
+    }
+
     // Helper methods for mapping data
     private function mapUserRole($role)
     {
