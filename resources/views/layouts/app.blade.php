@@ -78,21 +78,28 @@
         
         <!-- Module Header (Single white bar) -->
         <div class="bg-white shadow-sm border-b">
-            <div class="container mx-auto py-4 px-6">
+            <div class="container mx-auto py-2 px-3 sm:py-2 sm:px-4">
                 <div class="flex justify-between items-center">
-                    <h1 class="text-2xl font-bold text-gray-800">{{ $header ?? __('Dashboard') }}</h1>
+                    <div class="flex-1 min-w-0">
+                        <h1 class="text-base sm:text-xl font-bold text-gray-800 truncate">{{ $header ?? __('Dashboard') }}</h1>
+                        @isset($breadcrumbs)
+                            <div class="hidden sm:flex items-center text-xs text-gray-500">
+                                {{ $breadcrumbs }}
+                            </div>
+                        @endisset
+                    </div>
                     @auth
-                        <div class="text-gray-600">
+                        <div class="hidden sm:block text-gray-600 text-xs ml-2">
                             {{ Auth::user()->name ?? 'Guest' }} 
                             @if(Auth::user()->role)
-                                - {{ Auth::user()->role_name }}
+                                <span class="hidden md:inline">- {{ Auth::user()->role_name }}</span>
                             @endif
                             @if(Auth::user()->company)
-                                {{ __('at') }} {{ Auth::user()->company->name }}
+                                <span class="hidden lg:inline">{{ __('at') }} {{ Auth::user()->company->name }}</span>
                             @endif
                         </div>
                     @else
-                        <div class="text-gray-600">
+                        <div class="hidden sm:block text-gray-600 text-xs">
                             {{ __('Welcome Guest') }}
                         </div>
                     @endauth
@@ -101,26 +108,8 @@
         </div>
     </div>
 
-    <!-- User Profile Section -->
-    @auth
-        <div class="relative">
-            <button type="button" class="flex items-center space-x-3">
-                <img src="{{ auth()->user()->avatar ?? asset('images/default-avatar.png') }}" 
-                     alt="{{ auth()->user()->name ?? 'User' }}" 
-                     class="h-8 w-8 rounded-full">
-                <span class="text-gray-700">{{ auth()->user()->name ?? 'Guest' }}</span>
-            </button>
-        </div>
-    @else
-        <div>
-            <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900">
-                {{ __('Login') }}
-            </a>
-        </div>
-    @endauth
-
     <!-- Main Content with Sidebar -->
-    <div class="flex pt-36"> <!-- Increased padding top from 32 to 36 -->
+    <div class="flex pt-28"> <!-- Reduced from 36 to 28 -->
         <!-- Sidebar Overlay -->
         <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" 
              onclick="toggleSidebar()"></div>
@@ -133,12 +122,12 @@
         </button>
 
         <!-- Fixed Sidebar - Updated top position -->
-        <div id="sidebar" class="fixed left-0 top-36 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:z-30"> <!-- Updated top from 32 to 36 -->
+        <div id="sidebar" class="fixed left-0 top-28 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:z-30"> <!-- Updated top from 36 to 28 -->
             @include('layouts.sidebar')
         </div>
 
         <!-- Scrollable Main Content -->
-        <div class="flex-1 lg:ml-64 p-6 overflow-y-auto">
+        <div class="flex-1 lg:ml-64 p-2 overflow-y-auto">
             {{ $slot }}
         </div>
     </div>

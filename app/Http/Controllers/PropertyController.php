@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class PropertyController extends Controller
 {
@@ -32,6 +33,14 @@ class PropertyController extends Controller
             $query->where('handler_id', $request->salesman);
         }
 
+        // User filter (both handler and sales person)
+        if ($request->filled('user_id')) {
+            $query->where(function($q) use ($request) {
+                $q->where('handler_id', $request->user_id)
+                  ->orWhere('sales_person_id', $request->user_id);
+            });
+        }
+
         // Price range filter
         if ($request->filled('price_range')) {
             [$min, $max] = explode('-', $request->price_range . '+');
@@ -53,9 +62,18 @@ class PropertyController extends Controller
         }
 
         $properties = $query->with('media')->paginate(12)->withQueryString();
-        $users = User::where('company_id', auth()->user()->company_id)
-                     ->orderBy('name')
-                     ->get();
+        
+        // Get users who are related to properties (handlers or sales persons) - optimized single query
+        $users = User::select('users.id', 'users.name')
+            ->where('users.company_id', auth()->user()->company_id)
+            ->whereExists(function($query) {
+                $query->select(DB::raw(1))
+                      ->from('properties')
+                      ->whereRaw('properties.handler_id = users.id OR properties.sales_person_id = users.id');
+            })
+            ->orderBy('users.name')
+            ->get();
+            
         $regions = ['cairo', 'giza', 'alexandria', 'north-coast']; // Add your regions
 
         // Calculate statistics
@@ -64,6 +82,8 @@ class PropertyController extends Controller
             'available' => Property::where('status', 'available')->count(),
             'sold' => Property::where('status', 'sold')->count(),
             'rented' => Property::where('status', 'rented')->count(),
+            'pending' => Property::where('status', 'under_contract')->count(),
+            'featured' => Property::where('is_featured', true)->count(),
         ];
 
         $statuses = [
