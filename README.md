@@ -24,7 +24,7 @@ The name "REAX" represents the perfect fusion of real estate expertise and techn
 
 - **RE**: Real Estate - The foundation of our business focus
 - **A**: Advanced, Analytics, Application - Highlighting our tech-forward approach
-- **X**: Representing the X-factor that sets our solution apart in the Egyptian market
+- - **X**: Representing the X-factor that sets our solution apart in the Egyptian market
 
 With its easy pronunciation in both Arabic and English, REAX offers a modern, memorable identity for a system built to transform how real estate professionals operate in Egypt and beyond.
 
@@ -198,6 +198,142 @@ The dashboard provides an overview of your:
 ## 📚 Documentation
 
 Comprehensive documentation is available in the [REAX Documentation](https://docs.reaxcrm.com).
+
+## 🔐 Authentication & Roles System
+
+REAX CRM implements a sophisticated multi-tenant, company-based authentication system designed for real estate organizations of all sizes.
+
+### 🏢 Multi-Tenancy Architecture
+
+The platform operates on a **company-based multi-tenancy model** where:
+- Each company operates as an isolated tenant with complete data segregation
+- Companies can have multiple branches/teams for organizational flexibility
+- All user access and data visibility is scoped to the company level
+- Cross-company data access is strictly prohibited for security
+
+### 👥 User Hierarchy & Roles
+
+The system implements a **6-tier hierarchical role structure**:
+
+#### 1. 🔥 System Administrator
+- **Scope:** Platform-wide access
+- **Permissions:** Complete system control, company management, platform configuration
+- **Use Case:** Platform owners and technical administrators
+
+#### 2. 👑 Company Owner/CEO
+- **Scope:** Full company access
+- **Permissions:** All company operations, user management, system configuration
+- **Features:** Company-wide reporting, financial overview, strategic decision making
+- **Hierarchy:** Top-level executive with unrestricted company access
+
+#### 3. 🎯 Company Administrator
+- **Scope:** Administrative company access
+- **Permissions:** User management, role assignment, company settings, advanced reporting
+- **Responsibilities:** HR functions, system configuration, departmental oversight
+- **Limitations:** Cannot modify owner accounts or critical company settings
+
+#### 4. 📊 Manager
+- **Scope:** Team/department management
+- **Permissions:** Team member oversight, performance tracking, report generation
+- **Features:** Team assignment, sales monitoring, pipeline management
+- **Authority:** Can manage agents and employees within assigned teams
+
+#### 5. 🏘️ Agent
+- **Scope:** Customer-facing operations
+- **Permissions:** Lead management, property listings, client interactions, sales activities
+- **Specialization:** Property sales, client relationship management, transaction handling
+- **Focus:** Revenue generation and customer satisfaction
+
+#### 6. 👤 Employee
+- **Scope:** Basic operational access
+- **Permissions:** Task execution, data entry, basic reporting
+- **Role:** Support functions, administrative tasks, junior-level operations
+
+### 🛡️ Security Features
+
+#### Access Control
+- **Role-Based Access Control (RBAC):** Granular permissions system
+- **Route Protection:** Middleware-based access control on all endpoints
+- **Data Scoping:** Automatic filtering based on user company and role
+- **Session Management:** Secure session handling with automatic timeout
+
+#### Multi-Factor Authentication
+- **2FA Support:** Optional two-factor authentication for enhanced security
+- **Login Verification:** Email-based verification for new devices
+- **Password Policies:** Configurable password strength requirements
+
+#### Audit & Compliance
+- **Activity Logging:** Comprehensive user action tracking
+- **Data Privacy:** GDPR-compliant user data handling
+- **Access Logs:** Detailed login and permission usage tracking
+
+### 🎭 Custom Permissions System
+
+The platform features a **granular permissions system** with over 50 specific permissions:
+
+#### Property Management
+- `view-properties`, `create-properties`, `edit-properties`, `delete-properties`
+- `manage-property-media`, `assign-properties`, `view-property-analytics`
+
+#### Lead Management  
+- `view-leads`, `create-leads`, `edit-leads`, `delete-leads`
+- `assign-leads`, `convert-leads`, `view-lead-analytics`
+
+#### User Management
+- `view-users`, `create-users`, `edit-users`, `delete-users`
+- `assign-roles`, `manage-teams`, `view-user-reports`
+
+#### Financial Operations
+- `view-transactions`, `create-transactions`, `approve-transactions`
+- `view-financial-reports`, `manage-commissions`
+
+#### System Administration
+- `manage-company-settings`, `view-system-logs`, `backup-data`
+- `manage-integrations`, `configure-notifications`
+
+### 🏗️ Team-Based Organization
+
+#### Team Structure
+- **Hierarchical Teams:** Support for nested team structures
+- **Team Leaders:** Designated team leaders with management permissions
+- **Cross-Team Collaboration:** Configurable cross-team property and lead sharing
+- **Team Performance:** Team-based analytics and performance tracking
+
+#### Assignment Patterns
+- **Auto-Assignment:** Intelligent lead distribution based on team capacity
+- **Manual Assignment:** Manager-controlled lead and property assignment
+- **Territory Management:** Geographic-based assignment rules
+- **Workload Balancing:** Automatic distribution to prevent overload
+
+### 🔄 Registration & Onboarding
+
+#### Company Registration
+1. **Company Creation:** New companies register with basic information
+2. **Owner Account:** Automatic creation of company owner account
+3. **Team Setup:** Initial team and department configuration
+4. **System Configuration:** Company-specific settings and preferences
+
+#### User Invitation Flow
+1. **Admin Invitation:** Company administrators invite new users via email
+2. **Role Assignment:** Pre-defined role and team assignment
+3. **Welcome Process:** Guided onboarding with role-specific tutorials
+4. **Permission Verification:** Automatic permission validation and assignment
+
+### 📊 Data Access Patterns
+
+#### Company Isolation
+- **Database Scoping:** All queries automatically filtered by company
+- **Media Separation:** Company-specific file storage and access
+- **Report Isolation:** Analytics and reports scoped to company data
+- **Integration Boundaries:** API access limited to company data
+
+#### Role-Based Filtering
+- **Hierarchical Access:** Higher roles inherit lower role permissions
+- **Team-Based Filtering:** Data access limited to assigned teams/territories
+- **Property Assignment:** Users only see assigned or team-related properties
+- **Lead Visibility:** Lead access based on assignment and team membership
+
+This robust authentication system ensures **secure, scalable, and organized access control** suitable for real estate companies ranging from small agencies to large enterprise organizations.
 
 ## 🔄 Updates & Migration
 
