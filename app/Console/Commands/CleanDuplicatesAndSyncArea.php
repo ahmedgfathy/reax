@@ -13,12 +13,9 @@ class CleanDuplicatesAndSyncArea extends Command
     protected $signature = 'properties:clean-and-sync-area {--dry-run : Run without making changes}';
     protected $description = 'Remove duplicate properties and sync area data from Appwrite';
 
-    private $appwriteService;
-
-    public function __construct(AppwriteService $appwriteService)
+    public function __construct()
     {
         parent::__construct();
-        $this->appwriteService = $appwriteService;
     }
 
     public function handle()
@@ -34,8 +31,9 @@ class CleanDuplicatesAndSyncArea extends Command
         // Step 1: Remove duplicate properties
         $this->cleanupDuplicates($isDryRun);
 
-        // Step 2: Sync area data from Appwrite
-        $this->syncAreaFromAppwrite($isDryRun);
+        // Step 2: Sync area data from Appwrite (resolve service only when needed)
+        $appwriteService = app(AppwriteService::class);
+        $this->syncAreaFromAppwrite($isDryRun, $appwriteService);
 
         $this->info('Process completed successfully!');
         return Command::SUCCESS;
@@ -99,7 +97,7 @@ class CleanDuplicatesAndSyncArea extends Command
         $this->info("✅ Successfully deleted {$deleted} duplicate properties");
     }
 
-    private function syncAreaFromAppwrite($isDryRun = false)
+    private function syncAreaFromAppwrite($isDryRun = false, AppwriteService $appwriteService = null)
     {
         $this->info('🔄 Starting area data sync from Appwrite...');
 
@@ -123,7 +121,7 @@ class CleanDuplicatesAndSyncArea extends Command
             foreach ($properties as $property) {
                 try {
                     // Fetch the property from Appwrite
-                    $appwriteProperty = $this->appwriteService->getProperty($property->appwrite_id);
+                    $appwriteProperty = $appwriteService->getProperty($property->appwrite_id);
                     
                     if (!$appwriteProperty) {
                         $progressBar->advance();

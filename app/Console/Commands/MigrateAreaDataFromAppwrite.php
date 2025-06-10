@@ -22,14 +22,11 @@ class MigrateAreaDataFromAppwrite extends Command
      */
     protected $description = 'Fast migration of area data only from Appwrite to MariaDB (skips images and heavy processing)';
 
-    protected AppwriteService $appwriteService;
     protected $defaultCompany;
 
-    public function __construct(AppwriteService $appwriteService)
+    public function __construct()
     {
         parent::__construct();
-        $this->appwriteService = $appwriteService;
-        $this->defaultCompany = $this->getOrCreateDefaultCompany();
     }
 
     /**
@@ -47,9 +44,13 @@ class MigrateAreaDataFromAppwrite extends Command
         }
 
         try {
+            // Resolve services only when needed
+            $appwriteService = app(AppwriteService::class);
+            $this->defaultCompany = $this->getOrCreateDefaultCompany();
+            
             // Test Appwrite connection
             $this->info('Testing Appwrite connection...');
-            if (!$this->testConnection()) {
+            if (!$this->testConnection($appwriteService)) {
                 $this->error('Failed to connect to Appwrite. Please check your configuration.');
                 return Command::FAILURE;
             }
@@ -57,7 +58,7 @@ class MigrateAreaDataFromAppwrite extends Command
             $this->info('Connection successful! Starting area data migration...');
 
             // Get total count
-            $totalResponse = $this->appwriteService->getAllProperties(1, 0);
+            $totalResponse = $appwriteService->getAllProperties(1, 0);
             $totalCount = $totalResponse['total'] ?? 0;
             
             $this->info("Found {$totalCount} properties in Appwrite");
@@ -77,7 +78,7 @@ class MigrateAreaDataFromAppwrite extends Command
             $progressBar->start();
 
             while ($offset < $totalCount) {
-                $response = $this->appwriteService->getAllProperties($batchLimit, $offset);
+                $response = $appwriteService->getAllProperties($batchLimit, $offset);
                 $properties = $response['documents'] ?? [];
 
                 if (empty($properties)) {
@@ -133,10 +134,10 @@ class MigrateAreaDataFromAppwrite extends Command
     /**
      * Test connection to Appwrite
      */
-    private function testConnection(): bool
+    private function testConnection(AppwriteService $appwriteService): bool
     {
         try {
-            $response = $this->appwriteService->getAllProperties(1, 0);
+            $response = $appwriteService->getAllProperties(1, 0);
             return true;
         } catch (Exception $e) {
             Log::error('Appwrite connection test failed: ' . $e->getMessage());
