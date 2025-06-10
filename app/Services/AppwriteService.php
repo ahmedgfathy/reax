@@ -17,14 +17,32 @@ class AppwriteService
     
     public function __construct()
     {
-        $this->client = new Client();
-        $this->client
-            ->setEndpoint(config('appwrite.endpoint'))
-            ->setProject(config('appwrite.project_id'))
-            ->setKey(config('appwrite.api_key'));
-            
-        $this->databases = new Databases($this->client);
-        $this->storage = new Storage($this->client);
+        // Only initialize if all required Appwrite config values are present
+        $projectId = config('appwrite.project_id');
+        $apiKey = config('appwrite.api_key');
+        $endpoint = config('appwrite.endpoint');
+        
+        if ($projectId && $apiKey && $endpoint) {
+            $this->client = new Client();
+            $this->client
+                ->setEndpoint($endpoint)
+                ->setProject($projectId)
+                ->setKey($apiKey);
+                
+            $this->databases = new Databases($this->client);
+            $this->storage = new Storage($this->client);
+        } else {
+            // Log warning but don't fail - useful for build processes
+            Log::warning('Appwrite configuration incomplete. Service will not be functional.');
+        }
+    }
+    
+    /**
+     * Check if the service is properly configured
+     */
+    private function isConfigured(): bool
+    {
+        return $this->client !== null && $this->databases !== null;
     }
     
     /**
@@ -32,6 +50,11 @@ class AppwriteService
      */
     public function getAllProperties($limit = 100, $offset = 0)
     {
+        if (!$this->isConfigured()) {
+            Log::warning('Appwrite service not configured. Returning empty result.');
+            return ['documents' => [], 'total' => 0];
+        }
+        
         try {
             $response = $this->databases->listDocuments(
                 config('appwrite.database_id'),
@@ -58,6 +81,11 @@ class AppwriteService
      */
     public function getAllLeads($limit = 100, $offset = 0)
     {
+        if (!$this->isConfigured()) {
+            Log::warning('Appwrite service not configured. Returning empty result.');
+            return ['documents' => [], 'total' => 0];
+        }
+        
         try {
             $response = $this->databases->listDocuments(
                 config('appwrite.database_id'),
@@ -84,6 +112,11 @@ class AppwriteService
      */
     public function getAllUsers($limit = 100, $offset = 0)
     {
+        if (!$this->isConfigured()) {
+            Log::warning('Appwrite service not configured. Returning empty result.');
+            return ['documents' => [], 'total' => 0];
+        }
+        
         try {
             $response = $this->databases->listDocuments(
                 config('appwrite.database_id'),
@@ -110,6 +143,11 @@ class AppwriteService
      */
     public function getAllProjects($limit = 100, $offset = 0)
     {
+        if (!$this->isConfigured()) {
+            Log::warning('Appwrite service not configured. Returning empty result.');
+            return ['documents' => [], 'total' => 0];
+        }
+        
         try {
             $response = $this->databases->listDocuments(
                 config('appwrite.database_id'),
@@ -136,6 +174,11 @@ class AppwriteService
      */
     public function getAllEvents($limit = 100, $offset = 0)
     {
+        if (!$this->isConfigured()) {
+            Log::warning('Appwrite service not configured. Returning empty result.');
+            return ['documents' => [], 'total' => 0];
+        }
+        
         try {
             $response = $this->databases->listDocuments(
                 config('appwrite.database_id'),
@@ -162,6 +205,11 @@ class AppwriteService
      */
     public function downloadFile($bucketId, $fileId)
     {
+        if (!$this->isConfigured()) {
+            Log::warning('Appwrite service not configured. Cannot download file.');
+            return null;
+        }
+        
         try {
             return $this->storage->getFileDownload($bucketId, $fileId);
         } catch (Exception $e) {
@@ -175,6 +223,11 @@ class AppwriteService
      */
     public function getFileViewUrl($bucketId, $fileId)
     {
+        if (!$this->isConfigured()) {
+            Log::warning('Appwrite service not configured. Cannot get file view URL.');
+            return null;
+        }
+        
         try {
             return $this->storage->getFileView($bucketId, $fileId);
         } catch (Exception $e) {
@@ -188,6 +241,11 @@ class AppwriteService
      */
     public function getFileMetadata($bucketId, $fileId)
     {
+        if (!$this->isConfigured()) {
+            Log::warning('Appwrite service not configured. Cannot get file metadata.');
+            return null;
+        }
+        
         try {
             return $this->storage->getFile($bucketId, $fileId);
         } catch (Exception $e) {
@@ -201,6 +259,11 @@ class AppwriteService
      */
     public function getProperty($propertyId)
     {
+        if (!$this->isConfigured()) {
+            Log::warning('Appwrite service not configured. Cannot get property.');
+            return null;
+        }
+        
         try {
             $response = $this->databases->getDocument(
                 config('appwrite.database_id'),
