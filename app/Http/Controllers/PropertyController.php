@@ -79,11 +79,8 @@ class PropertyController extends Controller
         // Calculate statistics
         $stats = [
             'total' => Property::count(),
-            'available' => Property::where('status', 'available')->count(),
-            'sold' => Property::where('status', 'sold')->count(),
-            'rented' => Property::where('status', 'rented')->count(),
-            'pending' => Property::where('status', 'under_contract')->count(),
-            'featured' => Property::where('is_featured', true)->count(),
+            'for_sale' => Property::where('unit_for', 'sale')->count(),
+            'for_rent' => Property::where('unit_for', 'rent')->count(),
         ];
 
         $statuses = [

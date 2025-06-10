@@ -21,11 +21,8 @@
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-6">
         @foreach([
             ['label' => 'Total Properties', 'value' => $stats['total'], 'icon' => 'fa-building', 'gradient' => 'from-blue-900 to-blue-800', 'description' => 'Total property count'],
-            ['label' => 'Available', 'value' => $stats['available'], 'icon' => 'fa-check-circle', 'gradient' => 'from-green-900 to-green-800', 'description' => 'Ready for sale/rent'],
-            ['label' => 'Sold', 'value' => $stats['sold'], 'icon' => 'fa-dollar-sign', 'gradient' => 'from-yellow-900 to-yellow-800', 'description' => 'Successfully sold'],
-            ['label' => 'Rented', 'value' => $stats['rented'], 'icon' => 'fa-key', 'gradient' => 'from-purple-900 to-purple-800', 'description' => 'Currently rented'],
-            ['label' => 'Under Review', 'value' => $stats['pending'] ?? 0, 'icon' => 'fa-clock', 'gradient' => 'from-orange-900 to-orange-800', 'description' => 'Pending approval'],
-            ['label' => 'Featured', 'value' => $stats['featured'] ?? 0, 'icon' => 'fa-star', 'gradient' => 'from-pink-900 to-pink-800', 'description' => 'Featured properties']
+            ['label' => 'For Sale', 'value' => $stats['for_sale'], 'icon' => 'fa-tag', 'gradient' => 'from-green-900 to-green-800', 'description' => 'Properties for sale'],
+            ['label' => 'For Rent', 'value' => $stats['for_rent'], 'icon' => 'fa-key', 'gradient' => 'from-yellow-900 to-yellow-800', 'description' => 'Properties for rent']
         ] as $stat)
             <div class="bg-gradient-to-br {{ $stat['gradient'] }} overflow-hidden shadow-lg rounded-lg">
                 <div class="p-5">

@@ -195,4 +195,23 @@ class AppwriteService
             return null;
         }
     }
+
+    /**
+     * Get a single property by ID from Appwrite
+     */
+    public function getProperty($propertyId)
+    {
+        try {
+            $response = $this->databases->getDocument(
+                config('appwrite.database_id'),
+                config('appwrite.collections.properties'),
+                $propertyId
+            );
+            
+            return $response;
+        } catch (Exception $e) {
+            Log::error("Error fetching property {$propertyId} from Appwrite: " . $e->getMessage());
+            return null;
+        }
+    }
 }
