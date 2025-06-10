@@ -195,4 +195,10 @@ class User extends Authenticatable
     {
         return $this->company && $this->company->owner_id === $this->id;
     }
+
+    public function isSuperAdmin()
+    {
+        // Super Admin is identified by email admin@reax.com
+        return $this->email === 'admin@reax.com';
+    }
 }

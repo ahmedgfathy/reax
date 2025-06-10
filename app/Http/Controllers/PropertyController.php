@@ -13,7 +13,12 @@ class PropertyController extends Controller
 {
     public function index(Request $request)
     {
+        // Super Admin (admin@reax.com) sees ALL properties, other users see only their company's properties
         $query = Property::query();
+        
+        if (!auth()->user()->isSuperAdmin()) {
+            $query->where('company_id', auth()->user()->company_id);
+        }
 
         // Search filter
         if ($request->filled('search')) {
@@ -63,25 +68,44 @@ class PropertyController extends Controller
 
         $properties = $query->with('media')->paginate(12)->withQueryString();
         
-        // Get users who are related to properties (handlers or sales persons) - optimized single query
-        $users = User::select('users.id', 'users.name')
-            ->where('users.company_id', auth()->user()->company_id)
-            ->whereExists(function($query) {
-                $query->select(DB::raw(1))
-                      ->from('properties')
-                      ->whereRaw('properties.handler_id = users.id OR properties.sales_person_id = users.id');
-            })
-            ->orderBy('users.name')
-            ->get();
+        // Get users - Super Admin sees all users, others see only company users
+        if (auth()->user()->isSuperAdmin()) {
+            $users = User::select('users.id', 'users.name')
+                ->whereExists(function($query) {
+                    $query->select(DB::raw(1))
+                          ->from('properties')
+                          ->whereRaw('properties.handler_id = users.id OR properties.sales_person_id = users.id');
+                })
+                ->orderBy('users.name')
+                ->get();
+        } else {
+            $users = User::select('users.id', 'users.name')
+                ->where('users.company_id', auth()->user()->company_id)
+                ->whereExists(function($query) {
+                    $query->select(DB::raw(1))
+                          ->from('properties')
+                          ->whereRaw('properties.handler_id = users.id OR properties.sales_person_id = users.id');
+                })
+                ->orderBy('users.name')
+                ->get();
+        }
             
         $regions = ['cairo', 'giza', 'alexandria', 'north-coast']; // Add your regions
 
-        // Calculate statistics
-        $stats = [
-            'total' => Property::count(),
-            'for_sale' => Property::where('unit_for', 'sale')->count(),
-            'for_rent' => Property::where('unit_for', 'rent')->count(),
-        ];
+        // Calculate statistics - Super Admin sees all, others see only company stats
+        if (auth()->user()->isSuperAdmin()) {
+            $stats = [
+                'total' => Property::count(),
+                'for_sale' => Property::where('unit_for', 'sale')->count(),
+                'for_rent' => Property::where('unit_for', 'rent')->count(),
+            ];
+        } else {
+            $stats = [
+                'total' => Property::where('company_id', auth()->user()->company_id)->count(),
+                'for_sale' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'sale')->count(),
+                'for_rent' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'rent')->count(),
+            ];
+        }
 
         $statuses = [
             'available',
@@ -92,17 +116,31 @@ class PropertyController extends Controller
             'off_market'
         ];
 
-        // Get property types from database
-        $propertyTypes = Property::select('type')
-            ->distinct()
-            ->whereNotNull('type')
-            ->where('type', '!=', '')
-            ->where('type', '!=', 'no selected value')
-            ->pluck('type')
-            ->filter()
-            ->sort()
-            ->values()
-            ->toArray();
+        // Get property types - Super Admin sees all, others see only company types
+        if (auth()->user()->isSuperAdmin()) {
+            $propertyTypes = Property::select('type')
+                ->distinct()
+                ->whereNotNull('type')
+                ->where('type', '!=', '')
+                ->where('type', '!=', 'no selected value')
+                ->pluck('type')
+                ->filter()
+                ->sort()
+                ->values()
+                ->toArray();
+        } else {
+            $propertyTypes = Property::select('type')
+                ->where('company_id', auth()->user()->company_id)
+                ->distinct()
+                ->whereNotNull('type')
+                ->where('type', '!=', '')
+                ->where('type', '!=', 'no selected value')
+                ->pluck('type')
+                ->filter()
+                ->sort()
+                ->values()
+                ->toArray();
+        }
 
         return view('properties.index', compact('properties', 'users', 'regions', 'stats', 'propertyTypes', 'statuses'));
     }
