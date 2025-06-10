@@ -29,6 +29,10 @@ The name "REAX" represents the perfect fusion of real estate expertise and techn
 With its easy pronunciation in both Arabic and English, REAX offers a modern, memorable identity for a system built to transform how real estate professionals operate in Egypt and beyond.
 
 <div align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1AvSEjvcxYlktsPUyhoXvXi_m_331Nqir" alt="REAX Interface" width="800px" />
+</div>
+
+<div align="center">
   <img src="https://drive.google.com/uc?export=view&id=1c_ZDweeWRwRinC9bW9gtyupIcnBej_tV" alt="REAX Dashboard" width="800px" />
 </div>
 

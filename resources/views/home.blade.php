@@ -112,6 +112,34 @@
             background-position: right 0.5rem center;
             background-repeat: no-repeat;
             background-size: 1.5em 1.5em;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Ensure search elements are always on top */
+        .search-container {
+            position: relative;
+            z-index: 30;
+        }
+
+        .search-container * {
+            position: relative;
+            z-index: inherit;
+        }
+
+        /* Ensure dropdowns work properly */
+        select:focus {
+            z-index: 50;
+        }
+
+        /* Swiper pagination positioning */
+        .hero-swiper .swiper-pagination {
+            z-index: 15;
+        }
+
+        .hero-swiper .swiper-button-next,
+        .hero-swiper .swiper-button-prev {
+            z-index: 15;
         }
 
         /* Custom scrollbar for dropdowns */
@@ -288,8 +316,8 @@
     <!-- Hero Section -->
     <section class="relative h-screen">
         <!-- Background Image with Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30"></div>
-        <div class="absolute inset-0">
+        <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30 z-10"></div>
+        <div class="absolute inset-0 z-0">
             <div class="swiper hero-swiper h-full">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
@@ -310,44 +338,44 @@
         </div>
         
         <!-- Hero Content -->
-        <div class="relative container mx-auto px-6 h-full flex flex-col items-center justify-center">
+        <div class="relative z-20 container mx-auto px-6 h-full flex flex-col items-center justify-center">
             <div class="text-center text-white max-w-4xl mx-auto mb-8">
                 <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">{{ __('Discover Your Perfect Home Worldwide') }}</h1>
                 <p class="text-xl mb-12 text-white/90">{{ __('Premium properties in the world\'s most prestigious locations') }}</p>
             </div>
                 
             <!-- Search Box -->
-            <div class="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl transform hover:scale-[1.02] transition-transform duration-300 w-full max-w-6xl mx-auto">
+            <div class="search-container relative z-30 bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl transform hover:scale-[1.02] transition-transform duration-300 w-full max-w-6xl mx-auto">
                     <div class="flex flex-col md:flex-row gap-6">
                         <!-- Main Search Input -->
                         <div class="flex-1 relative">
                             <input type="text" placeholder="{{ __('Enter a location or property type...') }}" 
-                                   class="w-full px-6 py-4 pl-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 text-lg">
-                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
+                                   class="w-full px-6 py-4 pl-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 text-lg relative z-10">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg z-20"></i>
                         </div>
                         
                         <!-- Filters Dropdown -->
                         <div class="flex gap-4">
-                            <div class="relative">
-                                <select class="appearance-none bg-gray-50 px-6 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 pr-10 text-lg">
+                            <div class="relative z-10">
+                                <select class="appearance-none bg-gray-50 px-6 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 pr-10 text-lg relative z-10">
                                     <option value="">{{ __('For Sale') }}</option>
                                     <option value="rent">{{ __('For Rent') }}</option>
                                 </select>
-                                <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 z-20 pointer-events-none"></i>
                             </div>
                             
-                            <div class="relative">
-                                <select class="appearance-none bg-gray-50 px-6 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 pr-10 text-lg">
+                            <div class="relative z-10">
+                                <select class="appearance-none bg-gray-50 px-6 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 pr-10 text-lg relative z-10">
                                     <option value="">{{ __('Property Type') }}</option>
                                     <option value="apartment">{{ __('Apartment') }}</option>
                                     <option value="villa">{{ __('Villa') }}</option>
                                     <option value="house">{{ __('House') }}</option>
                                     <option value="penthouse">{{ __('Penthouse') }}</option>
                                 </select>
-                                <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 z-20 pointer-events-none"></i>
                             </div>
                             
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center gap-2 min-w-[140px]">
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center gap-2 min-w-[140px] relative z-10">
                                 <i class="fas fa-search"></i>
                                 {{ __('Search') }}
                             </button>
@@ -355,22 +383,22 @@
                     </div>
                     
                     <!-- Advanced Filters -->
-                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200 relative z-10">
                         <div class="flex gap-6">
-                            <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                            <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors relative z-10">
                                 <i class="fas fa-sliders-h"></i>
                                 {{ __('Price Range') }}
                             </button>
-                            <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                            <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors relative z-10">
                                 <i class="fas fa-bed"></i>
                                 {{ __('Bedrooms') }}
                             </button>
-                            <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                            <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors relative z-10">
                                 <i class="fas fa-ruler-combined"></i>
                                 {{ __('Area (m²)') }}
                             </button>
                         </div>
-                        <button class="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                        <button class="text-blue-600 hover:text-blue-700 font-medium transition-colors relative z-10">
                             {{ __('More Filters') }}
                         </button>
                     </div>
