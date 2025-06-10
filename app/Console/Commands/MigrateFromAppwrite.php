@@ -22,12 +22,9 @@ class MigrateFromAppwrite extends Command
      */
     protected $description = 'Migrate data from Appwrite database to local MariaDB';
 
-    protected AppwriteMigrationService $migrationService;
-
-    public function __construct(AppwriteMigrationService $migrationService)
+    public function __construct()
     {
         parent::__construct();
-        $this->migrationService = $migrationService;
     }
 
     /**
@@ -45,9 +42,12 @@ class MigrateFromAppwrite extends Command
         }
 
         try {
+            // Resolve the migration service only when needed
+            $migrationService = app(AppwriteMigrationService::class);
+            
             // Test Appwrite connection
             $this->info('Testing Appwrite connection...');
-            if (!$this->migrationService->testConnection()) {
+            if (!$migrationService->testConnection()) {
                 $this->error('Failed to connect to Appwrite. Please check your configuration.');
                 return Command::FAILURE;
             }
@@ -70,7 +70,7 @@ class MigrateFromAppwrite extends Command
                 $this->info("\n--- Migrating {$table} ---");
                 
                 try {
-                    $count = $this->migrateTable($table, $isDryRun);
+                    $count = $this->migrateTable($table, $isDryRun, $migrationService);
                     $totalCounts[$table] = $count;
                     $this->info("✓ Migrated {$count} {$table} records");
                 } catch (Exception $e) {
@@ -107,38 +107,38 @@ class MigrateFromAppwrite extends Command
         }
     }
 
-    private function migrateTable(string $table, bool $isDryRun): int
+    private function migrateTable(string $table, bool $isDryRun, AppwriteMigrationService $migrationService): int
     {
         $bar = $this->output->createProgressBar();
         $bar->setFormat('verbose');
 
         switch ($table) {
             case 'users':
-                return $this->migrationService->migrateUsers($isDryRun, function($progress, $total) use ($bar) {
+                return $migrationService->migrateUsers($isDryRun, function($progress, $total) use ($bar) {
                     $bar->setMaxSteps($total);
                     $bar->setProgress($progress);
                 });
                 
             case 'properties':
-                return $this->migrationService->migrateProperties($isDryRun, function($progress, $total) use ($bar) {
+                return $migrationService->migrateProperties($isDryRun, function($progress, $total) use ($bar) {
                     $bar->setMaxSteps($total);
                     $bar->setProgress($progress);
                 });
                 
             case 'leads':
-                return $this->migrationService->migrateLeads($isDryRun, function($progress, $total) use ($bar) {
+                return $migrationService->migrateLeads($isDryRun, function($progress, $total) use ($bar) {
                     $bar->setMaxSteps($total);
                     $bar->setProgress($progress);
                 });
                 
             case 'projects':
-                return $this->migrationService->migrateProjects($isDryRun, function($progress, $total) use ($bar) {
+                return $migrationService->migrateProjects($isDryRun, function($progress, $total) use ($bar) {
                     $bar->setMaxSteps($total);
                     $bar->setProgress($progress);
                 });
                 
             case 'events':
-                return $this->migrationService->migrateEvents($isDryRun, function($progress, $total) use ($bar) {
+                return $migrationService->migrateEvents($isDryRun, function($progress, $total) use ($bar) {
                     $bar->setMaxSteps($total);
                     $bar->setProgress($progress);
                 });
