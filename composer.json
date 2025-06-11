@@ -14,7 +14,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.3.11",
-        "appwrite/appwrite": "^15.0",
         "barryvdh/laravel-dompdf": "^3.1",
         "intervention/image": "^3.11",
         "laravel/framework": "^12.0",
