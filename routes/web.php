@@ -15,6 +15,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LeadImportExportController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TeamMemberController;
+use App\Http\Controllers\TeamController;
 use Illuminate\Http\Request; // Import Request at the top of the file
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\BranchController; // Import BranchController at the top with other use statements

@@ -223,8 +223,14 @@ class PropertyController extends Controller
     public function create()
     {
         try {
-            $users = User::where('company_id', auth()->user()->company_id)->get();
-            $projects = Project::where('company_id', auth()->user()->company_id)->get();
+            // Super admin sees all users and projects, others see only their company's
+            if (auth()->user()->isSuperAdmin()) {
+                $users = User::all();
+                $projects = Project::all();
+            } else {
+                $users = User::where('company_id', auth()->user()->company_id)->get();
+                $projects = Project::where('company_id', auth()->user()->company_id)->get();
+            }
             $formData = $this->getFormData();
 
             return view('properties.create', array_merge(
@@ -279,8 +285,15 @@ class PropertyController extends Controller
     public function edit(Property $property)
     {
         $property->load(['media', 'handler']); // Load relationships
-        $users = User::where('company_id', auth()->user()->company_id)->get();
-        $projects = Project::where('company_id', auth()->user()->company_id)->get();
+        
+        // Super admin sees all users and projects, others see only their company's
+        if (auth()->user()->isSuperAdmin()) {
+            $users = User::all();
+            $projects = Project::all();
+        } else {
+            $users = User::where('company_id', auth()->user()->company_id)->get();
+            $projects = Project::where('company_id', auth()->user()->company_id)->get();
+        }
         $formData = $this->getFormData();
 
         return view('properties.edit', array_merge(

@@ -1,21 +1,27 @@
-<x-app-layout>
-    <x-slot name="header">
-        {{ __('Properties') }}
-    </x-slot>
-    
-    <x-slot name="breadcrumbs">
-        <a href="{{ route('dashboard') }}" class="hover:text-gray-700">{{ __('Dashboard') }}</a>
-        <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-        </svg>
-        <span class="text-gray-700">{{ __('Properties') }}</span>
-        @if(request()->has('type'))
-            <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-            <span class="text-gray-700">{{ __(ucfirst(request('type'))) }}</span>
-        @endif
-    </x-slot>
+@extends('layouts.app')
+
+@section('content')
+<!-- Properties content -->
+<div class="bg-gray-100 min-h-screen">
+    <div class="p-6">
+            <!-- Header -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-semibold text-gray-900">{{ __('Properties') }}</h1>
+                <!-- Breadcrumbs -->
+                <nav class="flex items-center space-x-2 text-sm text-gray-500 mt-2">
+                    <a href="{{ route('dashboard') }}" class="hover:text-gray-700">{{ __('Dashboard') }}</a>
+                    <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    <span class="text-gray-700">{{ __('Properties') }}</span>
+                    @if(request()->has('type'))
+                        <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                        <span class="text-gray-700">{{ __(ucfirst(request('type'))) }}</span>
+                    @endif
+                </nav>
+            </div>
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-6">
@@ -193,13 +199,12 @@
         }
     </style>
 
-    <!-- Pagination -->
-    @if($properties->hasPages())
-        <div class="mt-3">
-            {{ $properties->links() }}
-        </div>
-    @endif
-
-    <!-- Import/Export Modals -->
-    <!-- ...existing modal code... -->
-</x-app-layout>
+            <!-- Pagination -->
+        @if($properties->hasPages())
+            <div class="mt-3">
+                {{ $properties->links() }}
+            </div>
+        @endif
+    </div>
+</div>
+@endsection
