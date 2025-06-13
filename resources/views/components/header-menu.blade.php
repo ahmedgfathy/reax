@@ -108,13 +108,6 @@
                             <span>{{ __('Systems') }}</span>
                         </div>
                     </a>
-
-                    <a href="{{ route('ai.debug') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('ai.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
-                        <div class="flex items-center">
-                            <i class="fas fa-robot mr-1"></i>
-                            <span>{{ __('AI Debug') }}</span>
-                        </div>
-                    </a>
                     @endif
                 </div>
             </div>

@@ -244,13 +244,5 @@ Route::middleware(['auth', 'admin'])->prefix('administration')->name('administra
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
 });
 
-// Add AI Debug routes in admin middleware group
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::prefix('ai')->name('ai.')->group(function () {
-        Route::get('/debug', [AIDebugController::class, 'index'])->name('debug');
-        Route::post('/analyze', [AIDebugController::class, 'analyze'])->name('analyze');
-    });
-});
-
 // Include admin routes
 require __DIR__ . '/admin.php';
