@@ -214,16 +214,28 @@
                 <div class="p-6">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Quick Actions') }}</h3>
                     <div class="grid grid-cols-2 gap-4">
-                        <a href="{{ route('employees.create') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100">
+                        <!-- Role Management -->
+                        <a href="{{ route('administration.role-management.index') }}" class="flex items-center p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg hover:from-purple-100 hover:to-purple-200 transition-colors">
+                            <i class="fas fa-users-cog text-purple-600 text-xl mr-3"></i>
+                            <span class="text-sm font-medium text-gray-900">{{ __('Role Management') }}</span>
+                        </a>
+                        
+                        <!-- Profile Management -->
+                        <a href="{{ route('administration.profiles.index') }}" class="flex items-center p-4 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg hover:from-indigo-100 hover:to-indigo-200 transition-colors">
+                            <i class="fas fa-id-card text-indigo-600 text-xl mr-3"></i>
+                            <span class="text-sm font-medium text-gray-900">{{ __('User Profiles') }}</span>
+                        </a>
+                        
+                        <a href="{{ route('administration.employees.create') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100">
                             <i class="fas fa-user-plus text-blue-600 text-xl mr-3"></i>
                             <span class="text-sm font-medium text-gray-900">{{ __('Add Employee') }}</span>
                         </a>
                         <a href="{{ route('properties.create') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100">
-                            <i class="fas fa-building text-indigo-600 text-xl mr-3"></i>
+                            <i class="fas fa-building text-green-600 text-xl mr-3"></i>
                             <span class="text-sm font-medium text-gray-900">{{ __('Add Property') }}</span>
                         </a>
                         <a href="{{ route('leads.create') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100">
-                            <i class="fas fa-user-check text-green-600 text-xl mr-3"></i>
+                            <i class="fas fa-user-check text-orange-600 text-xl mr-3"></i>
                             <span class="text-sm font-medium text-gray-900">{{ __('Add Lead') }}</span>
                         </a>
                         <a href="{{ route('reports.index') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100">

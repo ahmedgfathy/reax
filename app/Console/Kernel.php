@@ -17,6 +17,8 @@ class Kernel extends ConsoleKernel
         Commands\CleanMigrationsCommand::class,
         Commands\InspectLeadTableCommand::class,
         Commands\AssociatePropertyImages::class,
+        Commands\CleanDuplicatesCommand::class,
+        Commands\RemoveDuplicateProperties::class,
     ];
 
     // ...existing code...

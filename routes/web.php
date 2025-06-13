@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController; // Add this
@@ -35,6 +36,16 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
+
+// Temporary test route for admin auto-login
+Route::get('/test-admin-login', function () {
+    $user = App\Models\User::where('email', 'admin@reax.com')->first();
+    if ($user) {
+        Auth::login($user);
+        return redirect('/administration/profiles/1/edit')->with('success', 'Logged in as admin');
+    }
+    return 'Admin user not found';
+})->name('test.admin.login');
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {

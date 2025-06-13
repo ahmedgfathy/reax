@@ -128,7 +128,7 @@
 
         <!-- Scrollable Main Content -->
         <div class="flex-1 lg:ml-64 p-2 overflow-y-auto">
-            {{ $slot }}
+            @yield('content')
         </div>
     </div>
 
