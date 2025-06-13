@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdministrationController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\RoleManagementController;
+use App\Http\Controllers\Admin\UserManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,10 @@ Route::middleware(['auth'])->prefix('administration')->name('administration.')->
     // Main Administration Dashboard
     Route::get('/', [AdministrationController::class, 'index'])->name('index');
     
-    // Employee Management
+    // User Management (Admin only - includes ALL users including admins)
+    Route::resource('users', UserManagementController::class);
+    
+    // Employee Management (Non-admin users only)
     Route::resource('employees', EmployeeController::class);
     
     // Profile Management (Admin and Managers only)

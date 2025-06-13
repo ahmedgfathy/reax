@@ -19,6 +19,10 @@
                         <i class="fas fa-tachometer-alt w-4 mr-2"></i>
                         {{ __('Admin Dashboard') }}
                     </a>
+                    <a href="{{ route('administration.users.index') }}" class="flex items-center text-sm text-gray-600 hover:text-red-600 transition-colors {{ request()->routeIs('administration.users.*') ? 'text-red-600 font-medium' : '' }}">
+                        <i class="fas fa-users w-4 mr-2"></i>
+                        {{ __('All Users') }}
+                    </a>
                     <a href="{{ route('administration.profiles.index') }}" class="flex items-center text-sm text-gray-600 hover:text-red-600 transition-colors {{ request()->routeIs('administration.profiles.*') ? 'text-red-600 font-medium' : '' }}">
                         <i class="fas fa-user-shield w-4 mr-2"></i>
                         {{ __('User Profiles') }}

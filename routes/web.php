@@ -26,8 +26,8 @@ Route::get('/rent', [PropertyController::class, 'rent'])->name('rent');
 Route::get('/featured-properties', [HomeController::class, 'featuredProperties'])->name('featured.properties');
 
 // Move these routes BEFORE the auth middleware group
-Route::get('/compounds', [App\Http\Controllers\CompoundController::class, 'index'])->name('compounds.index');
-Route::get('/compounds/{compound}', [App\Http\Controllers\CompoundController::class, 'show'])->name('compounds.show');
+// Route::get('/compounds', [App\Http\Controllers\CompoundController::class, 'index'])->name('compounds.index');
+// Route::get('/compounds/{compound}', [App\Http\Controllers\CompoundController::class, 'show'])->name('compounds.show');
 
 // Auth routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -36,16 +36,6 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
-
-// Temporary test route for admin auto-login
-Route::get('/test-admin-login', function () {
-    $user = App\Models\User::where('email', 'admin@reax.com')->first();
-    if ($user) {
-        Auth::login($user);
-        return redirect('/administration/profiles/1/edit')->with('success', 'Logged in as admin');
-    }
-    return 'Admin user not found';
-})->name('test.admin.login');
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {
@@ -92,7 +82,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/profile/avatar', 'removeAvatar')->name('profile.avatar.remove');
     });
 
-    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
+    // Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
 
     // Opportunities Routes - SINGLE DEFINITION
     Route::resource('opportunities', \App\Http\Controllers\OpportunityController::class);
