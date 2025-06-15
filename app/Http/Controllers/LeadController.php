@@ -156,6 +156,11 @@ class LeadController extends Controller
      */
     public function show(Lead $lead)
     {
+        // Authorization check: Super admin can view all leads, others can only view their company's leads
+        if (!auth()->user()->isSuperAdmin() && $lead->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this lead.');
+        }
+
         $events = Event::where('lead_id', $lead->id)
             ->orderBy('start_date', 'desc')  // Changed from event_date to start_date
             ->get();
@@ -173,6 +178,11 @@ class LeadController extends Controller
      */
     public function edit(Lead $lead)
     {
+        // Authorization check: Super admin can edit all leads, others can only edit their company's leads
+        if (!auth()->user()->isSuperAdmin() && $lead->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this lead.');
+        }
+
         $users = User::all();
         $properties = Property::all();
         return view('leads.edit', compact('lead', 'users', 'properties'));

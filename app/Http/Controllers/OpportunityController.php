@@ -127,12 +127,22 @@ class OpportunityController extends Controller
 
     public function show(Opportunity $opportunity)
     {
+        // Authorization check: Super admin can view all opportunities, others can only view their company's opportunities
+        if (!auth()->user()->isSuperAdmin() && $opportunity->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this opportunity.');
+        }
+
         $opportunity->load(['lead', 'property', 'assignedTo', 'activities']);
         return view('opportunities.show', compact('opportunity'));
     }
 
     public function edit(Opportunity $opportunity)
     {
+        // Authorization check: Super admin can edit all opportunities, others can only edit their company's opportunities
+        if (!auth()->user()->isSuperAdmin() && $opportunity->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this opportunity.');
+        }
+
         $leads = Lead::select('id', 'first_name', 'last_name')->get();
         $properties = Property::select('id', 'property_name')->get();
         $users = User::select('id', 'name')->get();

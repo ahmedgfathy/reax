@@ -323,4 +323,14 @@ class User extends Authenticatable
 
         return false;
     }
+
+    /**
+     * Get territories assigned to this user
+     */
+    public function territories()
+    {
+        return $this->belongsToMany(Territory::class, 'territory_user')
+                    ->withTimestamps()
+                    ->withPivot('assigned_at', 'role', 'is_primary');
+    }
 }

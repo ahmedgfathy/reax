@@ -207,6 +207,11 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
+        // Authorization check: Super admin can view all properties, others can only view their company's properties
+        if (!auth()->user()->isSuperAdmin() && $property->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this property.');
+        }
+
         $property->load(['media', 'handler', 'project']);
         $formData = $this->getFormData();
         
@@ -284,6 +289,11 @@ class PropertyController extends Controller
 
     public function edit(Property $property)
     {
+        // Authorization check: Super admin can edit all properties, others can only edit their company's properties
+        if (!auth()->user()->isSuperAdmin() && $property->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this property.');
+        }
+
         $property->load(['media', 'handler']); // Load relationships
         
         // Super admin sees all users and projects, others see only their company's

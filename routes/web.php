@@ -95,153 +95,58 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('contacts', \App\Http\Controllers\ContactController::class);
     Route::resource('companies', \App\Http\Controllers\CompanyController::class);
 
-    Route::resource('branches', BranchController::class); // Add this line inside middleware auth group
-
+    Route::resource('branches', BranchController::class);
     Route::resource('departments', \App\Http\Controllers\DepartmentController::class);
-
-    // Management Routes
-    Route::get('/management', [\App\Http\Controllers\ManagementController::class, 'index'])->name('management.index');
-
-    Route::resource('teams', \App\Http\Controllers\TeamController::class); // Add team routes
-
-    Route::get('/teams/{team}/members/assign', [TeamController::class, 'assignMembersForm'])->name('teams.members.assign');
-    Route::post('/teams/{team}/members/assign', [TeamController::class, 'assignMembers'])->name('teams.members.store');
+    Route::resource('teams', \App\Http\Controllers\TeamController::class);
 
     // Team Member Management
     Route::get('/teams/{team}/members/assign', [TeamMemberController::class, 'assignForm'])
         ->name('teams.members.assign-form');
     Route::post('/teams/{team}/members/store', [TeamMemberController::class, 'store'])
         ->name('teams.members.add');
+    
+    // Systems Routes
+    Route::prefix('systems')->group(function () {
+        Route::get('/', [\App\Http\Controllers\SystemController::class, 'index'])->name('systems.index');
+    });
 });
 
-// Remove or comment out the old locale route
-// Route::post('/locale', function () { ... });
-
-// Fix the language switch route
+// Language and locale routes
 Route::post('/locale/switch', [LocaleController::class, 'switchLocale'])
     ->name('locale.switch')
     ->middleware('web');
 
-Route::get('/locale-debug', function () {
-    return [
-        'locale' => App::getLocale(),
-        'session_locale' => Session::get('locale'),
-    ];
-});
-
-// Debug route to check if HomeController is working
-Route::get('/home-debug', [HomeController::class, 'index']);
-
-// Debug routes
-Route::get('/debug-routes', function() {
-    $routeCollection = Route::getRoutes();
+// Management Routes
+Route::middleware(['auth'])->prefix('management')->name('management.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\ManagementController::class, 'index'])->name('index');
     
-    echo "<h1>Routes</h1>";
-    echo "<table border='1'>";
-    echo "<tr>";
-    echo "<td><b>HTTP Method</b></td>";
-    echo "<td><b>Route</b></td>";
-    echo "<td><b>Name</b></td>";
-    echo "<td><b>Controller</b></td>";
-    echo "</tr>";
+    // Territory Management
+    Route::get('/territories', [\App\Http\Controllers\ManagementController::class, 'territories'])->name('territories.index');
+    Route::get('/territories/create', [\App\Http\Controllers\ManagementController::class, 'createTerritory'])->name('territories.create');
+    Route::post('/territories', [\App\Http\Controllers\ManagementController::class, 'storeTerritory'])->name('territories.store');
+    Route::get('/territories/{territory}', [\App\Http\Controllers\ManagementController::class, 'showTerritory'])->name('territories.show');
+    Route::get('/territories/{territory}/edit', [\App\Http\Controllers\ManagementController::class, 'editTerritory'])->name('territories.edit');
+    Route::put('/territories/{territory}', [\App\Http\Controllers\ManagementController::class, 'updateTerritory'])->name('territories.update');
+    Route::delete('/territories/{territory}', [\App\Http\Controllers\ManagementController::class, 'destroyTerritory'])->name('territories.destroy');
     
-    foreach ($routeCollection as $value) {
-        echo "<tr>";
-        echo "<td>" . implode('|', $value->methods()) . "</td>";
-        echo "<td>" . $value->uri() . "</td>";
-        echo "<td>" . $value->getName() . "</td>";
-        echo "<td>" . $value->getActionName() . "</td>";
-        echo "</tr>";
-    }
-    echo "</table>";
-});
-
-// Add a debug route to check if the bulk action route is properly registered
-Route::get('/debug-bulk-action', function () {
-    $routeName = 'leads.bulk-action';
-    $routeExists = \Illuminate\Support\Facades\Route::has($routeName);
-    $route = collect(\Illuminate\Support\Facades\Route::getRoutes())->first(function ($route) use ($routeName) {
-        return $route->getName() === $routeName;
-    });
+    // Goal Management
+    Route::get('/goals', [\App\Http\Controllers\ManagementController::class, 'goals'])->name('goals.index');
+    Route::get('/goals/create', [\App\Http\Controllers\ManagementController::class, 'createGoal'])->name('goals.create');
+    Route::post('/goals', [\App\Http\Controllers\ManagementController::class, 'storeGoal'])->name('goals.store');
+    Route::get('/goals/{goal}', [\App\Http\Controllers\ManagementController::class, 'showGoal'])->name('goals.show');
+    Route::get('/goals/{goal}/edit', [\App\Http\Controllers\ManagementController::class, 'editGoal'])->name('goals.edit');
+    Route::put('/goals/{goal}', [\App\Http\Controllers\ManagementController::class, 'updateGoal'])->name('goals.update');
     
-    return [
-        'route_exists' => $routeExists,
-        'route_details' => $route ? [
-            'uri' => $route->uri(),
-            'methods' => $route->methods(),
-            'action' => $route->getActionName(),
-        ] : null,
-        'all_routes' => collect(\Illuminate\Support\Facades\Route::getRoutes())
-            ->map(function ($route) {
-                return [
-                    'uri' => $route->uri(),
-                    'name' => $route->getName(),
-                    'methods' => $route->methods(),
-                ];
-            })
-            ->filter(function ($route) {
-                return str_contains($route['uri'] ?? '', 'lead');
-            })
-            ->values()
-            ->toArray()
-    ];
-});
-
-// You can also add this debug route to test bulk actions directly
-Route::get('/debug/bulk-action-test', function() {
-    return view('debug.bulk-action-test', [
-        'users' => \App\Models\User::all(),
-        'leads' => \App\Models\Lead::take(5)->get()
-    ]);
-});
-
-// Administration Routes
-Route::prefix('administration')->group(function () {
-    Route::get('/', [\App\Http\Controllers\AdministrationController::class, 'index'])->name('administration.index');
-});
-
-// Systems Routes
-Route::prefix('systems')->group(function () {
-    Route::get('/', [\App\Http\Controllers\SystemController::class, 'index'])->name('systems.index');
-});
-
-// Add Management Routes
-Route::prefix('management')->group(function () {
-    Route::get('/', [\App\Http\Controllers\ManagementController::class, 'index'])->name('management.index');
+    // Performance Analytics
+    Route::get('/performance', [\App\Http\Controllers\ManagementController::class, 'performance'])->name('performance.index');
+    
+    // Team Activities
+    Route::get('/activities', [\App\Http\Controllers\ManagementController::class, 'activities'])->name('activities.index');
 });
 
 // Employee Routes
 Route::middleware(['auth'])->group(function () {
-    Route::resource('employees', App\Http\Controllers\EmployeeController::class);
-
-    // Property Routes  
-    Route::resource('properties', \App\Http\Controllers\PropertyController::class);
-});
-
-// Report Routes
-Route::prefix('reports')->group(function () {
-    Route::get('/', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
-    Route::post('/preview', [\App\Http\Controllers\ReportController::class, 'preview'])->name('reports.preview');
-    Route::get('/{report}/export', [\App\Http\Controllers\ReportController::class, 'export'])->name('reports.export');
-    Route::post('/{report}/share', [\App\Http\Controllers\ReportController::class, 'share'])->name('reports.share');
-    Route::post('/{report}/schedule', [\App\Http\Controllers\ReportController::class, 'schedule'])->name('reports.schedule');
-});
-
-// REMOVE these duplicate route definitions:
-// Route::prefix('opportunities')->group(function () {
-//     Route::get('/', [\App\Http\Controllers\OpportunityController::class, 'index'])->name('opportunities.index');
-// });
-
-// Admin Routes
-Route::middleware(['auth', 'admin'])->prefix('administration')->name('administration.')->group(function () {
-    Route::get('/', [AdministrationController::class, 'index'])->name('index');
-    Route::resource('employees', EmployeeController::class);
-    Route::resource('teams', TeamController::class);
-    Route::resource('roles', RoleController::class);
-    Route::resource('permissions', PermissionController::class);
-    Route::resource('departments', DepartmentController::class);
-    Route::resource('branches', BranchController::class);
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::resource('employees', \App\Http\Controllers\EmployeeController::class);
 });
 
 // Include admin routes

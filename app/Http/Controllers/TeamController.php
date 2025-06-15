@@ -56,11 +56,21 @@ class TeamController extends Controller
 
     public function show(Team $team)
     {
+        // Authorization check: Super admin can view all teams, others can only view their company's teams
+        if (!auth()->user()->isSuperAdmin() && $team->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this team.');
+        }
+
         return view('teams.show', compact('team'));
     }
 
     public function edit(Team $team)
     {
+        // Authorization check: Super admin can edit all teams, others can only edit their company's teams
+        if (!auth()->user()->isSuperAdmin() && $team->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this team.');
+        }
+
         $users = User::where('company_id', auth()->user()->company_id)->get();
         $departments = Department::where('company_id', auth()->user()->company_id)->get();
         return view('teams.edit', compact('team', 'users', 'departments'));

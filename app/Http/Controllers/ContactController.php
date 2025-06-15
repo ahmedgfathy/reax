@@ -69,11 +69,21 @@ class ContactController extends Controller
 
     public function show(Contact $contact)
     {
+        // Authorization check: Super admin can view all contacts, others can only view their company's contacts
+        if (!auth()->user()->isSuperAdmin() && $contact->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this contact.');
+        }
+
         return view('contacts.show', compact('contact'));
     }
 
     public function edit(Contact $contact)
     {
+        // Authorization check: Super admin can edit all contacts, others can only edit their company's contacts
+        if (!auth()->user()->isSuperAdmin() && $contact->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this contact.');
+        }
+
         $companies = Company::all();
         return view('contacts.edit', compact('contact', 'companies'));
     }

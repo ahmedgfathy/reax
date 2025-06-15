@@ -14,6 +14,7 @@ class Property extends Model
     protected $fillable = [
         'appwrite_id',
         'company_id',
+        'territory_id',
         'project_id',
         'team_id',
         'handler_id',
@@ -169,6 +170,11 @@ class Property extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function territory()
+    {
+        return $this->belongsTo(Territory::class);
     }
 
     public function team()
