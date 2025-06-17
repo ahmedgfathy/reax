@@ -143,11 +143,3 @@ Route::middleware(['auth'])->prefix('management')->name('management.')->group(fu
     // Team Activities
     Route::get('/activities', [\App\Http\Controllers\ManagementController::class, 'activities'])->name('activities.index');
 });
-
-// Employee Routes
-Route::middleware(['auth'])->group(function () {
-    Route::resource('employees', \App\Http\Controllers\EmployeeController::class);
-});
-
-// Include admin routes
-require __DIR__ . '/admin.php';

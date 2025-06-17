@@ -4,46 +4,11 @@
         <i class="fas fa-times"></i>
     </button>
 
-    <div class="p-6 space-y-8"> <!-- Increased padding from p-4 to p-6 and space-y from 6 to 8 -->
+    <div class="p-6 space-y-8">
         <div class="space-y-6">
-            <!-- Administration & User Management (Only visible to Admin and Managers) -->
             @auth
-            @if(auth()->user()->isAdmin() || auth()->user()->isManager())
-            <div class="pb-6 border-b border-gray-200">
-                <h3 class="flex items-center text-sm font-medium mb-2 text-gray-700">
-                    <i class="fas fa-cogs mr-3 text-red-600"></i>
-                    {{ __('Administration') }}
-                </h3>
-                <div class="ml-6 space-y-2">
-                    <a href="{{ route('administration.index') }}" class="flex items-center text-sm text-gray-600 hover:text-red-600 transition-colors {{ request()->routeIs('administration.index') ? 'text-red-600 font-medium' : '' }}">
-                        <i class="fas fa-tachometer-alt w-4 mr-2"></i>
-                        {{ __('Admin Dashboard') }}
-                    </a>
-                    <a href="{{ route('administration.users.index') }}" class="flex items-center text-sm text-gray-600 hover:text-red-600 transition-colors {{ request()->routeIs('administration.users.*') ? 'text-red-600 font-medium' : '' }}">
-                        <i class="fas fa-users w-4 mr-2"></i>
-                        {{ __('All Users') }}
-                    </a>
-                    <a href="{{ route('administration.profiles.index') }}" class="flex items-center text-sm text-gray-600 hover:text-red-600 transition-colors {{ request()->routeIs('administration.profiles.*') ? 'text-red-600 font-medium' : '' }}">
-                        <i class="fas fa-user-shield w-4 mr-2"></i>
-                        {{ __('User Profiles') }}
-                    </a>
-                    <a href="{{ route('administration.role-management.index') }}" class="flex items-center text-sm text-gray-600 hover:text-red-600 transition-colors {{ request()->routeIs('administration.role-management.*') ? 'text-red-600 font-medium' : '' }}">
-                        <i class="fas fa-users-cog w-4 mr-2"></i>
-                        {{ __('Role Management') }}
-                    </a>
-                    @if(auth()->user()->isAdmin())
-                    <a href="{{ route('administration.employees.index') }}" class="flex items-center text-sm text-gray-600 hover:text-red-600 transition-colors {{ request()->routeIs('administration.employees.*') ? 'text-red-600 font-medium' : '' }}">
-                        <i class="fas fa-user-plus w-4 mr-2"></i>
-                        {{ __('Employee Management') }}
-                    </a>
-                    @endif
-                </div>
-            </div>
-            @endif
-            @endauth
-
             <!-- Clients & Contact Management -->
-            <div class="pb-6 border-b border-gray-200"> <!-- Increased padding bottom from 4 to 6 -->
+            <div class="pb-6 border-b border-gray-200">
                 <h3 class="flex items-center text-sm font-medium mb-2 text-gray-700">
                     <i class="fas fa-users mr-3 text-blue-600"></i>
                     {{ __('Clients & Contact Management') }}
@@ -131,6 +96,7 @@
                     </a>
                 </div>
             </div>
+            @endauth
         </div>
     </div>
 </div>

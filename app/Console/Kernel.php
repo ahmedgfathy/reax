@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         Commands\AssociatePropertyImages::class,
         Commands\CleanDuplicatesCommand::class,
         Commands\RemoveDuplicateProperties::class,
+        Commands\CheckUserCommand::class,
     ];
 
     // ...existing code...
