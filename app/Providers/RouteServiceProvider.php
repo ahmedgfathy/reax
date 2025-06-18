@@ -36,6 +36,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api.php'));
 
             Route::middleware('web')
+                ->namespace($this->namespace)
                 ->group(function () {
                     // Load admin routes first to give them priority
                     require base_path('routes/admin.php');

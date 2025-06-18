@@ -36,17 +36,9 @@
                     </a>
                     @endguest
 
-                    <!-- Navigation Items - Reduced padding and font size -->
-                    <a href="{{ route('dashboard') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('dashboard') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            <span>{{ __('Dashboard') }}</span>
-                        </div>
-                    </a>
-
                     <!-- Apply the same style to all navigation items -->
+                    
+                    <!-- Properties -->
                     <a href="{{ route('properties.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('properties.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
                         <div class="flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -55,6 +47,19 @@
                             <span>{{ __('Properties') }}</span>
                         </div>
                     </a>
+
+                    <!-- Administration -->
+                    @if(auth()->check() && auth()->user()->isAdmin())
+                    <a href="{{ route('administration.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('administration.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span>{{ __('Administration') }}</span>
+                        </div>
+                    </a>
+                    @endif
 
                     <!-- Leads -->
                     <a href="{{ route('leads.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('leads.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
@@ -66,17 +71,15 @@
                         </div>
                     </a>
 
-                    <!-- Opportunities - Fix missing title -->
+                    <!-- Opportunities -->
                     <a href="{{ route('opportunities.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('opportunities.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
                         <div class="flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>{{ __('Opportunities') }}</span>
                         </div>
                     </a>
 
-                    <!-- Reports - Fix missing title -->
+                    <!-- Reports -->
                     <a href="{{ route('reports.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('reports.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
                         <div class="flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -86,7 +89,7 @@
                         </div>
                     </a>
 
-                    <!-- Management - Fix missing title -->
+                    <!-- Management -->
                     <a href="{{ route('management.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('management.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
                         <div class="flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,17 +99,10 @@
                         </div>
                     </a>
 
-                    <!-- Admin Only Modules -->
-                    @if(auth()->user() && auth()->user()->isAdmin())
-                    <a href="{{ route('administration.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('administration.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            </svg>
-                            <span>{{ __('Administration') }}</span>
-                        </div>
-                    </a>
 
+
+                    <!-- Systems -->
+                    @if(auth()->check() && auth()->user()->isAdmin())
                     <a href="{{ route('systems.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('systems.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
                         <div class="flex items-center">
                             <i class="fas fa-cogs mr-1"></i>
@@ -275,7 +271,7 @@
                             <a href="{{ route('administration.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('administration.*') ? 'bg-blue-800 text-white' : '' }}">
                                 <div class="flex items-center space-x-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     <span>{{ __('Administration') }}</span>

@@ -82,12 +82,13 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        $result = $this->role === 'admin' && $this->is_admin === true;
+        $result = $this->role === 'admin' && (bool)$this->is_admin === true;
         \Log::info('isAdmin() check', [
             'user_id' => $this->id,
             'email' => $this->email,
             'role' => $this->role,
             'is_admin' => $this->is_admin,
+            'is_admin_bool' => (bool)$this->is_admin,
             'result' => $result
         ]);
         return $result;
