@@ -12,7 +12,6 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LeadImportExportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamMemberController;
@@ -21,15 +20,10 @@ use Illuminate\Http\Request; // Import Request at the top of the file
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\BranchController; // Import BranchController at the top with other use statements
 
-// Public routes - place these before any auth routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/sale', [PropertyController::class, 'sale'])->name('sale');
-Route::get('/rent', [PropertyController::class, 'rent'])->name('rent');
-Route::get('/featured-properties', [HomeController::class, 'featuredProperties'])->name('featured.properties');
-
-// Move these routes BEFORE the auth middleware group
-// Route::get('/compounds', [App\Http\Controllers\CompoundController::class, 'index'])->name('compounds.index');
-// Route::get('/compounds/{compound}', [App\Http\Controllers\CompoundController::class, 'show'])->name('compounds.show');
+// Redirect root to login page
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 // Auth routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -91,14 +85,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('opportunities/bulk-action', [\App\Http\Controllers\OpportunityController::class, 'bulkAction'])
         ->name('opportunities.bulk-action');
 
-    // Contact Management Routes with full namespace
-    Route::resource('contacts', \App\Http\Controllers\ContactController::class);
+    // Company Management (needed for multi-tenancy)
     Route::resource('companies', \App\Http\Controllers\CompanyController::class);
 
     Route::resource('branches', BranchController::class);
     Route::resource('departments', \App\Http\Controllers\DepartmentController::class);
     Route::resource('teams', \App\Http\Controllers\TeamController::class);
-
+    
     // Team Member Management
     Route::get('/teams/{team}/members/assign', [TeamMemberController::class, 'assignForm'])
         ->name('teams.members.assign-form');
@@ -140,6 +133,10 @@ Route::middleware(['auth'])->prefix('management')->name('management.')->group(fu
     // Performance Analytics
     Route::get('/performance', [\App\Http\Controllers\ManagementController::class, 'performance'])->name('performance.index');
     
+
     // Team Activities
     Route::get('/activities', [\App\Http\Controllers\ManagementController::class, 'activities'])->name('activities.index');
 });
+
+// Load admin routes for administration panel
+require __DIR__.'/admin.php';

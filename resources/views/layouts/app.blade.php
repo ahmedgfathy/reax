@@ -108,26 +108,10 @@
         </div>
     </div>
 
-    <!-- Main Content with Sidebar -->
-    <div class="flex pt-28"> <!-- Reduced from 36 to 28 -->
-        <!-- Sidebar Overlay -->
-        <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" 
-             onclick="toggleSidebar()"></div>
-
-        <!-- Mobile Toggle Button - Updated position and design -->
-        <button id="sidebarToggle" 
-                class="fixed bottom-6 left-6 z-50 lg:hidden bg-gradient-to-r from-blue-600 to-blue-700 p-3.5 rounded-full shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 ease-in-out flex items-center justify-center"
-                onclick="toggleSidebar()">
-            <i class="fas fa-bars text-white text-lg"></i>
-        </button>
-
-        <!-- Fixed Sidebar - Updated top position -->
-        <div id="sidebar" class="fixed left-0 top-28 bottom-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 lg:z-30"> <!-- Updated top from 36 to 28 -->
-            @include('layouts.sidebar')
-        </div>
-
+    <!-- Main Content without Sidebar -->
+    <div class="pt-28"> <!-- Reduced from 36 to 28 -->
         <!-- Scrollable Main Content -->
-        <div class="flex-1 lg:ml-64 p-2 overflow-y-auto">
+        <div class="flex-1 p-2 overflow-y-auto">
             @yield('content')
         </div>
     </div>
@@ -137,66 +121,5 @@
     
     <!-- PWA Scripts -->
     <script src="{{ asset('js/pwa.js') }}" defer></script>
-
-    <!-- Updated Sidebar Toggle Script -->
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggleBtn = document.getElementById('sidebarToggle');
-            const icon = toggleBtn.querySelector('i');
-
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-            
-            // Toggle icon and button styles
-            if (icon.classList.contains('fa-bars')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-                toggleBtn.classList.remove('from-blue-600', 'to-blue-700');
-                toggleBtn.classList.add('from-red-600', 'to-red-700');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-                toggleBtn.classList.remove('from-red-600', 'to-red-700');
-                toggleBtn.classList.add('from-blue-600', 'to-blue-700');
-            }
-        }
-
-        // Close sidebar on window resize if screen becomes large
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 1024) {
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('sidebarOverlay');
-                const toggleBtn = document.getElementById('sidebarToggle');
-                const icon = toggleBtn.querySelector('i');
-
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-ellipsis-v');
-                toggleBtn.classList.remove('bg-gray-100');
-            }
-        });
-
-        // Close sidebar when clicking outside
-        document.addEventListener('click', (e) => {
-            const sidebar = document.getElementById('sidebar');
-            const toggleBtn = document.getElementById('sidebarToggle');
-            
-            if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && window.innerWidth < 1024) {
-                const overlay = document.getElementById('sidebarOverlay');
-                const icon = toggleBtn.querySelector('i');
-                
-                if (!sidebar.classList.contains('-translate-x-full')) {
-                    sidebar.classList.add('-translate-x-full');
-                    overlay.classList.add('hidden');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-ellipsis-v');
-                    toggleBtn.classList.remove('bg-gray-100');
-                }
-            }
-        });
-    </script>
 </body>
 </html>

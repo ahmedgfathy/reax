@@ -1,14 +1,20 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold text-gray-800">{{ $property->property_name }}</h2>
-            <div class="space-x-2">
-                <a href="{{ route('properties.edit', $property) }}" class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700">
-                    <i class="fas fa-edit mr-2"></i>{{ __('Edit') }}
-                </a>
+@extends('layouts.app')
+
+@section('content')
+<div class="container mx-auto py-6">
+    <!-- Property Header -->
+    <div class="bg-white rounded-lg shadow-sm mb-6">
+        <div class="p-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800">{{ $property->property_name }}</h2>
+                <div class="space-x-2">
+                    <a href="{{ route('properties.edit', $property) }}" class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700">
+                        <i class="fas fa-edit mr-2"></i>{{ __('Edit') }}
+                    </a>
+                </div>
             </div>
         </div>
-    </x-slot>
+    </div>
 
     <div class="max-w-7xl mx-auto py-6 space-y-6">
         <!-- Media Gallery -->
@@ -84,23 +90,23 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div>
                         <p class="text-sm text-gray-500">{{ __('Total Area') }}</p>
-                        <p class="font-medium">{{ number_format($property->total_area) }} m²</p>
+                        <p class="font-medium">{{ $property->total_area ? number_format((float)$property->total_area) : 'N/A' }} m²</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-500">{{ __('Unit Area') }}</p>
-                        <p class="font-medium">{{ number_format($property->unit_area) }} m²</p>
+                        <p class="font-medium">{{ $property->unit_area ? number_format((float)$property->unit_area) : 'N/A' }} m²</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-500">{{ __('Land Area') }}</p>
-                        <p class="font-medium">{{ number_format($property->land_area) }} m²</p>
+                        <p class="font-medium">{{ $property->land_area ? number_format((float)$property->land_area) : 'N/A' }} m²</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-500">{{ __('Garden Area') }}</p>
-                        <p class="font-medium">{{ number_format($property->garden_area) }} m²</p>
+                        <p class="font-medium">{{ $property->garden_area ? number_format((float)$property->garden_area) : 'N/A' }} m²</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-500">{{ __('Space Earth') }}</p>
-                        <p class="font-medium">{{ number_format($property->space_earth) }} m²</p>
+                        <p class="font-medium">{{ $property->space_earth ? number_format((float)$property->space_earth) : 'N/A' }} m²</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-500">{{ __('Type') }}</p>
@@ -133,11 +139,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div>
                         <p class="text-sm text-gray-500">{{ __('Total Price') }}</p>
-                        <p class="font-medium">{{ number_format($property->total_price) }} {{ $property->currency }}</p>
+                        <p class="font-medium">{{ $property->total_price ? number_format((float)$property->total_price) : 'N/A' }} {{ $property->currency }}</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-500">{{ __('Price per Meter') }}</p>
-                        <p class="font-medium">{{ number_format($property->price_per_meter) }} {{ $property->currency }}/m²</p>
+                        <p class="font-medium">{{ $property->price_per_meter ? number_format((float)$property->price_per_meter) : 'N/A' }} {{ $property->currency }}/m²</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-500">{{ __('For') }}</p>
@@ -298,4 +304,5 @@
             }
         </script>
     @endpush
-</x-app-layout>
+</div>
+@endsection

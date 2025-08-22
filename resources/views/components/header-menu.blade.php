@@ -13,29 +13,9 @@
 
             <!-- Navigation Links -->
             <div class="hidden md:flex items-center space-x-2">
-                <!-- Home Link with New Tab -->
-                <a href="{{ url('/') }}" 
-                   target="_blank"
-                   class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 text-blue-100 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    <span>{{ __('Website') }}</span>
-                </a>
-
                 <!-- Main Navigation Items -->
                 <div class="flex items-center gap-1"> <!-- Reduced gap -->
-                    @guest
-                    <a href="{{ url('/') }}" class="px-3 py-2 rounded-md hover:bg-blue-700 hover:text-white transition-colors duration-200 text-blue-100">
-                        <div class="flex items-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            <span>{{ __('Home') }}</span>
-                        </div>
-                    </a>
-                    @endguest
-
+                    
                     <!-- Apply the same style to all navigation items -->
                     
                     <!-- Properties -->
@@ -202,18 +182,6 @@
                          @click.away="isOpen = false" 
                          class="absolute top-16 left-0 right-0 bg-blue-700 shadow-lg z-20 mt-2">
                         <div class="flex flex-col py-2 px-4 space-y-1">
-                            <!-- Remove target="_blank" from mobile Home link as well -->
-                            @guest
-                            <a href="{{ url('/') }}" class="px-3 py-2 rounded-md hover:bg-blue-800">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                    </svg>
-                                    <span>{{ __('Home') }}</span>
-                                </div>
-                            </a>
-                            @endguest
-                            
                             <a href="{{ route('dashboard') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('dashboard') ? 'bg-blue-800 text-white' : '' }}">
                                 <div class="flex items-center space-x-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

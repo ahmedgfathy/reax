@@ -50,35 +50,32 @@
                             </div>
                         </div>
 
-                        <!-- Contact List -->
+                        <!-- Company Statistics -->
                         <div class="space-y-4">
-                            <div class="flex justify-between items-center">
-                                <h3 class="text-lg font-medium">{{ __('Recent Contacts') }}</h3>
-                                <a href="{{ route('contacts.create', ['company_id' => $company->id]) }}" class="text-blue-600 hover:text-blue-800">
-                                    <i class="fas fa-plus mr-1"></i>{{ __('Add Contact') }}
-                                </a>
-                            </div>
-                            <div class="space-y-3">
-                                @forelse($company->contacts as $contact)
-                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                        <div class="flex items-center">
-                                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                                <span class="text-blue-600 font-medium">
-                                                    {{ strtoupper(substr($contact->first_name, 0, 1)) }}
-                                                </span>
-                                            </div>
-                                            <div class="ml-3">
-                                                <p class="text-sm font-medium">{{ $contact->first_name }} {{ $contact->last_name }}</p>
-                                                <p class="text-xs text-gray-500">{{ $contact->email }}</p>
-                                            </div>
+                            <h3 class="text-lg font-medium">{{ __('Company Statistics') }}</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="p-4 bg-blue-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="p-2 bg-blue-100 rounded-lg">
+                                            <i class="fas fa-users text-blue-600"></i>
                                         </div>
-                                        <a href="{{ route('contacts.show', $contact) }}" class="text-blue-600 hover:text-blue-800">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
+                                        <div class="ml-3">
+                                            <p class="text-sm text-gray-500">{{ __('Total Users') }}</p>
+                                            <p class="text-lg font-semibold">{{ $company->users->count() }}</p>
+                                        </div>
                                     </div>
-                                @empty
-                                    <p class="text-gray-500 text-sm">{{ __('No contacts found.') }}</p>
-                                @endforelse
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="p-2 bg-green-100 rounded-lg">
+                                            <i class="fas fa-chart-line text-green-600"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm text-gray-500">{{ __('Active Since') }}</p>
+                                            <p class="text-lg font-semibold">{{ $company->created_at->format('M Y') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

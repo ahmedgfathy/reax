@@ -85,7 +85,6 @@ class AdministrationController extends Controller
             ],
             'properties' => [
                 'total' => $isSuperAdmin ? Property::count() : Property::where('company_id', $user->company_id)->count(),
-                'featured' => $isSuperAdmin ? Property::where('is_featured', true)->count() : Property::where('company_id', $user->company_id)->where('is_featured', true)->count(),
                 'published' => $isSuperAdmin ? Property::where('is_published', true)->count() : Property::where('company_id', $user->company_id)->where('is_published', true)->count()
             ],
             'leads' => [

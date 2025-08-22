@@ -1,19 +1,29 @@
-@import 'tailwindcss';
-
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source "../**/*.blade.php";
-@source "../**/*.js";
-@source "../**/*.vue";
-
-@theme {
-    --font-sans: 'Roboto', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-}
+/* Import local fonts */
+@import url('../../public/fonts/fonts.css');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Font settings */
+html {
+    font-family: 'Roboto', sans-serif;
+}
+
+html[lang="ar"], html.rtl {
+    font-family: 'Cairo', sans-serif !important;
+}
+
+/* RTL spacing fixes */
+[dir="rtl"] .space-x-6 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+}
+[dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+}
+[dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+}
 
 /* Font settings */
 html {

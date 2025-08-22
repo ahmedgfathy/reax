@@ -88,10 +88,6 @@
                     <div class="ml-4">
                         <h3 class="text-sm font-medium text-gray-500">Properties</h3>
                         <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['properties']['total']) }}</p>
-                        <p class="text-xs text-blue-600">
-                            <i class="fas fa-star mr-1"></i>
-                            {{ $stats['properties']['featured'] }} featured
-                        </p>
                     </div>
                 </div>
                 <div class="mt-4 text-sm">
