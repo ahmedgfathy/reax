@@ -8,23 +8,91 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Roboto', 'sans-serif'],
+                        'arabic': ['Cairo', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts with DNS prefetch -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="all">
+    
+    <!-- Immediate Font Loading Script -->
+    <script>
+        // Force font application immediately 
+        const applyFonts = () => {
+            const lang = document.documentElement.lang || 'en';
+            const dir = document.documentElement.dir || 'ltr';
+            
+            const fontFamily = (lang === 'ar' || dir === 'rtl') ? 
+                "'Cairo', 'Tahoma', 'Arial Unicode MS', sans-serif" : 
+                "'Roboto', 'Arial', 'Helvetica', sans-serif";
+            
+            document.body.style.setProperty('font-family', fontFamily, 'important');
+            document.documentElement.style.setProperty('font-family', fontFamily, 'important');
+            
+            // Apply to all existing elements
+            const allElements = document.querySelectorAll('*');
+            allElements.forEach(el => {
+                el.style.setProperty('font-family', fontFamily, 'important');
+            });
+        };
+        
+        // Apply fonts immediately and on DOM ready
+        applyFonts();
+        document.addEventListener('DOMContentLoaded', applyFonts);
+        window.addEventListener('load', applyFonts);
+    </script>
     
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Font Configuration */
-        body {
-            font-family: 'Roboto', sans-serif;
+        /* Font Configuration with higher specificity */
+        * {
+            font-family: 'Roboto', sans-serif !important;
         }
         
+        [dir="rtl"] *, html[lang="ar"] *, 
         [dir="rtl"], html[lang="ar"] {
             font-family: 'Cairo', sans-serif !important;
+        }
+        
+        /* Tailwind CSS font override */
+        .font-sans {
+            font-family: 'Roboto', sans-serif !important;
+        }
+        
+        [dir="rtl"] .font-sans, 
+        html[lang="ar"] .font-sans {
+            font-family: 'Cairo', sans-serif !important;
+        }
+        
+        /* Force font loading on all elements */
+        input, button, select, textarea, label, span, p, h1, h2, h3, h4, h5, h6, div, a {
+            font-family: inherit !important;
+        }
+        
+        /* Additional CSS to ensure font visibility */
+        @font-face {
+            font-family: 'Roboto-Fallback';
+            src: local('Roboto'), local('Arial'), local('sans-serif');
+        }
+        
+        @font-face {
+            font-family: 'Cairo-Fallback';
+            src: local('Cairo'), local('Tahoma'), local('Arial Unicode MS');
         }
         
         /* Custom Gradient - Emerald Ocean Theme */

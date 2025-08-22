@@ -1,11 +1,31 @@
 <style>
-    /* Font Configuration */
-    body {
-        font-family: 'Roboto', sans-serif;
+    /* Enhanced Font Configuration */
+    * {
+        font-family: 'Roboto', sans-serif !important;
     }
     
+    [dir="rtl"] *, html[lang="ar"] *, 
     [dir="rtl"], html[lang="ar"] {
         font-family: 'Cairo', sans-serif !important;
+    }
+    
+    /* RTL Icon and Text Spacing */
+    .nav-item-ltr {
+        flex-direction: row;
+    }
+    
+    .nav-item-rtl {
+        flex-direction: row-reverse;
+    }
+    
+    [dir="rtl"] .nav-icon {
+        margin-right: 0 !important;
+        margin-left: 0.5rem !important;
+    }
+    
+    [dir="ltr"] .nav-icon {
+        margin-right: 0.5rem !important;
+        margin-left: 0 !important;
     }
     
     /* Custom Gradient - Emerald Ocean Theme */
@@ -13,7 +33,7 @@
         background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
     }
     
-    /* Glass Effect */
+    /* Enhanced Glass Effect */
     .glass-effect {
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
@@ -25,29 +45,52 @@
     .glass-nav-item {
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
     }
+    
+    .glass-nav-item:hover {
+        background: rgba(255, 255, 255, 0.25) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Navigation spacing for RTL */
+    [dir="rtl"] .nav-container {
+        flex-direction: row-reverse;
+    }
+    
+    [dir="rtl"] .nav-links {
+        flex-direction: row-reverse;
+        gap: 0.25rem;
+    }
+    
+    [dir="ltr"] .nav-links {
+        gap: 0.25rem;
+    }
+    
+    /* User dropdown adjustments */
+    [dir="rtl"] .user-dropdown {
+        left: 0;
+        right: auto;
+    }
+    
+    [dir="ltr"] .user-dropdown {
+        right: 0;
+        left: auto;
+    }
+    
+    /* Language switcher */
+    .lang-select {
+        min-width: 80px;
+        text-align: center;
+    }
+    
+    [x-cloak] { display: none !important; }
 </style>
 
 <nav class="bg-gradient-header shadow-xl border-b border-emerald-600/20">
     <!-- Add Alpine.js if not already loaded -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <!-- Add necessary styles -->
-    <style>
-        .glass-effect {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-        
-        .bg-gradient-header {
-            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
-        }
-        
-        [x-cloak] { display: none !important; }
-    </style>
     
     <div class="max-w-full mx-4 xl:max-w-[1920px] xl:mx-auto px-4 md:px-6 w-full">
         <div class="flex items-center h-16">

@@ -8,22 +8,61 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Roboto', 'sans-serif'],
+                        'arabic': ['Cairo', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Immediate Font Loading Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = document.documentElement.lang;
+            const dir = document.documentElement.dir;
+            
+            if (lang === 'ar' || dir === 'rtl') {
+                document.body.style.fontFamily = "'Cairo', sans-serif";
+                document.documentElement.style.fontFamily = "'Cairo', sans-serif";
+            } else {
+                document.body.style.fontFamily = "'Roboto', sans-serif";
+                document.documentElement.style.fontFamily = "'Roboto', sans-serif";
+            }
+        });
+    </script>
+    
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Font Configuration */
-        body {
-            font-family: 'Roboto', sans-serif;
+        /* Font Configuration with higher specificity */
+        * {
+            font-family: 'Roboto', sans-serif !important;
         }
         
+        [dir="rtl"] *, html[lang="ar"] *, 
         [dir="rtl"], html[lang="ar"] {
+            font-family: 'Cairo', sans-serif !important;
+        }
+        
+        /* Tailwind CSS font override */
+        .font-sans {
+            font-family: 'Roboto', sans-serif !important;
+        }
+        
+        [dir="rtl"] .font-sans, 
+        html[lang="ar"] .font-sans {
             font-family: 'Cairo', sans-serif !important;
         }
         
