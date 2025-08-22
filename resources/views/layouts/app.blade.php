@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="{{ app()->get    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">le() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <meta property="og:title" content="Real Estate CRM - REAX" />
     <meta property="og:description" content="REAX Discover the best real estate deals with our powerful CRM!" />
     <meta property="og:image" content="https://real.e-egar.com/images/og-image.jpg" />
@@ -39,25 +42,39 @@
         });
     </script>
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'sans': ['Roboto', 'sans-serif'],
-                        'arabic': ['Cairo', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Local Tailwind CSS -->
+    <link href="{{ asset('css/tailwind-local.css') }}?v={{ time() }}" rel="stylesheet">
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Local Fonts -->
+    <link href="{{ asset('css/fonts.css') }}?v={{ time() }}" rel="stylesheet">
+    
+    <!-- Additional Custom Styles -->
+    <style>
+        /* Google Fonts Fallback */
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap');
+        
+        /* Font Configuration */
+        :root {
+            --font-sans: 'Roboto', ui-sans-serif, system-ui;
+            --font-arabic: 'Cairo', ui-sans-serif, system-ui;
+        }
+        
+        html {
+            font-family: var(--font-sans);
+        }
+        
+        html[lang="ar"], html.rtl {
+            font-family: var(--font-arabic) !important;
+        }
+        
+        /* Additional Tailwind-style utilities */
+        .line-clamp-1 {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+        }
+    </style>
     
     <!-- Immediate Font Loading Script -->
     <script>
@@ -223,6 +240,7 @@
     
     <!-- Add PWA meta tags -->
     <meta name="theme-color" content="#2563EB">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -251,36 +269,7 @@
         <!-- Main Navigation -->
         @include('components.header-menu')
         
-        <!-- Module Header (Single white bar) -->
-        <div class="bg-white shadow-sm border-b">
-            <div class="container mx-auto py-2 px-3 sm:py-2 sm:px-4">
-                <div class="flex justify-between items-center">
-                    <div class="flex-1 min-w-0">
-                        <h1 class="text-base sm:text-xl font-bold text-gray-800 truncate">{{ $header ?? __('Dashboard') }}</h1>
-                        @isset($breadcrumbs)
-                            <div class="hidden sm:flex items-center text-xs text-gray-500">
-                                {{ $breadcrumbs }}
-                            </div>
-                        @endisset
-                    </div>
-                    @auth
-                        <div class="hidden sm:block text-gray-600 text-xs ml-2">
-                            {{ Auth::user()->name ?? 'Guest' }} 
-                            @if(Auth::user()->role)
-                                <span class="hidden md:inline">- {{ Auth::user()->role_name }}</span>
-                            @endif
-                            @if(Auth::user()->company)
-                                <span class="hidden lg:inline">{{ __('at') }} {{ Auth::user()->company->name }}</span>
-                            @endif
-                        </div>
-                    @else
-                        <div class="hidden sm:block text-gray-600 text-xs">
-                            {{ __('Welcome Guest') }}
-                        </div>
-                    @endauth
-                </div>
-            </div>
-        </div>
+        <!-- Main Content -->
     </div>
 
     <!-- Main Content without Sidebar -->

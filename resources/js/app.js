@@ -1,5 +1,4 @@
 import './bootstrap';
-import './i18n';
 
 // Helper function to handle RTL for dynamic components
 document.addEventListener('DOMContentLoaded', function() {

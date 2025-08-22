@@ -1,16 +1,1 @@
-{
-    "description": "REAX Real Estates Website for Property and CRM for Management System",
-    "author": "Ahmed Fathy",
-    "location": "Egypt",
-    "contact": "ahmedgfathy@gmail.com",
-    "phone": "+201002778090",
-    "private": true,
-    "scripts": {
-        "extract-lang": "node lang-extract.js"
-    },
-    "devDependencies": {
-        "axios": "^1.7.4",
-        "@faker-js/faker": "^8.0.0",
-        "unsplash-js": "^7.0.15"
-    }
-}
+{}

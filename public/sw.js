@@ -1,18 +1,21 @@
-const CACHE_NAME = 'reax-cache-v1';
+const CACHE_NAME = 'reax-cache-v2';
 const urlsToCache = [
     '/',
-    '/css/app.css',
-    '/js/app.js',
-    '/images/brand/logo.svg',
-    '/images/brand/favicon-16.png',
-    '/images/brand/favicon-32.png',
-    '/images/brand/apple-touch-icon.png'
+    '/css/tailwind-local.css',
+    '/css/fonts.css',
+    '/images/brand/logo.svg'
 ];
 
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(urlsToCache))
+            .then(cache => {
+                return cache.addAll(urlsToCache).catch(err => {
+                    console.log('Cache addAll failed:', err);
+                    // Cache only the essential files that exist
+                    return cache.addAll(['/']);
+                });
+            })
     );
 });
 
@@ -20,6 +23,10 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
             .then(response => response || fetch(event.request))
+            .catch(err => {
+                console.log('Fetch failed:', err);
+                return fetch(event.request);
+            })
     );
 });
 

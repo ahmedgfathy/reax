@@ -40,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
     // Property routes
     Route::post('/properties/{property}/toggle-featured', [PropertyController::class, 'toggleFeatured'])->name('properties.toggle-featured');
     Route::post('/properties/import', [PropertyController::class, 'import'])->name('properties.import');
-    Route::post('/properties/export', [PropertyController::class, 'export'])->name('properties.export');
+    Route::get('/properties/export', [PropertyController::class, 'export'])->name('properties.export');
     Route::resource('properties', PropertyController::class);
     
     Route::post('/properties/{property}/toggle-published', [PropertyController::class, 'togglePublished'])
@@ -97,11 +97,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('teams.members.assign-form');
     Route::post('/teams/{team}/members/store', [TeamMemberController::class, 'store'])
         ->name('teams.members.add');
-    
-    // Systems Routes
-    Route::prefix('systems')->group(function () {
-        Route::get('/', [\App\Http\Controllers\SystemController::class, 'index'])->name('systems.index');
-    });
 });
 
 // Language and locale routes
@@ -146,6 +141,3 @@ Route::middleware(['auth'])->prefix('management')->name('management.')->group(fu
     // Team Activities
     Route::get('/activities', [\App\Http\Controllers\ManagementController::class, 'activities'])->name('activities.index');
 });
-
-// Load admin routes for administration panel
-require __DIR__.'/admin.php';
