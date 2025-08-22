@@ -1,28 +1,131 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ __('Dashboard') }} - REAX CRM</title>
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        /* Font Configuration */
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        [dir="rtl"], html[lang="ar"] {
+            font-family: 'Cairo', sans-serif !important;
+        }
+        
+        /* Custom Gradient - Emerald Ocean Theme */
+        .bg-gradient-main {
+            background: linear-gradient(135deg, #0c4a6e 0%, #065f46 50%, #1e40af 100%);
+        }
+        
+        .bg-gradient-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+        }
+        
+        /* Glass Effect */
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-card {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Hover Effects */
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        /* Accent Colors */
+        .text-accent { color: #10b981; }
+        .text-accent-dark { color: #047857; }
+        .bg-accent { background-color: #10b981; }
+        .border-accent { border-color: #10b981; }
+        
+        /* Tab Styling */
+        .tab-active {
+            border-bottom: 3px solid #10b981;
+            color: #10b981 !important;
+        }
+        
+        /* Gradient Stats Cards */
+        .stat-card-blue { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+        .stat-card-green { background: linear-gradient(135deg, #10b981, #047857); }
+        .stat-card-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .stat-card-yellow { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .stat-card-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .stat-card-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #047857;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 {{ app()->getLocale() == 'ar' ? 'rtl' : '' }} font-{{ app()->getLocale() == 'ar' ? 'Cairo' : 'Roboto' }}">
+<body class="min-h-screen bg-gradient-main">
     <!-- Header Menu -->
     @include('components.header-menu')
 
     <!-- Dashboard Header -->
-    <div class="bg-white shadow-sm border-b">
-        <div class="container mx-auto py-4 px-6">
+    <div class="bg-gradient-header shadow-lg border-b border-emerald-600/20">
+        <div class="container mx-auto py-8 px-6">
             <div class="flex justify-between items-center">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">{{ __('Dashboard') }}</h1>
-                    <p class="text-gray-500">{{ __('Welcome back') }}, {{ auth()->user()->name }}!</p>
+                <div class="text-white">
+                    <h1 class="text-4xl font-bold mb-2 flex items-center">
+                        <i class="fas fa-tachometer-alt mr-4 text-emerald-200"></i>
+                        {{ __('Dashboard') }}
+                    </h1>
+                    <p class="text-emerald-100 text-lg">{{ __('Welcome back') }}, {{ auth()->user()->name }}!</p>
                 </div>
-                <div>
-                    <p class="text-sm text-gray-500">{{ now()->format('l, F d, Y') }}</p>
+                <div class="text-right text-white">
+                    <div class="glass-effect px-6 py-4 rounded-xl">
+                        <p class="text-emerald-100 text-sm">{{ __('Today') }}</p>
+                        <p class="text-xl font-semibold">{{ now()->format('l, F d, Y') }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -30,32 +133,32 @@
 
     <!-- Main Content -->
     <div class="container mx-auto p-6">
-        <!-- Tabs -->
-        <div x-data="{ activeTab: 'properties' }" class="mb-6">
-            <div class="border-b border-gray-200">
-                <ul class="flex -mb-px">
+        <!-- Navigation Tabs -->
+        <div x-data="{ activeTab: 'properties' }" class="mb-8">
+            <div class="glass-effect rounded-2xl p-2 mb-8">
+                <ul class="flex space-x-2">
                     <li @click="activeTab = 'properties'" 
-                        :class="{'border-b-2 border-blue-500': activeTab === 'properties'}" 
-                        class="mr-6 py-2 cursor-pointer">
-                        <span :class="{'text-blue-600 font-medium': activeTab === 'properties', 'text-gray-500': activeTab !== 'properties'}" 
-                              class="flex items-center">
-                            <i class="fas fa-home mr-2"></i> {{ __('Properties') }}
+                        :class="{'tab-active bg-white shadow-md': activeTab === 'properties'}" 
+                        class="flex-1 py-4 cursor-pointer rounded-xl transition-all duration-200">
+                        <span class="flex items-center justify-center font-medium text-gray-700">
+                            <i class="fas fa-building mr-3 text-lg"></i> 
+                            {{ __('Properties') }}
                         </span>
                     </li>
                     <li @click="activeTab = 'leads'" 
-                        :class="{'border-b-2 border-blue-500': activeTab === 'leads'}" 
-                        class="mr-6 py-2 cursor-pointer">
-                        <span :class="{'text-blue-600 font-medium': activeTab === 'leads', 'text-gray-500': activeTab !== 'leads'}" 
-                              class="flex items-center">
-                            <i class="fas fa-users mr-2"></i> {{ __('Leads') }}
+                        :class="{'tab-active bg-white shadow-md': activeTab === 'leads'}" 
+                        class="flex-1 py-4 cursor-pointer rounded-xl transition-all duration-200">
+                        <span class="flex items-center justify-center font-medium text-gray-700">
+                            <i class="fas fa-users mr-3 text-lg"></i> 
+                            {{ __('Leads') }}
                         </span>
                     </li>
                     <li @click="activeTab = 'opportunities'" 
-                        :class="{'border-b-2 border-blue-500': activeTab === 'opportunities'}" 
-                        class="mr-6 py-2 cursor-pointer">
-                        <span :class="{'text-blue-600 font-medium': activeTab === 'opportunities', 'text-gray-500': activeTab !== 'opportunities'}" 
-                              class="flex items-center">
-                            <i class="fas fa-handshake mr-2"></i> {{ __('Opportunities') }}
+                        :class="{'tab-active bg-white shadow-md': activeTab === 'opportunities'}" 
+                        class="flex-1 py-4 cursor-pointer rounded-xl transition-all duration-200">
+                        <span class="flex items-center justify-center font-medium text-gray-700">
+                            <i class="fas fa-handshake mr-3 text-lg"></i> 
+                            {{ __('Opportunities') }}
                         </span>
                     </li>
                 </ul>
@@ -64,72 +167,82 @@
             <!-- Leads Stats -->
             <div x-show="activeTab === 'leads'">
                 <!-- Stats Overview -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-                    <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-card card-hover rounded-2xl p-6 stat-card-blue text-white">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h3 class="text-gray-500 text-sm">{{ __('Total Properties') }}</h3>
-                                <p class="text-3xl font-bold text-gray-800">{{ $stats['properties_count'] }}</p>
+                                <h3 class="text-emerald-100 text-sm font-medium uppercase tracking-wide">{{ __('Total Properties') }}</h3>
+                                <p class="text-3xl font-bold">{{ $stats['properties_count'] }}</p>
                             </div>
-                            <div class="bg-blue-100 p-3 rounded-full text-blue-500">
-                                <i class="fas fa-home text-xl"></i>
+                            <div class="bg-white/20 p-3 rounded-xl">
+                                <i class="fas fa-building text-2xl"></i>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
+                    <div class="glass-card card-hover rounded-2xl p-6 stat-card-green text-white">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h3 class="text-gray-500 text-sm">{{ __('Total Leads') }}</h3>
-                                <p class="text-3xl font-bold text-gray-800">{{ $stats['leads_count'] }}</p>
+                                <h3 class="text-emerald-100 text-sm font-medium uppercase tracking-wide">{{ __('Total Leads') }}</h3>
+                                <p class="text-3xl font-bold">{{ $stats['leads_count'] }}</p>
                             </div>
-                            <div class="bg-green-100 p-3 rounded-full text-green-500">
-                                <i class="fas fa-users text-xl"></i>
+                            <div class="bg-white/20 p-3 rounded-xl">
+                                <i class="fas fa-users text-2xl"></i>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
+                    <div class="glass-card card-hover rounded-2xl p-6 stat-card-purple text-white">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h3 class="text-gray-500 text-sm">{{ __('Active Leads') }}</h3>
-                                <p class="text-3xl font-bold text-gray-800">{{ $stats['active_leads_count'] }}</p>
+                                <h3 class="text-emerald-100 text-sm font-medium uppercase tracking-wide">{{ __('Active Leads') }}</h3>
+                                <p class="text-3xl font-bold">{{ $stats['active_leads_count'] }}</p>
                             </div>
-                            <div class="bg-purple-100 p-3 rounded-full text-purple-500">
-                                <i class="fas fa-user-tag text-xl"></i>
+                            <div class="bg-white/20 p-3 rounded-xl">
+                                <i class="fas fa-user-tag text-2xl"></i>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
+                    <div class="glass-card card-hover rounded-2xl p-6 stat-card-yellow text-white">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h3 class="text-gray-500 text-sm">{{ __('Potential Revenue') }}</h3>
-                                <p class="text-3xl font-bold text-gray-800">{{ number_format($stats['revenue_potential']) }}</p>
+                                <h3 class="text-emerald-100 text-sm font-medium uppercase tracking-wide">{{ __('Potential Revenue') }}</h3>
+                                <p class="text-3xl font-bold">{{ number_format($stats['revenue_potential']) }}</p>
                             </div>
-                            <div class="bg-yellow-100 p-3 rounded-full text-yellow-500">
-                                <i class="fas fa-dollar-sign text-xl"></i>
+                            <div class="bg-white/20 p-3 rounded-xl">
+                                <i class="fas fa-dollar-sign text-2xl"></i>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Recent Leads - LEFT SECTION -->
                     <div class="lg:col-span-2">
-                        <div class="bg-white rounded-lg shadow-sm">
-                            <div class="border-b px-6 py-3 flex justify-between items-center">
-                                <h2 class="text-lg font-semibold text-gray-800">{{ __('Recent Leads') }}</h2>
-                                <a href="{{ route('leads.index') }}" class="text-blue-600 text-sm hover:underline">{{ __('View All') }}</a>
+                        <div class="glass-card rounded-2xl shadow-xl">
+                            <div class="border-b border-emerald-100 px-6 py-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-t-2xl">
+                                <div class="flex justify-between items-center">
+                                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                                        <i class="fas fa-users mr-3 text-accent"></i>
+                                        {{ __('Recent Leads') }}
+                                    </h2>
+                                    <a href="{{ route('leads.index') }}" class="text-accent hover:text-accent-dark font-medium transition-colors">
+                                        {{ __('View All') }} <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
                             </div>
                             
-                            <div class="overflow-hidden">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+                            <div class="p-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     @forelse($recent_leads as $lead)
-                                        <div class="bg-gray-50 hover:bg-gray-100 transition-colors rounded-lg p-4 relative">
+                                        <div class="glass-effect hover:shadow-xl transition-all duration-300 rounded-xl p-5 border border-emerald-100">
                                             <!-- Status indicator -->
-                                            <div class="absolute top-4 right-4">
-                                                <span class="px-2 py-1 text-xs rounded-full 
+                                            <div class="flex justify-between items-start mb-4">
+                                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                                                    {{ strtoupper(substr($lead->first_name, 0, 1)) }}{{ strtoupper(substr($lead->last_name, 0, 1)) }}
+                                                </div>
+                                                <span class="px-3 py-1 text-xs rounded-full font-medium
                                                     {{ $lead->status == 'new' ? 'bg-blue-100 text-blue-700' : '' }}
                                                     {{ $lead->status == 'contacted' ? 'bg-indigo-100 text-indigo-700' : '' }}
                                                     {{ $lead->status == 'qualified' ? 'bg-purple-100 text-purple-700' : '' }}
@@ -142,67 +255,73 @@
                                                 </span>
                                             </div>
                                             
-                                            <div class="flex items-start space-x-3">
-                                                <!-- Avatar placeholder -->
-                                                <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold text-lg">
-                                                    {{ strtoupper(substr($lead->first_name, 0, 1)) }}{{ strtoupper(substr($lead->last_name, 0, 1)) }}
+                                            <div>
+                                                <h3 class="font-bold text-gray-800 text-lg mb-3">
+                                                    <a href="{{ route('leads.show', $lead->id) }}" class="hover:text-accent transition-colors">
+                                                        {{ $lead->first_name }} {{ $lead->last_name }}
+                                                    </a>
+                                                </h3>
+                                                
+                                                <div class="space-y-2">
+                                                    @if($lead->email)
+                                                    <div class="flex items-center text-sm text-gray-600">
+                                                        <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center mr-3">
+                                                            <i class="fas fa-envelope text-emerald-600"></i>
+                                                        </div>
+                                                        <span class="truncate">{{ $lead->email }}</span>
+                                                    </div>
+                                                    @endif
+                                                    
+                                                    @if($lead->phone)
+                                                    <div class="flex items-center text-sm text-gray-600">
+                                                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                                            <i class="fas fa-phone text-blue-600"></i>
+                                                        </div>
+                                                        <span>{{ $lead->phone }}</span>
+                                                    </div>
+                                                    @endif
+                                                    
+                                                    @if($lead->interestedProperty)
+                                                    <div class="flex items-center text-sm text-gray-600">
+                                                        <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                                                            <i class="fas fa-home text-purple-600"></i>
+                                                        </div>
+                                                        <span class="truncate">{{ $lead->interestedProperty->name }}</span>
+                                                    </div>
+                                                    @endif
+                                                    
+                                                    @if($lead->budget)
+                                                    <div class="flex items-center text-sm text-gray-600">
+                                                        <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
+                                                            <i class="fas fa-dollar-sign text-yellow-600"></i>
+                                                        </div>
+                                                        <span class="font-semibold">{{ number_format($lead->budget) }}</span>
+                                                    </div>
+                                                    @endif
                                                 </div>
                                                 
-                                                <div class="flex-grow">
-                                                    <h3 class="font-semibold text-gray-800">
-                                                        <a href="{{ route('leads.show', $lead->id) }}" class="hover:text-blue-600">
-                                                            {{ $lead->first_name }} {{ $lead->last_name }}
+                                                <div class="mt-4 flex items-center justify-between">
+                                                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                                                        {{ $lead->created_at->diffForHumans() }}
+                                                    </span>
+                                                    
+                                                    <div class="flex space-x-2">
+                                                        <a href="{{ route('leads.show', $lead->id) }}" class="w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
+                                                            <i class="fas fa-eye text-sm"></i>
                                                         </a>
-                                                    </h3>
-                                                    
-                                                    <div class="grid grid-cols-1 gap-1 mt-1">
-                                                        @if($lead->email)
-                                                        <div class="flex items-center text-xs">
-                                                            <span class="text-gray-500 w-5"><i class="fas fa-envelope"></i></span>
-                                                            <span class="ml-2 text-gray-700 truncate">{{ $lead->email }}</span>
-                                                        </div>
-                                                        @endif
-                                                        
-                                                        @if($lead->phone)
-                                                        <div class="flex items-center text-xs">
-                                                            <span class="text-gray-500 w-5"><i class="fas fa-phone"></i></span>
-                                                            <span class="ml-2 text-gray-700">{{ $lead->phone }}</span>
-                                                        </div>
-                                                        @endif
-                                                        
-                                                        @if($lead->interestedProperty)
-                                                        <div class="flex items-center text-xs">
-                                                            <span class="text-gray-500 w-5"><i class="fas fa-home"></i></span>
-                                                            <span class="ml-2 text-gray-700 truncate">{{ $lead->interestedProperty->name }}</span>
-                                                        </div>
-                                                        @endif
-                                                        
-                                                        @if($lead->budget)
-                                                        <div class="flex items-center text-xs">
-                                                            <span class="text-gray-500 w-5"><i class="fas fa-dollar-sign"></i></span>
-                                                            <span class="ml-2 text-gray-700">{{ number_format($lead->budget) }}</span>
-                                                        </div>
-                                                        @endif
-                                                    </div>
-                                                    
-                                                    <div class="mt-2 flex items-center justify-between">
-                                                        <span class="text-xs text-gray-500">{{ $lead->created_at->diffForHumans() }}</span>
-                                                        
-                                                        <div class="flex space-x-2">
-                                                            <a href="{{ route('leads.show', $lead->id) }}" class="text-blue-600 hover:text-blue-800">
-                                                                <i class="fas fa-eye"></i>
-                                                            </a>
-                                                            <a href="{{ route('leads.edit', $lead->id) }}" class="text-yellow-600 hover:text-yellow-800">
-                                                                <i class="fas fa-edit"></i>
-                                                            </a>
-                                                        </div>
+                                                        <a href="{{ route('leads.edit', $lead->id) }}" class="w-8 h-8 bg-amber-500 text-white rounded-lg flex items-center justify-center hover:bg-amber-600 transition-colors">
+                                                            <i class="fas fa-edit text-sm"></i>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     @empty
-                                        <div class="col-span-2 p-4 text-center text-gray-500">
-                                            {{ __('No leads found.') }}
+                                        <div class="col-span-2 p-8 text-center">
+                                            <div class="text-gray-400 mb-4">
+                                                <i class="fas fa-users text-4xl"></i>
+                                            </div>
+                                            <p class="text-gray-500 text-lg">{{ __('No leads found.') }}</p>
                                         </div>
                                     @endforelse
                                 </div>

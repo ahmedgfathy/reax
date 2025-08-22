@@ -99,12 +99,20 @@
     <!-- Language Switcher -->
     <div class="lang-switcher">
         <div class="flex space-x-2">
-            <a href="{{ url('/lang/en') }}" class="lang-btn {{ app()->getLocale() == 'en' ? 'active' : '' }}">
-                <i class="fas fa-globe mr-1"></i>EN
-            </a>
-            <a href="{{ url('/lang/ar') }}" class="lang-btn {{ app()->getLocale() == 'ar' ? 'active' : '' }}">
-                <i class="fas fa-globe mr-1"></i>العربية
-            </a>
+            <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                @csrf
+                <input type="hidden" name="locale" value="en">
+                <button type="submit" class="lang-btn {{ app()->getLocale() == 'en' ? 'active' : '' }}">
+                    <i class="fas fa-globe mr-1"></i>EN
+                </button>
+            </form>
+            <form method="POST" action="{{ route('locale.switch') }}" class="inline">
+                @csrf
+                <input type="hidden" name="locale" value="ar">
+                <button type="submit" class="lang-btn {{ app()->getLocale() == 'ar' ? 'active' : '' }}">
+                    <i class="fas fa-globe mr-1"></i>العربية
+                </button>
+            </form>
         </div>
     </div>
 

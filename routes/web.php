@@ -91,7 +91,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('branches', BranchController::class);
     Route::resource('departments', \App\Http\Controllers\DepartmentController::class);
     Route::resource('teams', \App\Http\Controllers\TeamController::class);
-    
+
     // Team Member Management
     Route::get('/teams/{team}/members/assign', [TeamMemberController::class, 'assignForm'])
         ->name('teams.members.assign-form');
@@ -108,6 +108,15 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/locale/switch', [LocaleController::class, 'switchLocale'])
     ->name('locale.switch')
     ->middleware('web');
+
+// Simple GET routes for language switching
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'ar'])) {
+        session(['locale' => $locale]);
+        app()->setLocale($locale);
+    }
+    return redirect()->back();
+})->name('lang.switch');
 
 // Management Routes
 Route::middleware(['auth'])->prefix('management')->name('management.')->group(function () {

@@ -1,54 +1,63 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Properties content -->
-<div class="bg-gray-100 min-h-screen">
-    <div class="p-6">
-            <!-- Header -->
-            <div class="mb-6">
-                <h1 class="text-2xl font-semibold text-gray-900">{{ __('Properties') }}</h1>
-                <!-- Breadcrumbs -->
-                <nav class="flex items-center space-x-2 text-sm text-gray-500 mt-2">
-                    <a href="{{ route('dashboard') }}" class="hover:text-gray-700">{{ __('Dashboard') }}</a>
-                    <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                    <span class="text-gray-700">{{ __('Properties') }}</span>
-                    @if(request()->has('type'))
-                        <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                        <span class="text-gray-700">{{ __(ucfirst(request('type'))) }}</span>
-                    @endif
-                </nav>
+<div class="min-h-screen">
+    <!-- Page Header -->
+    <div class="bg-gradient-header shadow-xl border-b border-emerald-600/20 mb-8">
+        <div class="container mx-auto py-8 px-6">
+            <div class="flex justify-between items-center">
+                <div class="text-white">
+                    <h1 class="text-4xl font-bold mb-2 flex items-center">
+                        <i class="fas fa-building mr-4 text-emerald-200"></i>
+                        {{ __('Properties') }}
+                    </h1>
+                    <!-- Breadcrumbs -->
+                    <nav class="flex items-center space-x-2 text-emerald-100">
+                        <a href="{{ route('dashboard') }}" class="hover:text-white transition-colors">{{ __('Dashboard') }}</a>
+                        <i class="fas fa-chevron-right text-emerald-300 mx-2"></i>
+                        <span class="text-white">{{ __('Properties') }}</span>
+                        @if(request()->has('type'))
+                            <i class="fas fa-chevron-right text-emerald-300 mx-2"></i>
+                            <span class="text-white">{{ __(ucfirst(request('type'))) }}</span>
+                        @endif
+                    </nav>
+                </div>
+                <div class="text-right text-white">
+                    <a href="{{ route('properties.create') }}" class="glass-effect px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-200 inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i>{{ __('Add New Property') }}
+                    </a>
+                </div>
             </div>
+        </div>
+    </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-6">
-        @foreach([
-            ['label' => 'Total Properties', 'value' => $stats['total'], 'icon' => 'fa-building', 'gradient' => 'from-blue-900 to-blue-800', 'description' => 'Total property count'],
-            ['label' => 'For Sale', 'value' => $stats['for_sale'], 'icon' => 'fa-tag', 'gradient' => 'from-green-900 to-green-800', 'description' => 'Properties for sale'],
-            ['label' => 'For Rent', 'value' => $stats['for_rent'], 'icon' => 'fa-key', 'gradient' => 'from-yellow-900 to-yellow-800', 'description' => 'Properties for rent']
-        ] as $stat)
-            <div class="bg-gradient-to-br {{ $stat['gradient'] }} overflow-hidden shadow-lg rounded-lg">
-                <div class="p-5">
+    <div class="container mx-auto px-6">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+            @foreach([
+                ['label' => 'Total Properties', 'value' => $stats['total'], 'icon' => 'fa-building', 'color' => 'blue', 'description' => 'Total property count'],
+                ['label' => 'For Sale', 'value' => $stats['for_sale'], 'icon' => 'fa-tag', 'color' => 'green', 'description' => 'Properties for sale'],
+                ['label' => 'For Rent', 'value' => $stats['for_rent'], 'icon' => 'fa-key', 'color' => 'yellow', 'description' => 'Properties for rent']
+            ] as $stat)
+                <div class="glass-card card-hover rounded-2xl p-6 
+                    @if($stat['color'] == 'blue') stat-card-blue text-white
+                    @elseif($stat['color'] == 'green') stat-card-green text-white  
+                    @else stat-card-yellow text-white @endif">
                     <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <div class="bg-white/20 rounded-full p-3">
-                                <i class="fas {{ $stat['icon'] }} text-white text-xl"></i>
-                            </div>
+                        <div class="bg-white/20 p-3 rounded-xl mr-4">
+                            <i class="fas {{ $stat['icon'] }} text-2xl"></i>
                         </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <h3 class="text-lg font-medium text-white">{{ __($stat['label']) }}</h3>
-                            <p class="text-sm text-white/70">{{ __($stat['description']) }}</p>
-                            <div class="mt-3">
-                                <span class="text-2xl font-bold text-white">{{ number_format($stat['value']) }}</span>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-emerald-100">{{ __($stat['label']) }}</h3>
+                            <p class="text-sm text-emerald-100/80">{{ __($stat['description']) }}</p>
+                            <div class="mt-2">
+                                <span class="text-3xl font-bold">{{ number_format($stat['value']) }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
+        </div>
     </div>
 
     <!-- Filters Section -->
