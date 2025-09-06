@@ -85,11 +85,21 @@ class BranchController extends Controller
 
     public function show(Branch $branch)
     {
+        // Authorization check: Super admin can view all branches, others can only view their company's branches
+        if (!auth()->user()->isSuperAdmin() && $branch->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this branch.');
+        }
+
         return view('branches.show', compact('branch'));
     }
 
     public function edit(Branch $branch)
     {
+        // Authorization check: Super admin can edit all branches, others can only edit their company's branches
+        if (!auth()->user()->isSuperAdmin() && $branch->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this branch.');
+        }
+
         return view('branches.edit', compact('branch'));
     }
 

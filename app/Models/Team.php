@@ -46,7 +46,14 @@ class Team extends Model
 
     public function members()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class, 'team_user')
+            ->withTimestamps();
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'team_user')
+            ->withTimestamps();
     }
 
     public function sharedProperties()
@@ -62,5 +69,10 @@ class Team extends Model
     public function publicListings()
     {
         return $this->hasMany(Property::class)->where('is_public', true);
+    }
+
+    public function performanceMetrics()
+    {
+        return $this->hasMany(TeamPerformanceMetric::class);
     }
 }

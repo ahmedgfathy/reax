@@ -10,13 +10,11 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->text('description')->nullable();
-            $table->foreignId('company_id')->constrained()->onDelete('cascade');
-            $table->json('permissions')->nullable();
+            $table->string('name')->unique();
+            $table->string('display_name');
+            $table->string('description')->nullable();
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes(); // Add this line
         });
     }
 

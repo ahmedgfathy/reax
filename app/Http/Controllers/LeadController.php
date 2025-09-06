@@ -18,14 +18,19 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
-        $company = Company::first();
-        
-        if (!$company) {
-            return redirect()->route('companies.create')
-                ->with('error', 'Please create a company first');
-        }
+        // Super admin sees all leads, others see only their company's leads
+        if (auth()->user()->isSuperAdmin()) {
+            $query = Lead::with(['assignedUser', 'interestedProperty']);
+        } else {
+            $company = auth()->user()->company;
+            
+            if (!$company) {
+                return redirect()->route('companies.create')
+                    ->with('error', 'Please create a company first');
+            }
 
-        $query = Lead::with(['assignedUser', 'interestedProperty'])->where('company_id', $company->id);
+            $query = Lead::with(['assignedUser', 'interestedProperty'])->where('company_id', $company->id);
+        }
         
         // Search functionality
         if ($request->has('search') && $request->search != '') {
@@ -73,13 +78,24 @@ class LeadController extends Controller
         $filters = $request->only(['search', 'status', 'source', 'order_by', 'order_direction']);
         session(['lead_filters' => $filters]);
 
-        // Calculate stats
-        $stats = [
-            'active' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])->where('company_id', $company->id)->count(),
-            'won' => Lead::where('status', 'won')->where('company_id', $company->id)->count(),
-            'pipeline_value' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])->where('company_id', $company->id)
-                               ->sum('budget'),
-        ];
+        // Calculate stats - Super admin sees all leads stats, others see only their company's
+        if (auth()->user()->isSuperAdmin()) {
+            $stats = [
+                'active' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])->count(),
+                'won' => Lead::where('status', 'won')->count(),
+                'pipeline_value' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])
+                                   ->sum('budget'),
+            ];
+            $company = null; // Super admin doesn't need company context
+        } else {
+            $company = auth()->user()->company;
+            $stats = [
+                'active' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])->where('company_id', $company->id)->count(),
+                'won' => Lead::where('status', 'won')->where('company_id', $company->id)->count(),
+                'pipeline_value' => Lead::whereIn('status', ['new', 'contacted', 'qualified', 'negotiation'])->where('company_id', $company->id)
+                                   ->sum('budget'),
+            ];
+        }
         
         return view('leads.index', compact('leads', 'sources', 'users', 'perPage', 'stats', 'company'));
     }
@@ -140,6 +156,11 @@ class LeadController extends Controller
      */
     public function show(Lead $lead)
     {
+        // Authorization check: Super admin can view all leads, others can only view their company's leads
+        if (!auth()->user()->isSuperAdmin() && $lead->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this lead.');
+        }
+
         $events = Event::where('lead_id', $lead->id)
             ->orderBy('start_date', 'desc')  // Changed from event_date to start_date
             ->get();
@@ -157,6 +178,11 @@ class LeadController extends Controller
      */
     public function edit(Lead $lead)
     {
+        // Authorization check: Super admin can edit all leads, others can only edit their company's leads
+        if (!auth()->user()->isSuperAdmin() && $lead->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this lead.');
+        }
+
         $users = User::all();
         $properties = Property::all();
         return view('leads.edit', compact('lead', 'users', 'properties'));

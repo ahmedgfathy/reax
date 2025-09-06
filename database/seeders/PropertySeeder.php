@@ -2,79 +2,62 @@
 
 namespace Database\Seeders;
 
-use App\Models\Property;
+use App\Models\Team;
 use App\Models\User;
+use App\Models\Property;
 use App\Models\Company;
 use Illuminate\Database\Seeder;
 
 class PropertySeeder extends Seeder
 {
+    protected $propertyTypes = ['apartment', 'villa', 'duplex', 'penthouse', 'studio', 'office', 'retail'];
+    protected $features = ['pool', 'security', 'parking', 'built-in kitchen', 'gym', 'balcony', 'elevator'];
+    protected $amenities = ['security', 'playground', 'shopping', 'schools', 'mosque', 'hospital'];
+    protected $compounds = ['Mountain View', 'Palm Hills', 'Madinaty', 'El Rehab', 'Hyde Park'];
+
     public function run()
     {
-        try {
-            $company = Company::first();
-            if (!$company) {
-                throw new \Exception('No company found. Please run CompanySeeder first.');
-            }
-
-            $users = User::where('company_id', $company->id)->get();
-            if ($users->isEmpty()) {
-                throw new \Exception('No users found. Please run UserSeeder first.');
-            }
-
-            // Fake image URLs for seeding
-            $fakeImageUrls = [
-                'https://source.unsplash.com/800x600/?apartment',
-                'https://source.unsplash.com/800x600/?house',
-                'https://source.unsplash.com/800x600/?villa',
-                'https://source.unsplash.com/800x600/?property',
-                'https://source.unsplash.com/800x600/?real-estate'
-            ];
-
-            for ($i = 0; $i < 50; $i++) {
-                $property = Property::create([
-                    'company_id' => $company->id,
-                    'handler_id' => $users->random()->id,
-                    'property_name' => fake()->words(3, true) . ' Property',
-                    'compound_name' => fake()->company(),
-                    'unit_for' => fake()->randomElement(['sale', 'rent']),
-                    'type' => fake()->randomElement(['apartment', 'villa', 'duplex', 'penthouse', 'studio']),
-                    'category' => fake()->randomElement(['residential', 'commercial', 'administrative']),
-                    'status' => 'available',
-                    'total_area' => fake()->numberBetween(80, 500),
-                    'total_price' => fake()->numberBetween(500000, 5000000),
-                    'rooms' => fake()->numberBetween(1, 6),
-                    'bathrooms' => fake()->numberBetween(1, 4),
-                    'currency' => 'EGP',
-                    'owner_name' => fake()->name(),
-                    'owner_mobile' => fake()->phoneNumber(),
-                    'location_type' => fake()->randomElement(['inside', 'outside']),
-                    'is_published' => true,
-                    'features' => json_encode(['balcony', 'pool']),
-                    'amenities' => json_encode(['gym', 'spa'])
-                ]);
-
-                // Create media record for each property
-                $property->media()->create([
-                    'type' => 'image',
-                    'file_path' => $fakeImageUrls[array_rand($fakeImageUrls)],
-                    'is_featured' => true
-                ]);
-
-                // Add 2-4 additional images
-                for ($j = 0; $j < rand(2, 4); $j++) {
-                    $property->media()->create([
-                        'type' => 'image',
-                        'file_path' => $fakeImageUrls[array_rand($fakeImageUrls)],
-                        'is_featured' => false
-                    ]);
-                }
-            }
-
-            $this->command->info('Properties seeded successfully.');
-        } catch (\Exception $e) {
-            $this->command->error('Error seeding properties: ' . $e->getMessage());
-            throw $e;
+        $company = Company::first();
+        $users = User::where('company_id', $company->id)->get();
+        $teams = Team::all();
+        
+        for ($i = 0; $i < 50; $i++) {
+            $type = $this->propertyTypes[array_rand($this->propertyTypes)];
+            $unitFor = fake()->randomElement(['sale', 'rent']);
+            $totalArea = fake()->numberBetween(80, 500);
+            $pricePerMeter = fake()->numberBetween(15000, 35000);
+            
+            Property::create([
+                'company_id' => $company->id,
+                'team_id' => $teams->random()->id,
+                'handler_id' => $users->random()->id,
+                'property_name' => "Modern {$type} in " . fake()->randomElement($this->compounds),
+                'property_number' => 'PRO' . str_pad($i + 10000000, 8, '0', STR_PAD_LEFT),
+                'compound_name' => fake()->randomElement($this->compounds),
+                'unit_for' => $unitFor,
+                'type' => $type,
+                'category' => fake()->randomElement(['residential', 'commercial']),
+                'status' => fake()->randomElement(['available', 'sold', 'rented', 'reserved']),
+                'location_type' => fake()->randomElement(['inside', 'outside']),
+                'phase' => fake()->numberBetween(1, 5),
+                'building' => fake()->buildingNumber(),
+                'floor' => fake()->numberBetween(1, 20),
+                'unit_no' => fake()->unique()->numberBetween(1, 1000),
+                'total_area' => $totalArea,
+                'unit_area' => $totalArea * 0.9,
+                'garden_area' => fake()->optional(0.3)->numberBetween(20, 100),
+                'rooms' => fake()->numberBetween(2, 6),
+                'bathrooms' => fake()->numberBetween(1, 4),
+                'features' => fake()->randomElements($this->features, fake()->numberBetween(2, 5)),
+                'amenities' => fake()->randomElements($this->amenities, fake()->numberBetween(2, 4)),
+                'total_price' => $totalArea * $pricePerMeter,
+                'price_per_meter' => $pricePerMeter,
+                'currency' => 'EGP',
+                'description' => fake()->paragraphs(3, true),
+                'is_featured' => fake()->boolean(20),
+                'is_published' => true,
+                'finished' => fake()->boolean(90),
+            ]);
         }
     }
 }

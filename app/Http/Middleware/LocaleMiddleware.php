@@ -13,21 +13,30 @@ class LocaleMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        // Check session first
+        // Priority order: session, cookie, browser preference, default
+        $locale = null;
+        
+        // 1. Check session first
         if (Session::has('locale')) {
             $locale = Session::get('locale');
         }
-        // Then check browser preference
+        // 2. Check cookie
+        elseif ($request->cookie('locale')) {
+            $locale = $request->cookie('locale');
+        }
+        // 3. Check browser preference
         else {
             $locale = substr($request->server('HTTP_ACCEPT_LANGUAGE'), 0, 2);
-            // Fallback to default if not supported
-            if (!in_array($locale, ['en', 'ar'])) {
-                $locale = config('app.locale');
-            }
-            // Store in session
-            Session::put('locale', $locale);
         }
-
+        
+        // Validate and fallback to default if not supported
+        if (!in_array($locale, ['en', 'ar'])) {
+            $locale = config('app.locale', 'en');
+        }
+        
+        // Store in session for future requests
+        Session::put('locale', $locale);
+        
         // Set the application locale
         App::setLocale($locale);
         

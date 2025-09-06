@@ -10,8 +10,8 @@ return new class extends Migration
     public function up()
     {
         try {
-            // First try to drop foreign key if it exists
-            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            // Handle MySQL vs PostgreSQL foreign key checks
+            $this->disableForeignKeyChecks();
             
             if (Schema::hasColumn('activity_logs', 'lead_id')) {
                 Schema::table('activity_logs', function (Blueprint $table) {
@@ -46,9 +46,9 @@ return new class extends Migration
                 }
             });
             
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            $this->enableForeignKeyChecks();
         } catch (\Exception $e) {
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            $this->enableForeignKeyChecks();
             throw $e;
         }
     }
@@ -56,7 +56,7 @@ return new class extends Migration
     public function down()
     {
         try {
-            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            $this->disableForeignKeyChecks();
             
             Schema::table('activity_logs', function (Blueprint $table) {
                 $table->dropMorphs('loggable');
@@ -74,10 +74,33 @@ return new class extends Migration
                 }
             });
             
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            $this->enableForeignKeyChecks();
         } catch (\Exception $e) {
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            $this->enableForeignKeyChecks();
             throw $e;
+        }
+    }
+    
+    private function disableForeignKeyChecks()
+    {
+        $driver = DB::getDriverName();
+        
+        if ($driver === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        } elseif ($driver === 'pgsql') {
+            // PostgreSQL doesn't have a direct equivalent, but we can use transactions
+            // Foreign key checks are automatically handled in PostgreSQL transactions
+        }
+    }
+    
+    private function enableForeignKeyChecks()
+    {
+        $driver = DB::getDriverName();
+        
+        if ($driver === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        } elseif ($driver === 'pgsql') {
+            // PostgreSQL doesn't need explicit foreign key check enabling
         }
     }
 };

@@ -57,11 +57,21 @@ class DepartmentController extends Controller
 
     public function show(Department $department)
     {
+        // Authorization check: Super admin can view all departments, others can only view their company's departments
+        if (!auth()->user()->isSuperAdmin() && $department->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this department.');
+        }
+
         return view('departments.show', compact('department'));
     }
 
     public function edit(Department $department)
     {
+        // Authorization check: Super admin can edit all departments, others can only edit their company's departments
+        if (!auth()->user()->isSuperAdmin() && $department->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this department.');
+        }
+
         $departments = Department::where('company_id', auth()->user()->company_id)
             ->where('id', '!=', $department->id)
             ->get();

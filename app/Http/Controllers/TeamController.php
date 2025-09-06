@@ -56,11 +56,21 @@ class TeamController extends Controller
 
     public function show(Team $team)
     {
+        // Authorization check: Super admin can view all teams, others can only view their company's teams
+        if (!auth()->user()->isSuperAdmin() && $team->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this team.');
+        }
+
         return view('teams.show', compact('team'));
     }
 
     public function edit(Team $team)
     {
+        // Authorization check: Super admin can edit all teams, others can only edit their company's teams
+        if (!auth()->user()->isSuperAdmin() && $team->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this team.');
+        }
+
         $users = User::where('company_id', auth()->user()->company_id)->get();
         $departments = Department::where('company_id', auth()->user()->company_id)->get();
         return view('teams.edit', compact('team', 'users', 'departments'));
@@ -88,5 +98,24 @@ class TeamController extends Controller
         $team->delete();
         return redirect()->route('teams.index')
             ->with('success', 'Team deleted successfully');
+    }
+
+    public function assignMembersForm(Team $team)
+    {
+        $users = User::whereNotIn('id', $team->members->pluck('id'))->get();
+        return view('teams.assign-members', compact('team', 'users'));
+    }
+
+    public function assignMembers(Request $request, Team $team)
+    {
+        $validated = $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id'
+        ]);
+
+        $team->members()->attach($validated['user_ids']);
+
+        return redirect()->route('teams.show', $team)
+            ->with('success', 'Team members assigned successfully.');
     }
 }

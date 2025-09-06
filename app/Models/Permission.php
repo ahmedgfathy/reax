@@ -33,4 +33,22 @@ class Permission extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    /**
+     * Get roles that have this permission
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_permission')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get profiles that have this permission
+     */
+    public function profiles()
+    {
+        return $this->belongsToMany(Profile::class, 'profile_permission')
+            ->withTimestamps();
+    }
 }

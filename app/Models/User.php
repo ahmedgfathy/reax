@@ -18,12 +18,25 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'appwrite_id',
         'name',
         'email',
         'password',
         'company_id',
         'role',
-        'is_active'
+        'manager_id',
+        'profile_id',
+        'hierarchy_level',
+        'phone',
+        'mobile',
+        'position',
+        'address',
+        'avatar',
+        'is_admin',
+        'is_company_admin',
+        'is_active',
+        'team_id',
+        'role_id'
     ];
 
     /**
@@ -52,7 +65,9 @@ class User extends Authenticatable
      */
     const ROLE_ADMIN = 'admin';
     const ROLE_MANAGER = 'manager';
+    const ROLE_TEAM_LEADER = 'team_leader';
     const ROLE_AGENT = 'agent';
+    const ROLE_EMPLOYEE = 'employee';
     
     /**
      * Get formatted role name
@@ -65,9 +80,26 @@ class User extends Authenticatable
     /**
      * Check if user is admin
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
-        return $this->role === self::ROLE_ADMIN;
+        $result = $this->role === 'admin' && (bool)$this->is_admin === true;
+        \Log::info('isAdmin() check', [
+            'user_id' => $this->id,
+            'email' => $this->email,
+            'role' => $this->role,
+            'is_admin' => $this->is_admin,
+            'is_admin_bool' => (bool)$this->is_admin,
+            'result' => $result
+        ]);
+        return $result;
+    }
+
+    /**
+     * Check if user is super admin (full system access)
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'admin' && $this->is_admin === 1;
     }
 
     /**
@@ -84,6 +116,22 @@ class User extends Authenticatable
     public function isAgent()
     {
         return $this->role === self::ROLE_AGENT;
+    }
+    
+    /**
+     * Check if user is team leader
+     */
+    public function isTeamLeader()
+    {
+        return $this->role === self::ROLE_TEAM_LEADER;
+    }
+
+    /**
+     * Check if user is employee
+     */
+    public function isEmployee()
+    {
+        return $this->role === self::ROLE_EMPLOYEE;
     }
     
     /**
@@ -176,13 +224,122 @@ class User extends Authenticatable
         return $this->belongsTo(Team::class);
     }
 
-    public function hasPermission($permission)
+    public function teams()
     {
-        return $this->role->permissions->contains('name', $permission);
+        return $this->belongsToMany(Team::class, 'team_user')
+            ->withTimestamps();
     }
 
-    public function isCompanyOwner()
+    /**
+     * HIERARCHICAL RELATIONSHIPS
+     */
+
+    /**
+     * Get the manager of this user
+     */
+    public function manager()
     {
-        return $this->company && $this->company->owner_id === $this->id;
+        return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    /**
+     * Get users managed by this user
+     */
+    public function subordinates()
+    {
+        return $this->hasMany(User::class, 'manager_id');
+    }
+
+    /**
+     * Get the profile assigned to this user
+     */
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class);
+    }
+
+    /**
+     * Get all users under this user's hierarchy (recursive)
+     */
+    public function getAllSubordinates()
+    {
+        $subordinates = collect();
+        
+        foreach ($this->subordinates as $subordinate) {
+            $subordinates->push($subordinate);
+            $subordinates = $subordinates->merge($subordinate->getAllSubordinates());
+        }
+        
+        return $subordinates;
+    }
+
+    /**
+     * Check if this user can manage another user
+     */
+    public function canManage(User $user)
+    {
+        // Admin can manage everyone
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        // Manager can manage team leaders and employees
+        if ($this->isManager() && ($user->isTeamLeader() || $user->isEmployee())) {
+            return true;
+        }
+
+        // Team leader can manage employees
+        if ($this->isTeamLeader() && $user->isEmployee()) {
+            return true;
+        }
+
+        // Check direct management relationship
+        return $user->manager_id === $this->id;
+    }
+
+    /**
+     * Get hierarchy level as integer
+     */
+    public function getHierarchyLevelAttribute()
+    {
+        return match($this->role) {
+            self::ROLE_ADMIN => 1,
+            self::ROLE_MANAGER => 2,
+            self::ROLE_TEAM_LEADER => 3,
+            self::ROLE_EMPLOYEE => 4,
+            default => 4
+        };
+    }
+
+    /**
+     * Check if user has permission through profile or role
+     */
+    public function hasPermission($permission)
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        // Check through profile
+        if ($this->profile && $this->profile->hasPermission($permission)) {
+            return true;
+        }
+
+        // Check through role
+        if ($this->role && $this->role->permissions && $this->role->permissions->contains('slug', $permission)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get territories assigned to this user
+     */
+    public function territories()
+    {
+        return $this->belongsToMany(Territory::class, 'territory_user')
+                    ->withTimestamps()
+                    ->withPivot('assigned_at', 'role', 'is_primary');
     }
 }

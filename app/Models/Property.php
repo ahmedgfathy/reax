@@ -12,7 +12,9 @@ class Property extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'appwrite_id',
         'company_id',
+        'territory_id',
         'project_id',
         'team_id',
         'handler_id',
@@ -32,6 +34,12 @@ class Property extends Model
         'unit_area',
         'building_area',
         'garden_area',
+        'land_area',
+        'built_area',
+        'space_earth',
+        'space_unit',
+        'space_guard',
+        'location',
         'rooms',
         'bathrooms',
         'features',
@@ -45,6 +53,7 @@ class Property extends Model
         'owner_phone',
         'owner_mobile',
         'owner_email',
+        'owner_contact_status',
         'owner_address',
         'owner_notes',
         'owner_contact_status',
@@ -79,15 +88,20 @@ class Property extends Model
     protected $casts = [
         'features' => 'array',
         'amenities' => 'array',
-        'sharing_settings' => 'array',
         'finished' => 'boolean',
         'is_published' => 'boolean',
         'is_featured' => 'boolean',
         'is_shared' => 'boolean',
+        'sharing_settings' => 'array',
         'total_area' => 'decimal:2',
         'unit_area' => 'decimal:2',
         'building_area' => 'decimal:2',
         'garden_area' => 'decimal:2',
+        'land_area' => 'decimal:2',
+        'built_area' => 'decimal:2',
+        'space_earth' => 'decimal:2',
+        'space_unit' => 'decimal:2',
+        'space_guard' => 'decimal:2',
         'total_price' => 'decimal:2',
         'price_per_meter' => 'decimal:2',
         'rent_from' => 'date',
@@ -156,6 +170,11 @@ class Property extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function territory()
+    {
+        return $this->belongsTo(Territory::class);
     }
 
     public function team()
@@ -287,6 +306,22 @@ class Property extends Model
             'reserved' => 'yellow',
             default => 'gray'
         };
+    }
+
+    // Accessor methods for backward compatibility with views
+    public function getNameAttribute()
+    {
+        return $this->property_name;
+    }
+
+    public function getPriceAttribute()
+    {
+        return $this->total_price;
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->getFeaturedImageUrlAttribute();
     }
 
     public function getFeaturedImageUrlAttribute()

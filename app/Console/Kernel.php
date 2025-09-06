@@ -15,7 +15,11 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // ...existing commands...
         Commands\CleanMigrationsCommand::class,
-        Commands\InspectLeadTableCommand::class, // Add the new command
+        Commands\InspectLeadTableCommand::class,
+        Commands\AssociatePropertyImages::class,
+        Commands\CleanDuplicatesCommand::class,
+        Commands\RemoveDuplicateProperties::class,
+        Commands\CheckUserCommand::class,
     ];
 
     // ...existing code...

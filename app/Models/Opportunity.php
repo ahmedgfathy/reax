@@ -16,6 +16,7 @@ class Opportunity extends Model
         'lead_id',
         'property_id',
         'assigned_to',
+        'territory_id',
         'status',
         'value',
         'probability',
@@ -51,6 +52,11 @@ class Opportunity extends Model
     public function assignedTo()
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function territory()
+    {
+        return $this->belongsTo(Territory::class);
     }
 
     public function lastModifiedBy()

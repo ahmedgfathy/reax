@@ -86,9 +86,6 @@
                     <a href="{{ route('reports.index') }}" class="block py-3 px-4 rounded-lg mb-1 {{ request()->routeIs('reports.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
                         <i class="fas fa-chart-bar mr-2"></i> {{ __('Reports') }}
                     </a>
-                    <a href="{{ url('/') }}" class="block py-3 px-4 rounded-lg mb-1 text-gray-700 hover:bg-gray-100">
-                        <i class="fas fa-globe mr-2"></i> {{ __('View Site') }}
-                    </a>
                 </nav>
             </div>
         </aside>
@@ -136,9 +133,6 @@
                 </a>
                 <a href="{{ route('reports.index') }}" class="block py-3 px-4 rounded-lg mb-1 {{ request()->routeIs('reports.*') ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-chart-bar mr-2"></i> {{ __('Reports') }}
-                </a>
-                <a href="{{ url('/') }}" class="block py-3 px-4 rounded-lg mb-1 text-gray-700 hover:bg-gray-100">
-                    <i class="fas fa-globe mr-2"></i> {{ __('View Site') }}
                 </a>
             </nav>
         </div>

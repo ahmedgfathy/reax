@@ -56,10 +56,8 @@ class RegisterController extends Controller
         // Create CEO role for the company
         $role = Role::create([
             'name' => 'CEO',
-            'slug' => 'ceo-' . $company->id,
+            'display_name' => 'Chief Executive Officer',
             'description' => 'Company Chief Executive Officer',
-            'company_id' => $company->id,
-            'permissions' => ['*'], // Full company permissions
         ]);
 
         // Create user as CEO

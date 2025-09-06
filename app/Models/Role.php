@@ -12,10 +12,9 @@ class Role extends Model
 
     protected $fillable = [
         'name',
-        'slug',
+        'display_name',
         'description',
-        'company_id',
-        'permissions'
+        'company_id'
     ];
 
     protected $casts = [
@@ -30,5 +29,42 @@ class Role extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    /**
+     * Get permissions assigned to this role
+     */
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'role_permission')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if role has a specific permission
+     */
+    public function hasPermission($permission)
+    {
+        if (is_string($permission)) {
+            return $this->permissions->contains('slug', $permission);
+        }
+
+        return $this->permissions->contains('id', $permission->id);
+    }
+
+    /**
+     * Assign permission to role
+     */
+    public function givePermission($permission)
+    {
+        if (is_string($permission)) {
+            $permission = Permission::where('slug', $permission)->first();
+        }
+
+        if ($permission && !$this->hasPermission($permission)) {
+            $this->permissions()->attach($permission);
+        }
+
+        return $this;
     }
 }

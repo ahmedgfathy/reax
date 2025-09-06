@@ -1,21 +1,21 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col space-y-2">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">
-                    {{ __('Leads Management') }} - {{ $company->name }}
-                </h2>
-                <!-- Breadcrumbs -->
-                <div class="flex items-center text-sm text-gray-500 mt-1">
-                    <a href="{{ route('dashboard') }}" class="hover:text-gray-700">{{ __('Dashboard') }}</a>
-                    <span class="px-2">/</span>
-                    <span class="text-gray-700">{{ __('Leads') }}</span>
-                </div>
-            </div>
-        </div>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-2">
+@section('content')
+<!-- Leads content -->
+<div class="bg-gray-100 min-h-screen">
+    <div class="p-6">
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-semibold text-gray-900">{{ __('Leads Management') }}@if($company) - {{ $company->name }}@endif</h1>
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center space-x-2 text-sm text-gray-500 mt-2">
+                <a href="{{ route('dashboard') }}" class="hover:text-gray-700">{{ __('Dashboard') }}</a>
+                <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                <span class="text-gray-700">{{ __('Leads') }}</span>
+            </nav>
+        </div>
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-6">
             <!-- Active Leads Card -->
@@ -855,4 +855,5 @@
             });
         </script>
     </div>
-</x-app-layout>
+</div>
+@endsection

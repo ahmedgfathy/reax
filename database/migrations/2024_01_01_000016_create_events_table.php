@@ -10,19 +10,17 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained()->onDelete('cascade');
+            $table->foreignId('company_id')->constrained();
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('event_type');
-            $table->timestamp('start_date');
-            $table->timestamp('end_date')->nullable();
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->string('status')->default('scheduled');
-            $table->foreignId('lead_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('property_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
-            $table->json('attendees')->nullable();
-            $table->text('outcome')->nullable();
-            $table->boolean('is_private')->default(false);
+            $table->string('location')->nullable();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('lead_id')->nullable()->constrained();
+            $table->boolean('is_completed')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -17,7 +17,9 @@ class Lead extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'appwrite_id',
         'company_id',
+        'territory_id',
         'assigned_to', // Changed from user_id
         'first_name',
         'last_name',
@@ -63,6 +65,14 @@ class Lead extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    /**
+     * Get the territory associated with the lead.
+     */
+    public function territory()
+    {
+        return $this->belongsTo(Territory::class);
     }
 
     /**

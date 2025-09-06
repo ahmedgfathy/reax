@@ -13,22 +13,46 @@ class OpportunityController extends Controller
 {
     public function index()
     {
-        // Calculate real statistics
-        $stats = [
-            'opportunities_count' => Opportunity::count(),
-            'won_opportunities' => Opportunity::where('status', 'won')->count(),
-            'pipeline_value' => Opportunity::whereIn('status', ['pending', 'negotiation'])
-                ->sum('value'),
-            'conversion_rate' => Opportunity::count() > 0 
-                ? round((Opportunity::where('status', 'won')->count() / Opportunity::count()) * 100)
-                : 0,
-            'total_value' => Opportunity::sum('value'),
-            'pending_opportunities' => Opportunity::where('status', 'pending')->count(),
-            'negotiation_opportunities' => Opportunity::where('status', 'negotiation')->count(),
-            'lost_opportunities' => Opportunity::where('status', 'lost')->count(),
-        ];
+        // Super Admin sees all opportunities, others see only their company's
+        $opportunitiesQuery = Opportunity::query();
+        
+        if (!auth()->user()->isSuperAdmin()) {
+            $opportunitiesQuery->where('company_id', auth()->user()->company_id);
+        }
 
-        $opportunities = Opportunity::with(['lead', 'property', 'assignedTo'])
+        // Calculate real statistics - Super Admin sees all, others see only company stats
+        if (auth()->user()->isSuperAdmin()) {
+            $stats = [
+                'opportunities_count' => Opportunity::count(),
+                'won_opportunities' => Opportunity::where('status', 'won')->count(),
+                'pipeline_value' => Opportunity::whereIn('status', ['pending', 'negotiation'])
+                    ->sum('value'),
+                'conversion_rate' => Opportunity::count() > 0 
+                    ? round((Opportunity::where('status', 'won')->count() / Opportunity::count()) * 100)
+                    : 0,
+                'total_value' => Opportunity::sum('value'),
+                'pending_opportunities' => Opportunity::where('status', 'pending')->count(),
+                'negotiation_opportunities' => Opportunity::where('status', 'negotiation')->count(),
+                'lost_opportunities' => Opportunity::where('status', 'lost')->count(),
+            ];
+        } else {
+            $stats = [
+                'opportunities_count' => Opportunity::where('company_id', auth()->user()->company_id)->count(),
+                'won_opportunities' => Opportunity::where('company_id', auth()->user()->company_id)->where('status', 'won')->count(),
+                'pipeline_value' => Opportunity::where('company_id', auth()->user()->company_id)
+                    ->whereIn('status', ['pending', 'negotiation'])
+                    ->sum('value'),
+                'conversion_rate' => Opportunity::where('company_id', auth()->user()->company_id)->count() > 0 
+                    ? round((Opportunity::where('company_id', auth()->user()->company_id)->where('status', 'won')->count() / Opportunity::where('company_id', auth()->user()->company_id)->count()) * 100)
+                    : 0,
+                'total_value' => Opportunity::where('company_id', auth()->user()->company_id)->sum('value'),
+                'pending_opportunities' => Opportunity::where('company_id', auth()->user()->company_id)->where('status', 'pending')->count(),
+                'negotiation_opportunities' => Opportunity::where('company_id', auth()->user()->company_id)->where('status', 'negotiation')->count(),
+                'lost_opportunities' => Opportunity::where('company_id', auth()->user()->company_id)->where('status', 'lost')->count(),
+            ];
+        }
+
+        $opportunities = $opportunitiesQuery->with(['lead', 'property', 'assignedTo'])
             ->when(request('search'), function($query) {
                 $query->where('title', 'like', '%' . request('search') . '%');
             })
@@ -63,9 +87,16 @@ class OpportunityController extends Controller
 
     public function create()
     {
-        $leads = Lead::select('id', 'first_name', 'last_name')->get();
-        $properties = Property::select('id', 'property_name')->get();
-        $users = User::select('id', 'name')->get();
+        // Super admin sees all data, others see only their company's data
+        if (auth()->user()->isSuperAdmin()) {
+            $leads = Lead::select('id', 'first_name', 'last_name')->get();
+            $properties = Property::select('id', 'property_name')->get();
+            $users = User::select('id', 'name')->get();
+        } else {
+            $leads = Lead::where('company_id', auth()->user()->company_id)->select('id', 'first_name', 'last_name')->get();
+            $properties = Property::where('company_id', auth()->user()->company_id)->select('id', 'property_name')->get();
+            $users = User::where('company_id', auth()->user()->company_id)->select('id', 'name')->get();
+        }
         
         return view('opportunities.create', compact('leads', 'properties', 'users'));
     }
@@ -96,12 +127,22 @@ class OpportunityController extends Controller
 
     public function show(Opportunity $opportunity)
     {
+        // Authorization check: Super admin can view all opportunities, others can only view their company's opportunities
+        if (!auth()->user()->isSuperAdmin() && $opportunity->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this opportunity.');
+        }
+
         $opportunity->load(['lead', 'property', 'assignedTo', 'activities']);
         return view('opportunities.show', compact('opportunity'));
     }
 
     public function edit(Opportunity $opportunity)
     {
+        // Authorization check: Super admin can edit all opportunities, others can only edit their company's opportunities
+        if (!auth()->user()->isSuperAdmin() && $opportunity->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this opportunity.');
+        }
+
         $leads = Lead::select('id', 'first_name', 'last_name')->get();
         $properties = Property::select('id', 'property_name')->get();
         $users = User::select('id', 'name')->get();

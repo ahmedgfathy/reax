@@ -11,19 +11,18 @@ class Event extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'company_id',
+        'appwrite_id',
         'title',
         'description',
         'event_type',
-        'start_date', // Updated from event_date
+        'start_date',
         'end_date',
         'status',
-        'is_completed',  // Add this line
+        'location',
+        'user_id',
         'lead_id',
-        'property_id',
-        'created_by',
-        'attendees',
-        'outcome'
+        'is_completed',
+        'company_id'
     ];
 
     protected $casts = [
