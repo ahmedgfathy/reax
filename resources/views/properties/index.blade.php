@@ -1,28 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- ENHANCED MODERN PROPERTIES PAGE -->
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-    <!-- Animated Background Elements -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-10 -right-10 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-10 -left-10 w-96 h-96 bg-gradient-to-tr from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
-    </div>
-
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Enhanced Header -->
+<div class="min-h-screen bg-gradient-main">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
         <div class="mb-8">
-            <div class="backdrop-blur-xl bg-white/80 rounded-3xl border border-white/40 shadow-2xl p-8">
+            <div class="glass-card rounded-2xl p-6">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 class="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">
                             {{ __('Properties') }}
                         </h1>
-                        <p class="text-gray-600 text-lg">{{ __('Manage all properties in the system') }}</p>
+                        <p class="text-gray-600">{{ __('Manage all properties in the system') }}</p>
                     </div>
-                    <div class="mt-6 sm:mt-0">
-                        <a href="{{ route('properties.create') }}" class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 transform">
-                            <span class="mr-3 text-2xl group-hover:scale-110 transition-transform duration-300">✨</span>
+                    <div class="mt-4 sm:mt-0">
+                        <a href="{{ route('properties.create') }}" class="inline-flex items-center px-6 py-3 bg-accent-600 text-white font-semibold rounded-lg shadow-lg hover:bg-accent-700 hover:shadow-xl transition-all duration-300">
+                            <i class="fas fa-plus mr-2"></i>
                             {{ __('Add New Property') }}
                         </a>
                     </div>
@@ -30,21 +23,17 @@
             </div>
         </div>
 
-        <!-- Enhanced Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <!-- Total Properties -->
-            <div class="group backdrop-blur-xl bg-white/85 rounded-3xl p-8 hover:bg-white/90 hover:shadow-2xl hover:scale-105 transition-all duration-500 border border-white/50">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
-                            <span class="text-3xl">🏠</span>
-                        </div>
+            <div class="stat-card stat-blue">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wide mb-2">{{ __('Total Properties') }}</h3>
+                        <p class="text-3xl font-bold text-gray-800">{{ $stats['total'] ?? 0 }}</p>
                     </div>
-                    <div class="ml-6 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-bold text-gray-500 uppercase tracking-wider">{{ __('Total Properties') }}</dt>
-                            <dd class="text-4xl font-black text-gray-900 mt-1">{{ $stats['total'] ?? 0 }}</dd>
-                        </dl>
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white">
+                        <i class="fas fa-building text-xl"></i>
                     </div>
                 </div>
             </div>

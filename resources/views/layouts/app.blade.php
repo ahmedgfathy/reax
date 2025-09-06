@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <!-- Google Fonts -->
+    <!-- Preload critical fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- SEO Meta Tags -->
     <meta property="og:title" content="Real Estate CRM - REAX" />
     <meta property="og:description" content="REAX Discover the best real estate deals with our powerful CRM!" />
     <meta property="og:image" content="https://real.e-egar.com/images/og-image.jpg" />
@@ -29,79 +30,53 @@
 
     <title>{{ $title ?? config('app.name') }}</title>
     
-    <script>
-        // Set up CSRF token for all AJAX requests
-        document.addEventListener('DOMContentLoaded', function() {
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            window.csrf_token = token;
-            
-            // Set up axios defaults if using axios
-            if (window.axios) {
-                window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
-            }
-        });
-    </script>
-    
-    <!-- Local Tailwind CSS -->
-    <link href="{{ asset('css/tailwind-local.css') }}?v={{ time() }}" rel="stylesheet">
-    
-    <!-- Local Fonts -->
-    <link href="{{ asset('css/fonts.css') }}?v={{ time() }}" rel="stylesheet">
-    
-    <!-- Additional Custom Styles -->
-    <style>
-        /* Google Fonts Fallback */
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap');
-        
-        /* Font Configuration */
-        :root {
-            --font-sans: 'Roboto', ui-sans-serif, system-ui;
-            --font-arabic: 'Cairo', ui-sans-serif, system-ui;
-        }
-        
-        html {
-            font-family: var(--font-sans);
-        }
-        
-        html[lang="ar"], html.rtl {
-            font-family: var(--font-arabic) !important;
-        }
-        
-        /* Additional Tailwind-style utilities */
-        .line-clamp-1 {
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 1;
-        }
-    </style>
-    
-    <!-- Immediate Font Loading Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const lang = document.documentElement.lang;
-            const dir = document.documentElement.dir;
-            
-            if (lang === 'ar' || dir === 'rtl') {
-                document.body.style.fontFamily = "'Cairo', sans-serif";
-                document.documentElement.style.fontFamily = "'Cairo', sans-serif";
-            } else {
-                document.body.style.fontFamily = "'Roboto', sans-serif";
-                document.documentElement.style.fontFamily = "'Roboto', sans-serif";
-            }
-        });
-    </script>
-    
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Alpine.js -->
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#10b981">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js CDN -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
+    <!-- Custom Styles -->
     <style>
-        /* Font Configuration with higher specificity */
+        /* Tailwind Config */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'accent': {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+        
+        /* Font Configuration */
         * {
-            font-family: 'Roboto', sans-serif !important;
+            font-family: 'Inter', 'Roboto', sans-serif !important;
         }
         
         [dir="rtl"] *, html[lang="ar"] *, 
@@ -109,26 +84,16 @@
             font-family: 'Cairo', sans-serif !important;
         }
         
-        /* Tailwind CSS font override */
-        .font-sans {
-            font-family: 'Roboto', sans-serif !important;
-        }
-        
-        [dir="rtl"] .font-sans, 
-        html[lang="ar"] .font-sans {
-            font-family: 'Cairo', sans-serif !important;
-        }
-        
-        /* Custom Gradient - Emerald Ocean Theme */
+        /* Background Gradients */
         .bg-gradient-main {
-            background: linear-gradient(135deg, #0c4a6e 0%, #065f46 50%, #1e40af 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
         }
         
         .bg-gradient-header {
-            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 50%, rgba(4, 120, 87, 0.95) 100%);
         }
         
-        /* Glass Effect */
+        /* Glass Effects */
         .glass-effect {
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -155,110 +120,138 @@
         /* Accent Colors */
         .text-accent { color: #10b981; }
         .text-accent-dark { color: #047857; }
-        .text-accent-light { color: #6ee7b7; }
         .bg-accent { background-color: #10b981; }
+        .bg-accent-500 { background-color: #10b981; }
+        .bg-accent-600 { background-color: #059669; }
+        .bg-accent-700 { background-color: #047857; }
+        .hover\\:bg-accent-600:hover { background-color: #059669; }
+        .hover\\:bg-accent-700:hover { background-color: #047857; }
         .border-accent { border-color: #10b981; }
-        .bg-accent-glow { 
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
-        /* Button Gradient */
-        .btn-gradient {
-            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        .btn-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
         }
         
-        /* Input Focus */
-        .input-focus:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
-            border-color: #10b981;
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        .animate-slide-up { animation: slideUp 0.3s ease-out; }
+        .animate-bounce-in { animation: bounceIn 0.6s ease-out; }
+        
+        /* Stat Cards */
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
         
-        /* Custom scrollbar */
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #1e40af);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover::before { transform: scaleX(1); }
+        .stat-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); }
+        
+        .stat-blue::before { background: linear-gradient(90deg, #3b82f6, #1e40af); }
+        .stat-green::before { background: linear-gradient(90deg, #10b981, #047857); }
+        .stat-purple::before { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
+        .stat-yellow::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .stat-red::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .stat-indigo::before { background: linear-gradient(90deg, #6366f1, #4f46e5); }
+        
+        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
         
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
         }
         
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #10b981;
+            background: linear-gradient(135deg, #10b981, #047857);
             border-radius: 10px;
         }
         
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #047857;
+            background: linear-gradient(135deg, #047857, #065f46);
         }
         
-        /* Table Styling */
-        .emerald-table th {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        /* RTL Support */
+        [dir="rtl"] .ml-2 { margin-left: 0; margin-right: 0.5rem; }
+        [dir="rtl"] .mr-2 { margin-right: 0; margin-left: 0.5rem; }
+        [dir="rtl"] .ml-3 { margin-left: 0; margin-right: 0.75rem; }
+        [dir="rtl"] .mr-3 { margin-right: 0; margin-left: 0.75rem; }
+        [dir="rtl"] .ml-4 { margin-left: 0; margin-right: 1rem; }
+        [dir="rtl"] .mr-4 { margin-right: 0; margin-left: 1rem; }
+        
+        /* Ensure consistent heights */
+        .min-h-screen { min-height: 100vh; }
+        .h-full { height: 100%; }
+        
+        /* Button styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
             color: white;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
         }
         
-        .emerald-table tbody tr:hover {
-            background-color: rgba(16, 185, 129, 0.05);
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
         }
         
-        /* Form Styling */
-        .emerald-form-input {
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid rgba(16, 185, 129, 0.2);
-            border-radius: 12px;
-            transition: all 0.3s ease;
+        /* Form elements */
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
         }
         
-        .emerald-form-input:focus {
-            background: rgba(255, 255, 255, 1);
+        .form-input:focus {
+            outline: none;
             border-color: #10b981;
             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
         }
-        
-        /* Gradient Stats Cards */
-        .stat-card-blue { background: linear-gradient(135deg, #3b82f6, #1e40af); }
-        .stat-card-green { background: linear-gradient(135deg, #10b981, #047857); }
-        .stat-card-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
-        .stat-card-yellow { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .stat-card-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .stat-card-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
     </style>
-    
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('images/brand/logo.svg') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/brand/favicon-32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/brand/favicon-16.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/brand/apple-touch-icon.png') }}">
-    
-    <!-- Add PWA meta tags -->
-    <meta name="theme-color" content="#2563EB">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
-    
-    <!-- Apple PWA Meta Tags -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/brand/apple-touch-icon.png') }}">
-    <meta name="apple-mobile-web-app-title" content="REAX">
-    
-    <!-- Microsoft PWA Meta Tags -->
-    <meta name="msapplication-TileColor" content="#2563EB">
-    <meta name="msapplication-TileImage" content="{{ asset('images/brand/icon-144.png') }}">
 </head>
 <body class="min-h-screen bg-gradient-main" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
     @include('components.layouts.alert-scripts')
     
-    <!-- Add PWA Install Button -->
+    <!-- PWA Install Button -->
     <div id="pwa-install-button" class="hidden fixed bottom-4 right-4 z-50">
-        <button class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors">
+        <button class="flex items-center px-4 py-2 bg-accent-600 text-white rounded-lg shadow-lg hover:bg-accent-700 transition-colors">
             <i class="fas fa-download mr-2"></i>
             {{ __('Install App') }}
         </button>
@@ -266,24 +259,15 @@
     
     <!-- Fixed Header -->
     <div class="fixed top-0 left-0 right-0 z-50">
-        <!-- Main Navigation -->
         @include('components.header-menu')
-        
-        <!-- Main Content -->
     </div>
 
-    <!-- Main Content without Sidebar -->
-    <div class="pt-28"> <!-- Reduced from 36 to 28 -->
+    <!-- Main Content -->
+    <div class="pt-20">
         <!-- Scrollable Main Content -->
         <div class="flex-1 p-2 overflow-y-auto">
             @yield('content')
         </div>
     </div>
-
-    <!-- AlpineJS -->
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
-    
-    <!-- PWA Scripts -->
-    <script src="{{ asset('js/pwa.js') }}" defer></script>
 </body>
 </html>

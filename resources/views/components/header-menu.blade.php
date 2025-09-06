@@ -1,226 +1,156 @@
-<!-- FontAwesome CDN with multiple fallbacks for reliability -->
+<!-- FontAwesome CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" crossorigin="anonymous" />
-
-<!-- Fallback for broken FontAwesome - Pure CSS Icons -->
-<style>
-    .fa-fallback {
-        display: inline-block;
-        font-style: normal;
-        font-variant: normal;
-        text-rendering: auto;
-        line-height: 1;
-    }
-    
-    /* Fallback icons using Unicode */
-    .fas.fa-building:before { content: "🏢"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-users:before { content: "👥"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-handshake:before { content: "🤝"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-chart-bar:before { content: "📊"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-cogs:before { content: "⚙️"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-globe:before { content: "🌐"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-user:before { content: "👤"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-bars:before { content: "☰"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-user-edit:before { content: "✏️"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-tachometer-alt:before { content: "📊"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-sign-out-alt:before { content: "🚪"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-check:before { content: "✓"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-    .fas.fa-chevron-down:before { content: "▼"; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
-</style>
 
 <style>
-    /* Modern Font Configuration */
-    * {
-        font-family: 'Inter', 'Roboto', sans-serif !important;
-    }
-    
-    [dir="rtl"] *, html[lang="ar"] *, 
-    [dir="rtl"], html[lang="ar"] {
-        font-family: 'Cairo', sans-serif !important;
-    }
-    
-    /* Modern Header Design */
+    /* Modern Header Design - Simplified */
     .modern-header {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 50%, rgba(4, 120, 87, 0.95) 100%) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 50%, rgba(4, 120, 87, 0.95) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
     
     /* Navigation Item Styling */
     .modern-nav-item {
-        position: relative !important;
-        display: flex !important;
-        align-items: center !important;
-        padding: 8px 12px !important;
-        border-radius: 12px !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        color: rgba(255, 255, 255, 0.9) !important;
-        text-decoration: none !important;
-        white-space: nowrap !important;
-        font-weight: 500 !important;
-        font-size: 13px !important;
-        backdrop-filter: blur(10px) !important;
-        overflow: hidden !important;
-        margin: 0 2px !important;
-    }
-    
-    .modern-nav-item::before {
-        content: '' !important;
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
-        border-radius: 16px !important;
-        opacity: 0 !important;
-        transition: opacity 0.3s ease !important;
-        z-index: -1 !important;
-    }
-    
-    .modern-nav-item:hover::before {
-        opacity: 1 !important;
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 13px;
+        margin: 0 2px;
+        position: relative;
     }
     
     .modern-nav-item:hover {
-        color: white !important;
-        transform: translateY(-2px) !important;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+        color: white;
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
     }
     
     .modern-nav-item.active {
-        background: rgba(255, 255, 255, 0.25) !important;
-        color: white !important;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     /* Icon Styling */
     .modern-nav-icon {
-        font-size: 14px !important;
-        margin-right: 6px !important;
-        display: inline-flex !important;
-        width: 16px !important;
-        height: 16px !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: rgba(255, 255, 255, 0.2) !important;
-        border-radius: 6px !important;
-        transition: all 0.3s ease !important;
+        font-size: 14px;
+        margin-right: 6px;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        transition: all 0.3s ease;
     }
     
     .modern-nav-item:hover .modern-nav-icon {
-        background: rgba(255, 255, 255, 0.3) !important;
-        transform: scale(1.1) !important;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
     }
     
-    /* RTL Icon positioning */
+    /* RTL Support */
     [dir="rtl"] .modern-nav-icon {
-        margin-right: 0 !important;
-        margin-left: 6px !important;
+        margin-right: 0;
+        margin-left: 6px;
     }
     
     /* Logo Design */
     .modern-logo {
-        background: rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        border-radius: 16px !important;
-        transition: all 0.3s ease !important;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        padding: 8px;
     }
     
     .modern-logo:hover {
-        background: rgba(255, 255, 255, 0.25) !important;
-        transform: scale(1.02) !important;
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.02);
     }
     
     /* User Menu & Language Switcher */
     .modern-button {
-        padding: 8px 12px !important;
-        border-radius: 12px !important;
-        background: rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        color: white !important;
-        transition: all 0.3s ease !important;
-        font-weight: 500 !important;
-        font-size: 13px !important;
+        padding: 8px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
     }
     
     .modern-button:hover {
-        background: rgba(255, 255, 255, 0.25) !important;
-        transform: translateY(-1px) !important;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     }
     
     /* Dropdown Menus */
     .modern-dropdown {
-        background: rgba(255, 255, 255, 0.98) !important;
-        backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        border-radius: 20px !important;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
-        overflow: hidden !important;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
     
     .modern-dropdown-item {
-        padding: 12px 16px !important;
-        transition: all 0.2s ease !important;
-        color: #374151 !important;
-        display: flex !important;
-        align-items: center !important;
+        padding: 12px 16px;
+        transition: all 0.2s ease;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
     }
     
     .modern-dropdown-item:hover {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1)) !important;
-        color: #047857 !important;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+        color: #047857;
     }
     
     /* Mobile Menu */
     .modern-mobile-menu {
-        background: rgba(255, 255, 255, 0.98) !important;
-        backdrop-filter: blur(20px) !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
-        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1) !important;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
     }
     
     .modern-mobile-item {
-        padding: 16px !important;
-        border-radius: 16px !important;
-        margin: 8px !important;
-        background: rgba(255, 255, 255, 0.7) !important;
-        border: 1px solid rgba(16, 185, 129, 0.1) !important;
-        transition: all 0.3s ease !important;
+        padding: 16px;
+        border-radius: 16px;
+        margin: 8px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(16, 185, 129, 0.1);
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+        color: #374151;
     }
     
     .modern-mobile-item:hover {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1)) !important;
-        transform: translateX(4px) !important;
-    }
-    
-    /* Animations */
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .animate-slide-in {
-        animation: slideIn 0.3s ease-out;
-    }
-    
-    /* Enhanced Focus States */
-    .modern-nav-item:focus,
-    .modern-button:focus {
-        outline: 2px solid rgba(255, 255, 255, 0.5) !important;
-        outline-offset: 2px !important;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+        transform: translateX(4px);
     }
 </style>
 
