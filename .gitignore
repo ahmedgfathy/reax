@@ -6,7 +6,7 @@
 /storage/*.key
 /storage/pail
 /vendor
-# .env
+.env
 .env.backup
 .env.production
 .phpactor.json
@@ -21,3 +21,35 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary/unwanted files
+*.tmp
+*.temp
+*.log
+*.cache
+=
+$filename,
+$imagePath
+email
+getFile
+getMessage
+name
+role
+
+# Editor files
+*~
+*.swp
+*.swo
+
+# Development files
+database-schema-editor.html
+*.code-workspace
