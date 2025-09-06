@@ -11,35 +11,63 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        $company = Company::first();
-
-        // Create admin user if doesn't exist
-        User::firstOrCreate(
-            ['email' => 'admin@example.com'],
-            [
-                'name' => 'Admin User',
-                'password' => Hash::make('password'),
-                'is_admin' => true,
-                'is_active' => true
-            ]
-        );
-
-        // Create some regular users if we have less than 5
-        if (User::count() < 6) {
-            $positions = ['Sales Agent', 'Property Manager', 'Sales Manager', 'Customer Service'];
+        try {
+            $company = Company::first();
             
-            foreach (range(1, 5) as $i) {
-                User::create([
-                    'name' => fake()->name(),
-                    'email' => fake()->unique()->safeEmail(),
-                    'password' => Hash::make('password'),
-                    'phone' => fake()->phoneNumber(),
-                    'mobile' => fake()->phoneNumber(),
-                    'position' => fake()->randomElement($positions),
-                    'address' => fake()->address(),
-                    'is_active' => true
-                ]);
+            if (!$company) {
+                throw new \Exception('Company not found. Please ensure CompanySeeder runs first.');
             }
+
+            // Create admin user
+            User::firstOrCreate(
+                ['email' => 'admin@reax.com'],
+                [
+                    'name' => 'System Admin',
+                    'password' => Hash::make('password'),
+                    'company_id' => $company->id,
+                    'role' => 'admin',
+                    'is_active' => true,
+                    'email_verified_at' => now(),
+                ]
+            );
+
+            // Create test users with different roles
+            $users = [
+                [
+                    'email' => 'manager@reax.com',
+                    'name' => 'Manager User',
+                    'role' => 'manager'
+                ],
+                [
+                    'email' => 'agent@reax.com',
+                    'name' => 'Agent User',
+                    'role' => 'agent'
+                ],
+                [
+                    'email' => 'employee@reax.com',
+                    'name' => 'Employee User',
+                    'role' => 'employee'
+                ]
+            ];
+
+            foreach ($users as $userData) {
+                User::firstOrCreate(
+                    ['email' => $userData['email']],
+                    [
+                        'name' => $userData['name'],
+                        'password' => Hash::make('password'),
+                        'company_id' => $company->id,
+                        'role' => $userData['role'],
+                        'is_active' => true,
+                        'email_verified_at' => now(),
+                    ]
+                );
+            }
+
+            $this->command->info('Users seeded successfully.');
+        } catch (\Exception $e) {
+            $this->command->error('Error seeding users: ' . $e->getMessage());
+            throw $e;
         }
     }
 }

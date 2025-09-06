@@ -17,16 +17,21 @@ class LocaleController extends Controller
             $locale = 'en';
         }
         
-        // Store in session
+        // Set session and application locale
         Session::put('locale', $locale);
-        
-        // Set locale for the current request
         App::setLocale($locale);
         
-        // Create cookies with proper settings for JavaScript access
-        $cookie = Cookie::make('locale', $locale, 60 * 24 * 30, null, null, false, false);
-        $rtlCookie = Cookie::make('is_rtl', $locale === 'ar' ? '1' : '0', 60 * 24 * 30, null, null, false, false);
+        // Create response with cookie
+        $response = redirect()->back()
+            ->with([
+                'locale_changed' => true,
+                'locale' => $locale,
+                'message' => 'Language changed to ' . ($locale === 'ar' ? 'Arabic' : 'English')
+            ]);
+            
+        // Add the locale cookie to the response
+        $response->withCookie(Cookie::forever('locale', $locale));
         
-        return redirect()->back()->withCookie($cookie)->withCookie($rtlCookie);
+        return $response;
     }
 }

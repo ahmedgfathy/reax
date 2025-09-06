@@ -2,41 +2,62 @@
 
 namespace Database\Seeders;
 
+use App\Models\Team;
+use App\Models\User;
 use App\Models\Property;
 use App\Models\Company;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class PropertySeeder extends Seeder
 {
+    protected $propertyTypes = ['apartment', 'villa', 'duplex', 'penthouse', 'studio', 'office', 'retail'];
+    protected $features = ['pool', 'security', 'parking', 'built-in kitchen', 'gym', 'balcony', 'elevator'];
+    protected $amenities = ['security', 'playground', 'shopping', 'schools', 'mosque', 'hospital'];
+    protected $compounds = ['Mountain View', 'Palm Hills', 'Madinaty', 'El Rehab', 'Hyde Park'];
+
     public function run()
     {
         $company = Company::first();
-        $users = User::all();
-
-        // Only create if we have less than 50 properties
-        if (Property::count() < 50) {
-            $remainingCount = 50 - Property::count();
+        $users = User::where('company_id', $company->id)->get();
+        $teams = Team::all();
+        
+        for ($i = 0; $i < 50; $i++) {
+            $type = $this->propertyTypes[array_rand($this->propertyTypes)];
+            $unitFor = fake()->randomElement(['sale', 'rent']);
+            $totalArea = fake()->numberBetween(80, 500);
+            $pricePerMeter = fake()->numberBetween(15000, 35000);
             
-            for ($i = 0; $i < $remainingCount; $i++) {
-                Property::create([
-                    'company_id' => $company->id,
-                    'property_name' => fake()->words(3, true),
-                    'compound_name' => fake()->company(),
-                    'unit_for' => fake()->randomElement(['sale', 'rent']),
-                    'type' => fake()->randomElement(['apartment', 'villa', 'duplex', 'penthouse']),
-                    'total_area' => fake()->numberBetween(80, 500),
-                    'unit_area' => fake()->numberBetween(60, 400),
-                    'rooms' => fake()->numberBetween(1, 6),
-                    'bathrooms' => fake()->numberBetween(1, 4),
-                    'total_price' => fake()->numberBetween(500000, 5000000),
-                    'price_per_meter' => fake()->numberBetween(5000, 20000),
-                    'currency' => 'EGP',
-                    'status' => fake()->randomElement(['available', 'sold', 'reserved']),
-                    'handler_id' => $users->random()->id,
-                    'is_published' => true,
-                ]);
-            }
+            Property::create([
+                'company_id' => $company->id,
+                'team_id' => $teams->random()->id,
+                'handler_id' => $users->random()->id,
+                'property_name' => "Modern {$type} in " . fake()->randomElement($this->compounds),
+                'property_number' => 'PRO' . str_pad($i + 10000000, 8, '0', STR_PAD_LEFT),
+                'compound_name' => fake()->randomElement($this->compounds),
+                'unit_for' => $unitFor,
+                'type' => $type,
+                'category' => fake()->randomElement(['residential', 'commercial']),
+                'status' => fake()->randomElement(['available', 'sold', 'rented', 'reserved']),
+                'location_type' => fake()->randomElement(['inside', 'outside']),
+                'phase' => fake()->numberBetween(1, 5),
+                'building' => fake()->buildingNumber(),
+                'floor' => fake()->numberBetween(1, 20),
+                'unit_no' => fake()->unique()->numberBetween(1, 1000),
+                'total_area' => $totalArea,
+                'unit_area' => $totalArea * 0.9,
+                'garden_area' => fake()->optional(0.3)->numberBetween(20, 100),
+                'rooms' => fake()->numberBetween(2, 6),
+                'bathrooms' => fake()->numberBetween(1, 4),
+                'features' => fake()->randomElements($this->features, fake()->numberBetween(2, 5)),
+                'amenities' => fake()->randomElements($this->amenities, fake()->numberBetween(2, 4)),
+                'total_price' => $totalArea * $pricePerMeter,
+                'price_per_meter' => $pricePerMeter,
+                'currency' => 'EGP',
+                'description' => fake()->paragraphs(3, true),
+                'is_featured' => fake()->boolean(20),
+                'is_published' => true,
+                'finished' => fake()->boolean(90),
+            ]);
         }
     }
 }

@@ -1,347 +1,452 @@
-<nav class="bg-gradient-to-r from-blue-700 to-blue-600 text-white shadow-lg w-full">
-    <div class="container mx-auto px-4 md:px-6 w-full">
-        <div class="flex items-center h-14">
-            <!-- Logo -->
-            <div class="flex items-center mr-4">
-                <a href="{{ route('dashboard') }}" class="flex items-center">
-                    <span class="text-lg font-bold text-white group-hover:text-blue-200 transition">REAX 
-                        <span class="text-xs font-normal opacity-80 bg-blue-800 px-2 py-0.5 rounded-md ml-1">CRM</span>
-                    </span>
+<!-- FontAwesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    /* Modern Header Design - Simplified */
+    .modern-header {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 50%, rgba(4, 120, 87, 0.95) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Navigation Item Styling */
+    .modern-nav-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 13px;
+        margin: 0 2px;
+        position: relative;
+    }
+    
+    .modern-nav-item:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .modern-nav-item.active {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Icon Styling */
+    .modern-nav-icon {
+        font-size: 14px;
+        margin-right: 6px;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .modern-nav-item:hover .modern-nav-icon {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+    
+    /* RTL Support */
+    [dir="rtl"] .modern-nav-icon {
+        margin-right: 0;
+        margin-left: 6px;
+    }
+    
+    /* Logo Design */
+    .modern-logo {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        padding: 8px;
+    }
+    
+    .modern-logo:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.02);
+    }
+    
+    /* User Menu & Language Switcher */
+    .modern-button {
+        padding: 8px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+    }
+    
+    .modern-button:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Dropdown Menus */
+    .modern-dropdown {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    
+    .modern-dropdown-item {
+        padding: 12px 16px;
+        transition: all 0.2s ease;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+    }
+    
+    .modern-dropdown-item:hover {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+        color: #047857;
+    }
+    
+    /* Mobile Menu */
+    .modern-mobile-menu {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modern-mobile-item {
+        padding: 16px;
+        border-radius: 16px;
+        margin: 8px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(16, 185, 129, 0.1);
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+        color: #374151;
+    }
+    
+    .modern-mobile-item:hover {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+        transform: translateX(4px);
+    }
+</style>
+
+<nav class="modern-header shadow-2xl" x-data="{ mobileOpen: false }" style="min-height: 56px; position: sticky; top: 0; z-index: 50;">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between h-14">
+            
+            <!-- Logo Section -->
+            <div class="flex items-center">
+                <a href="{{ route('dashboard') }}" class="flex items-center modern-logo p-2">
+                    <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-building text-lg text-white"></i>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xl font-bold text-white tracking-wide">REAX</span>
+                        <span class="text-sm font-medium text-white/90 tracking-wider">
+                            {{ app()->getLocale() == 'ar' ? 'نظام إدارة العقارات' : 'CRM SYSTEM' }}
+                        </span>
+                    </div>
                 </a>
             </div>
 
-            <!-- Navigation Links -->
-            <div class="hidden md:flex items-center space-x-1">
-                <!-- Home Link with New Tab -->
-                <a href="{{ url('/') }}" 
-                   target="_blank"
-                   class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 text-blue-100 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    <span>{{ __('Website') }}</span>
+            <!-- Center Navigation Links -->
+            <div class="hidden lg:flex items-center space-x-0">
+                
+                <!-- Properties -->
+                <a href="{{ route('properties.index') }}" class="modern-nav-item {{ request()->routeIs('properties.*') ? 'active' : '' }}">
+                    <div class="modern-nav-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <span>{{ __('Properties') }}</span>
                 </a>
 
-                <!-- Main Navigation Items -->
-                <div class="flex items-center gap-1"> <!-- Reduced gap -->
-                    @guest
-                    <a href="{{ url('/') }}" class="px-3 py-2 rounded-md hover:bg-blue-700 hover:text-white transition-colors duration-200 text-blue-100">
-                        <div class="flex items-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            <span>{{ __('Home') }}</span>
-                        </div>
-                    </a>
-                    @endguest
+                <!-- Leads -->
+                <a href="{{ route('leads.index') }}" class="modern-nav-item {{ request()->routeIs('leads.*') ? 'active' : '' }}">
+                    <div class="modern-nav-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <span>{{ __('Leads') }}</span>
+                </a>
 
-                    <!-- Navigation Items - Reduced padding and font size -->
-                    <a href="{{ route('dashboard') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('dashboard') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            <span>{{ __('Dashboard') }}</span>
-                        </div>
-                    </a>
+                <!-- Opportunities -->
+                <a href="{{ route('opportunities.index') }}" class="modern-nav-item {{ request()->routeIs('opportunities.*') ? 'active' : '' }}">
+                    <div class="modern-nav-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <span>{{ __('Opportunities') }}</span>
+                </a>
 
-                    <!-- Apply the same style to all navigation items -->
-                    <a href="{{ route('properties.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('properties.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
-                            <span>{{ __('Properties') }}</span>
-                        </div>
-                    </a>
+                <!-- Reports -->
+                <a href="{{ route('reports.index') }}" class="modern-nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                    <div class="modern-nav-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <span>{{ __('Reports') }}</span>
+                </a>
 
-                    <!-- Leads -->
-                    <a href="{{ route('leads.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('leads.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            <span>{{ __('Leads') }}</span>
-                        </div>
-                    </a>
-
-                    <!-- Opportunities -->
-                    <a href="{{ route('opportunities.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('opportunities.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>{{ __('Opportunities') }}</span>
-                        </div>
-                    </a>
-
-                    <!-- Reports -->
-                    <a href="{{ route('reports.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('reports.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
-                            <span>{{ __('Reports') }}</span>
-                        </div>
-                    </a>
-
-                    <!-- Administration -->
-                    <a href="{{ route('administration.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('administration.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span>{{ __('Administration') }}</span>
-                        </div>
-                    </a>
-
-                    <!-- Systems -->
-                    <a href="{{ route('systems.index') }}" class="px-2 py-1 rounded-md hover:bg-blue-700 text-sm hover:text-white transition-colors duration-200 {{ request()->routeIs('systems.*') ? 'bg-blue-800 text-white' : 'text-blue-100' }}">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            <span>{{ __('Systems') }}</span>
-                        </div>
-                    </a>
-                </div>
+                <!-- Management -->
+                <a href="{{ route('management.index') }}" class="modern-nav-item {{ request()->routeIs('management.*') ? 'active' : '' }}">
+                    <div class="modern-nav-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <span>{{ __('Management') }}</span>
+                </a>
             </div>
 
-            <!-- Right Side Items -->
-            <div class="flex items-center ml-auto space-x-2">
-                <!-- Language Switcher - Smaller size -->
-                <form method="POST" action="{{ route('locale.switch') }}" class="hidden md:inline-flex items-center">
-                    @csrf
-                    <select name="locale" onchange="this.form.submit()" class="text-sm bg-blue-800/30 border border-blue-600 rounded px-1 py-0.5 text-white">
-                        <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>English</option>
-                        <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>العربية</option>
-                    </select>
-                    <noscript>
-                        <button type="submit" class="mt-2 w-full bg-blue-600 text-white rounded-md px-2 py-1 text-xs">
-                            {{ __('Change Language') }}
-                        </button>
-                    </noscript>
-                </form>
-
-                <!-- User Menu - Smaller size -->
-                <div class="relative" x-data="{ isOpen: false }">
-                    <button @click="isOpen = !isOpen" class="flex items-center space-x-1 bg-blue-800 rounded-full pl-2 pr-2 py-1 text-sm">
-                        <div class="h-7 w-7 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
-                            {{ substr(Auth::user()->name, 0, 1) }}
+            <!-- Right Side Menu -->
+            <div class="flex items-center space-x-1">
+                
+                <!-- Language Switcher -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="modern-button flex items-center space-x-1">
+                        <div class="w-4 h-4 rounded-full bg-white/20 flex items-center justify-content">
+                            <i class="fas fa-globe text-xs"></i>
                         </div>
-                        <span class="font-medium">{{ Auth::user()->name }}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-200" :class="{'rotate-180': isOpen}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
+                        <span class="font-semibold text-xs uppercase">{{ app()->getLocale() }}</span>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-300" :class="{ 'rotate-180': open }"></i>
                     </button>
                     
-                    <!-- Dropdown Menu -->
-                    <div x-show="isOpen" 
-                         x-transition:enter="transition ease-out duration-100" 
-                         x-transition:enter-start="transform opacity-0 scale-95" 
-                         x-transition:enter-end="transform opacity-100 scale-100" 
-                         x-transition:leave="transition ease-in duration-75" 
-                         x-transition:leave-start="transform opacity-100 scale-100" 
-                         x-transition:leave-end="transform opacity-0 scale-95"
-                         @click.away="isOpen = false" 
-                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 ring-1 ring-black ring-opacity-5">
-                        
-                        <!-- Language Selector -->
-                        <form method="POST" action="{{ route('locale.switch') }}" class="px-4 py-2 border-b">
-                            @csrf
-                            <select name="locale" onchange="this.form.submit()" class="w-full text-gray-800 bg-transparent focus:outline-none cursor-pointer">
-                                <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>English</option>
-                                <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>العربية</option>
-                            </select>
-                            <noscript>
-                                <button type="submit" class="mt-2 w-full bg-blue-600 text-white rounded-md px-2 py-1 text-xs">
-                                    {{ __('Change Language') }}
+                    <div x-show="open" 
+                         @click.away="open = false" 
+                         x-transition:enter="transition ease-out duration-200" 
+                         x-transition:enter-start="opacity-0 scale-95" 
+                         x-transition:enter-end="opacity-100 scale-100" 
+                         x-transition:leave="transition ease-in duration-150" 
+                         x-transition:leave-start="opacity-100 scale-100" 
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute right-0 mt-3 w-52 modern-dropdown z-50 animate-slide-in">
+                        <div class="py-2">
+                            <form method="POST" action="{{ route('locale.switch') }}">
+                                @csrf
+                                <input type="hidden" name="locale" value="en">
+                                <button type="submit" class="modern-dropdown-item w-full {{ app()->getLocale() == 'en' ? 'bg-emerald-50 text-emerald-800 font-semibold' : '' }}">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
+                                        <span class="text-sm">🇺🇸</span>
+                                    </div>
+                                    <span class="font-medium">English</span>
+                                    @if(app()->getLocale() == 'en')
+                                        <i class="fas fa-check ml-auto text-emerald-600"></i>
+                                    @endif
                                 </button>
-                            </noscript>
-                        </form>
-                        
-                        <!-- Profile Link -->
-                        <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            {{ __('Profile') }}
-                        </a>
-                        
-                        <!-- Logout Button -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                </svg>
-                                {{ __('Logout') }}
-                            </button>
-                        </form>
+                            </form>
+                            <form method="POST" action="{{ route('locale.switch') }}">
+                                @csrf
+                                <input type="hidden" name="locale" value="ar">
+                                <button type="submit" class="modern-dropdown-item w-full {{ app()->getLocale() == 'ar' ? 'bg-emerald-50 text-emerald-800 font-semibold' : '' }}">
+                                    <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center mr-3">
+                                        <span class="text-sm">🇸🇦</span>
+                                    </div>
+                                    <span class="font-medium">العربية</span>
+                                    @if(app()->getLocale() == 'ar')
+                                        <i class="fas fa-check ml-auto text-emerald-600"></i>
+                                    @endif
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Mobile Menu Button - Aligned right -->
-                <div class="md:hidden" x-data="{ isOpen: false }">
-                    <button @click="isOpen = !isOpen" class="p-2 rounded-md bg-blue-800 focus:outline-none hover:bg-blue-900 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path x-show="!isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            <path x-show="isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                <!-- User Menu -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="modern-button flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </div>
+                        <div class="hidden sm:block text-left">
+                            <div class="text-sm font-semibold text-white leading-tight">{{ auth()->user()->name }}</div>
+                        </div>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-300" :class="{ 'rotate-180': open }"></i>
                     </button>
                     
-                    <!-- Mobile Navigation Menu -->
-                    <div x-show="isOpen" 
-                         x-transition:enter="transition ease-out duration-100" 
-                         x-transition:enter-start="transform opacity-0 scale-95" 
-                         x-transition:enter-end="transform opacity-100 scale-100" 
-                         x-transition:leave="transition ease-in duration-75" 
-                         x-transition:leave-start="transform opacity-100 scale-100" 
-                         x-transition:leave-end="transform opacity-0 scale-95"
-                         @click.away="isOpen = false" 
-                         class="absolute top-16 left-0 right-0 bg-blue-700 shadow-lg z-20 mt-2">
-                        <div class="flex flex-col py-2 px-4 space-y-1">
-                            <!-- Remove target="_blank" from mobile Home link as well -->
-                            @guest
-                            <a href="{{ url('/') }}" class="px-3 py-2 rounded-md hover:bg-blue-800">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                    </svg>
-                                    <span>{{ __('Home') }}</span>
+                    <div x-show="open" 
+                         @click.away="open = false" 
+                         x-transition:enter="transition ease-out duration-200" 
+                         x-transition:enter-start="opacity-0 scale-95" 
+                         x-transition:enter-end="opacity-100 scale-100" 
+                         x-transition:leave="transition ease-in duration-150" 
+                         x-transition:leave-start="opacity-100 scale-100" 
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute right-0 mt-3 w-72 modern-dropdown z-50 animate-slide-in">
+                        
+                        <!-- User Info Header -->
+                        <div class="px-6 py-4 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-lg"></i>
                                 </div>
-                            </a>
-                            @endguest
-                            
-                            <a href="{{ route('dashboard') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('dashboard') ? 'bg-blue-800 text-white' : '' }}">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                    </svg>
-                                    <span>{{ __('Dashboard') }}</span>
+                                <div class="ml-4">
+                                    <div class="text-sm font-semibold text-gray-900">{{ auth()->user()->name }}</div>
+                                    <div class="text-xs text-gray-500">{{ auth()->user()->email }}</div>
+                                    @if(auth()->user()->role)
+                                        <div class="text-xs text-emerald-600 font-medium">{{ ucfirst(auth()->user()->role) }}</div>
+                                    @endif
                                 </div>
-                            </a>
-                            <a href="{{ route('properties.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('properties.*') ? 'bg-blue-800 text-white' : '' }}">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                    </svg>
-                                    <span>{{ __('Properties') }}</span>
-                                </div>
-                            </a>
-                            <a href="{{ route('leads.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('leads.*') ? 'bg-blue-800 text-white' : '' }}">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                    <span>{{ __('Leads') }}</span>
-                                </div>
-                            </a>
-                            <a href="{{ route('opportunities.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('opportunities.*') ? 'bg-blue-800 text-white' : '' }}">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span>{{ __('Opportunities') }}</span>
-                                </div>
-                            </a>
-                            
-                            <!-- Mobile Reports Module - Update with the correct route -->
-                            <a href="{{ route('reports.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('reports.*') ? 'bg-blue-800 text-white' : '' }}">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                    </svg>
-                                    <span>{{ __('Reports') }}</span>
-                                </div>
-                            </a>
-                            
-                            <!-- Mobile Administration Module -->
-                            <a href="{{ route('administration.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('administration.*') ? 'bg-blue-800 text-white' : '' }}">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    <span>{{ __('Administration') }}</span>
-                                </div>
-                            </a>
-
-                            <!-- Mobile Systems Module -->
-                            <a href="{{ route('systems.index') }}" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->routeIs('systems.*') ? 'bg-blue-800 text-white' : '' }}">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <span>{{ __('Systems') }}</span>
-                                </div>
-                            </a>
-
-                            <!-- Mobile Documentation Link - Keep text for mobile -->
-                            <a href="{{ url('/documentation.html') }}" target="_blank" class="px-3 py-2 rounded-md hover:bg-blue-800 {{ request()->is('documentation*') ? 'bg-blue-800 text-white' : '' }}" title="{{ __('Documentation') }}">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                    </svg>
-                                    <span class="md:hidden">{{ __('Documentation') }}</span>
-                                </div>
-                            </a>
-
-                            <div class="border-t border-blue-600 pt-2 mt-2">
-                                <!-- User Info -->
-                                <div class="flex items-center px-3 py-2 mb-2 text-blue-200">
-                                    <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold mr-3">
-                                        {{ substr(Auth::user()->name, 0, 1) }}
-                                    </div>
-                                    <span class="font-medium">{{ Auth::user()->name }}</span>
-                                </div>
-                                
-                                <!-- Language Selector -->
-                                <form method="POST" action="{{ route('locale.switch') }}" class="px-3 py-2">
-                                    @csrf
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-                                        </svg>
-                                        <select name="locale" onchange="this.form.submit()" class="w-full bg-blue-800 rounded text-white focus:outline-none p-1">
-                                            <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>English</option>
-                                            <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>العربية</option>
-                                        </select>
-                                        <noscript>
-                                            <button type="submit" class="mt-2 w-full bg-blue-600 text-white rounded-md px-2 py-1 text-xs">
-                                                {{ __('Change Language') }}
-                                            </button>
-                                        </noscript>
-                                    </div>
-                                </form>
-                                
-                                <!-- Profile Link in mobile menu -->
-                                <a href="{{ route('profile.show') }}" class="flex items-center px-3 py-2 hover:bg-blue-800 rounded-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg>
-                                    {{ __('Profile') }}
-                                </a>
-                                
-                                <!-- Logout Button -->
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left flex items-center px-3 py-2 hover:bg-blue-800 rounded-md">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                        </svg>
-                                        {{ __('Logout') }}
-                                    </button>
-                                </form>
                             </div>
                         </div>
+                        
+                        <!-- Menu Items -->
+                        <div class="py-2">
+                            <a href="{{ route('profile.edit') }}" class="modern-dropdown-item">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
+                                    <i class="fas fa-user-edit text-blue-600"></i>
+                                </div>
+                                <span class="font-medium">{{ __('Edit Profile') }}</span>
+                            </a>
+                            
+                            <a href="{{ route('dashboard') }}" class="modern-dropdown-item">
+                                <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center mr-3">
+                                    <i class="fas fa-tachometer-alt text-purple-600"></i>
+                                </div>
+                                <span class="font-medium">{{ __('Dashboard') }}</span>
+                            </a>
+                            
+                            <div class="border-t border-gray-100 my-2"></div>
+                            
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="modern-dropdown-item w-full text-red-600 hover:bg-red-50">
+                                    <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center mr-3">
+                                        <i class="fas fa-sign-out-alt text-red-600"></i>
+                                    </div>
+                                    <span class="font-medium">{{ __('Log Out') }}</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button @click="mobileOpen = !mobileOpen" class="lg:hidden modern-button p-2">
+                    <i class="fas fa-bars text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div x-show="mobileOpen" 
+         x-transition:enter="transition ease-out duration-300" 
+         x-transition:enter-start="opacity-0 transform -translate-y-4" 
+         x-transition:enter-end="opacity-100 transform translate-y-0" 
+         x-transition:leave="transition ease-in duration-200" 
+         x-transition:leave-start="opacity-100 transform translate-y-0" 
+         x-transition:leave-end="opacity-0 transform -translate-y-4" 
+         @click.away="mobileOpen = false" 
+         class="lg:hidden modern-mobile-menu">
+        
+        <div class="px-4 py-6 space-y-3">
+            <!-- Mobile Navigation Links -->
+            <div class="space-y-2">
+                <a href="{{ route('properties.index') }}" class="modern-mobile-item {{ request()->routeIs('properties.*') ? 'bg-emerald-100 text-emerald-800' : 'text-gray-700' }}">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mr-4">
+                            <i class="fas fa-building text-blue-600"></i>
+                        </div>
+                        <span class="font-medium">{{ __('Properties') }}</span>
+                    </div>
+                </a>
+                
+                <a href="{{ route('leads.index') }}" class="modern-mobile-item {{ request()->routeIs('leads.*') ? 'bg-emerald-100 text-emerald-800' : 'text-gray-700' }}">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center mr-4">
+                            <i class="fas fa-users text-green-600"></i>
+                        </div>
+                        <span class="font-medium">{{ __('Leads') }}</span>
+                    </div>
+                </a>
+                
+                <a href="{{ route('opportunities.index') }}" class="modern-mobile-item {{ request()->routeIs('opportunities.*') ? 'bg-emerald-100 text-emerald-800' : 'text-gray-700' }}">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center mr-4">
+                            <i class="fas fa-handshake text-purple-600"></i>
+                        </div>
+                        <span class="font-medium">{{ __('Opportunities') }}</span>
+                    </div>
+                </a>
+                
+                <a href="{{ route('reports.index') }}" class="modern-mobile-item {{ request()->routeIs('reports.*') ? 'bg-emerald-100 text-emerald-800' : 'text-gray-700' }}">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center mr-4">
+                            <i class="fas fa-chart-bar text-yellow-600"></i>
+                        </div>
+                        <span class="font-medium">{{ __('Reports') }}</span>
+                    </div>
+                </a>
+                
+                <a href="{{ route('management.index') }}" class="modern-mobile-item {{ request()->routeIs('management.*') ? 'bg-emerald-100 text-emerald-800' : 'text-gray-700' }}">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center mr-4">
+                            <i class="fas fa-cogs text-indigo-600"></i>
+                        </div>
+                        <span class="font-medium">{{ __('Management') }}</span>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-6">
+                <!-- Mobile Language Switcher -->
+                <div class="mb-4">
+                    <form method="POST" action="{{ route('locale.switch') }}" id="mobileLangForm">
+                        @csrf
+                        <select name="locale" onchange="document.getElementById('mobileLangForm').submit()" 
+                                class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>🇺🇸 English</option>
+                            <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>🇸🇦 العربية</option>
+                        </select>
+                    </form>
+                </div>
+                
+                <!-- Mobile User Actions -->
+                <div class="space-y-2">
+                    <a href="{{ route('profile.edit') }}" class="modern-mobile-item">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-user-edit text-gray-600"></i>
+                            </div>
+                            <span class="font-medium">{{ __('Edit Profile') }}</span>
+                        </div>
+                    </a>
+                    
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="modern-mobile-item w-full text-red-600">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-sign-out-alt text-red-600"></i>
+                                </div>
+                                <span class="font-medium">{{ __('Log Out') }}</span>
+                            </div>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </nav>
 
-<!-- AlpineJS for dropdown functionality -->
-<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+<!-- Alpine.js -->
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>

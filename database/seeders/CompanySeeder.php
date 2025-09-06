@@ -2,21 +2,26 @@
 
 namespace Database\Seeders;
 
-use App\Models\Company;
 use Illuminate\Database\Seeder;
+use App\Models\Company;
 
 class CompanySeeder extends Seeder
 {
     public function run()
     {
-        Company::firstOrCreate(
-            ['slug' => 'default-company'],
+        $company = Company::firstOrCreate(
+            ['email' => 'company@example.com'],
             [
                 'name' => 'Default Company',
-                'email' => 'info@defaultcompany.com',
-                'phone' => '1234567890',
-                'is_active' => true,
+                'slug' => 'default-company',
+                'phone' => '123-456-7890',
+                'address' => '123 Main Street',
+                'is_active' => true
             ]
         );
+
+        $this->command->info('Default company created successfully.');
+        
+        return $company;
     }
 }

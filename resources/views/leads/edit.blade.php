@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ __('Edit Lead') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
@@ -176,12 +177,14 @@
                         </div>
                         
                         <div class="mb-4">
-                            <label for="lead_class" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Lead Class') }}</label>
-                            <select name="lead_class" id="lead_class" class="w-full p-2 border rounded-md">
+                            <label for="lead_classification_id" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Lead Class') }}</label>
+                            <select name="lead_classification_id" id="lead_classification_id" class="w-full p-2 border rounded-md">
                                 <option value="">{{ __('Select a class') }}</option>
-                                <option value="A" {{ old('lead_class', $lead->lead_class) == 'A' ? 'selected' : '' }}>A - {{ __('Hot Lead') }}</option>
-                                <option value="B" {{ old('lead_class', $lead->lead_class) == 'B' ? 'selected' : '' }}>B - {{ __('Warm Lead') }}</option>
-                                <option value="C" {{ old('lead_class', $lead->lead_class) == 'C' ? 'selected' : '' }}>C - {{ __('Cold Lead') }}</option>
+                                @foreach(\App\Models\LeadClassification::where('is_active', true)->orderBy('priority')->get() as $classification)
+                                    <option value="{{ $classification->id }}" {{ old('lead_classification_id', $lead->lead_classification_id) == $classification->id ? 'selected' : '' }}>
+                                        {{ $classification->code }} - {{ __($classification->name) }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         

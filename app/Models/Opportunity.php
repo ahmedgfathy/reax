@@ -12,9 +12,11 @@ class Opportunity extends Model
 
     protected $fillable = [
         'title',
+        'company_id',
         'lead_id',
         'property_id',
         'assigned_to',
+        'territory_id',
         'status',
         'value',
         'probability',
@@ -52,6 +54,11 @@ class Opportunity extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    public function territory()
+    {
+        return $this->belongsTo(Territory::class);
+    }
+
     public function lastModifiedBy()
     {
         return $this->belongsTo(User::class, 'last_modified_by');
@@ -60,5 +67,11 @@ class Opportunity extends Model
     public function activities()
     {
         return $this->morphMany(ActivityLog::class, 'loggable');
+    }
+
+    // Add company relationship
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

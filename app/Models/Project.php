@@ -11,26 +11,38 @@ class Project extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'appwrite_id',
         'company_id',
-        'code',
         'name',
-        'description',
+        'code',
         'location',
+        'description',
         'developer',
         'status',
-        'launch_date',
-        'completion_date',
-        'featured_image'
+        'amenities',
+        'features',
+        'total_area',
+        'total_units',
+        'start_date',
+        'completion_date'
     ];
 
     protected $casts = [
-        'launch_date' => 'date',
+        'amenities' => 'array',
+        'features' => 'array',
+        'start_date' => 'date',
         'completion_date' => 'date',
-        'amenities' => 'array'
+        'total_area' => 'decimal:2',
+        'total_units' => 'integer',
     ];
 
     public function properties()
     {
         return $this->hasMany(Property::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

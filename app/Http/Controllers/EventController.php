@@ -22,7 +22,15 @@ class EventController extends Controller
             'event_date' => 'required|date',
         ]);
         
-        $validated['user_id'] = auth()->id();
+        // Get company_id from the authenticated user
+        $validated['company_id'] = auth()->user()->company_id;
+        
+        // Convert event_date to start_date
+        $validated['start_date'] = $validated['event_date'];
+        unset($validated['event_date']);
+        
+        // Set created_by to current user
+        $validated['created_by'] = auth()->id();
         
         $event = Event::create($validated);
         
@@ -42,7 +50,7 @@ class EventController extends Controller
         
         $eventTypeName = $eventTypeMap[$event->event_type] ?? 'Event';
         $description = "Scheduled {$eventTypeName}: \"{$event->title}\" for {$leadName} on " . 
-                      $event->event_date->format('M d, Y g:i A');
+                      $event->start_date->format('M d, Y g:i A');
         
         // Log this activity with detailed information
         ActivityLog::log(
@@ -51,7 +59,7 @@ class EventController extends Controller
             $description,
             [
                 'event_id' => $event->id,
-                'event_date' => $event->event_date,
+                'start_date' => $event->start_date,
                 'event_type' => $event->event_type,
                 'title' => $event->title,
                 'description' => $event->description
@@ -109,7 +117,7 @@ class EventController extends Controller
             $description,
             [
                 'event_id' => $event->id,
-                'event_date' => $event->event_date,
+                'start_date' => $event->start_date,
                 'event_type' => $event->event_type,
                 'title' => $event->title,
                 'description' => $event->description,
@@ -138,7 +146,7 @@ class EventController extends Controller
             'title' => $event->title,
             'description' => $event->description,
             'event_type' => $event->event_type,
-            'event_date' => $event->event_date,
+            'start_date' => $event->start_date,
             'is_completed' => $event->is_completed,
             'completion_notes' => $event->completion_notes,
         ];

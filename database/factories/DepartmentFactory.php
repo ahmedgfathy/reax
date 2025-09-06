@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Department;
 use App\Models\Company;
-use App\Models\User;
+use App\Models\Department;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DepartmentFactory extends Factory
@@ -15,11 +14,15 @@ class DepartmentFactory extends Factory
     {
         return [
             'company_id' => Company::factory(),
-            'name' => fake()->unique()->words(2, true) . ' Department',
-            'code' => fake()->unique()->bothify('DEP-####'),
-            'description' => fake()->sentence(),
-            'manager_id' => User::factory()
-            // Remove is_active since it doesn't exist in schema
+            'name' => $this->faker->words(2, true) . ' Department',
+            'code' => 'DEP-' . $this->faker->numberBetween(1000, 9999),
+            'description' => $this->faker->sentence(),
+            'manager_name' => $this->faker->name(),
+            'manager_phone' => $this->faker->phoneNumber(),
+            'manager_email' => $this->faker->safeEmail(),
+            'is_active' => $this->faker->boolean(80),
+            'notes' => $this->faker->paragraph(),
+            'parent_id' => null // Will be set manually if needed
         ];
     }
 }

@@ -1,7 +1,13 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">{{ __('Opportunities Management') }}</h2>
-    </x-slot>
+@extends('layouts.app')
+
+@section('content')
+<!-- Opportunities content -->
+<div class="bg-gray-100 min-h-screen">
+    <div class="p-6">
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-semibold text-gray-900">{{ __('Opportunities Management') }}</h1>
+        </div>
 
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-6">
@@ -260,4 +266,5 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</div>
+@endsection

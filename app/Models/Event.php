@@ -11,24 +11,25 @@ class Event extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'company_id',
+        'appwrite_id',
         'title',
         'description',
         'event_type',
         'start_date',
         'end_date',
         'status',
+        'location',
+        'user_id',
         'lead_id',
-        'property_id',
-        'created_by',
-        'attendees',
-        'outcome'
+        'is_completed',
+        'company_id'
     ];
 
     protected $casts = [
-        'start_date' => 'datetime',
+        'start_date' => 'datetime', // Updated from event_date
         'end_date' => 'datetime',
-        'attendees' => 'array'
+        'attendees' => 'array',
+        'is_completed' => 'boolean'  // Add this line
     ];
 
     public function lead()

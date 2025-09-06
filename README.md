@@ -24,12 +24,16 @@ The name "REAX" represents the perfect fusion of real estate expertise and techn
 
 - **RE**: Real Estate - The foundation of our business focus
 - **A**: Advanced, Analytics, Application - Highlighting our tech-forward approach
-- **X**: Representing the X-factor that sets our solution apart in the Egyptian market
+- - **X**: Representing the X-factor that sets our solution apart in the Egyptian market
 
 With its easy pronunciation in both Arabic and English, REAX offers a modern, memorable identity for a system built to transform how real estate professionals operate in Egypt and beyond.
 
 <div align="center">
-  <img src="public/images-screenshots/dashboard.png" alt="REAX Dashboard" width="800px" />
+  <img src="https://drive.google.com/uc?export=view&id=1AvSEjvcxYlktsPUyhoXvXi_m_331Nqir" alt="REAX Interface" width="800px" />
+</div>
+
+<div align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1c_ZDweeWRwRinC9bW9gtyupIcnBej_tV" alt="REAX Dashboard" width="800px" />
 </div>
 
 ## 🚀 Features
@@ -63,6 +67,55 @@ With its easy pronunciation in both Arabic and English, REAX offers a modern, me
 - **Currency Handling:** Support for Egyptian Pound (EGP) and multiple currencies
 - **Local Integrations:** Connections to popular Egyptian property portals and marketing platforms
 - **Regional Reporting:** Analyze data with insights specific to the Egyptian real estate market
+
+## 🎨 Frontend Technologies
+
+REAX is built with modern, performance-focused frontend technologies that deliver an exceptional user experience:
+
+### **Core Technologies**
+- **🎨 Tailwind CSS** - Utility-first CSS framework for rapid UI development
+- **⚡ Alpine.js v2.8.2** - Lightweight JavaScript framework for interactive components
+- **🔤 Font Awesome 6.0.0** - Comprehensive icon library for intuitive UI elements
+- **⚙️ Vite** - Modern build tool for fast development and optimized production builds
+
+### **Architecture & Design Patterns**
+- **📱 Mobile-First Responsive Design** - Optimized for all screen sizes from mobile to desktop
+- **🧩 Component-Based Architecture** - Reusable Blade components for maintainable code
+- **🎯 Utility-First CSS** - Tailwind's approach for consistent and scalable styling
+- **🔄 Progressive Enhancement** - Core functionality works without JavaScript, enhanced with Alpine.js
+
+### **Progressive Web App (PWA)**
+- **📲 Service Worker** - Offline functionality and caching strategies
+- **🏠 Web App Manifest** - Native app-like installation and experience
+- **⚡ Performance Optimized** - Fast loading and smooth interactions
+- **🔄 Background Sync** - Seamless data synchronization when connectivity returns
+
+### **UI/UX Features**
+- **📊 Card-Based Layouts** - Clean, organized data presentation
+- **🔍 Advanced Filtering** - Intuitive search and filter systems
+- **📱 Touch-Friendly Interface** - Optimized for mobile and tablet interactions
+- **🌙 Responsive Navigation** - Collapsible sidebar with mobile-friendly toggle
+- **📋 Modal/Overlay Patterns** - Seamless user interactions and data entry
+
+### **Performance & Optimization**
+- **⚡ Compressed Spacing** - Efficient use of screen real estate
+- **🏃 Lazy Loading** - Optimized resource loading for better performance
+- **📦 Minimal JavaScript** - Lightweight Alpine.js keeps the bundle small
+- **🎯 CSS Grid & Flexbox** - Modern layout techniques for responsive design
+
+### **Internationalization & Accessibility**
+- **🌍 RTL Support** - Right-to-left language support for Arabic
+- **🔤 Multi-Language Fonts** - Roboto for English, Cairo for Arabic
+- **♿ Accessibility Features** - Semantic HTML and ARIA compliance
+- **📱 Cross-Browser Compatibility** - Modern browser support with graceful fallbacks
+
+### **Development Experience**
+- **🔧 Laravel Blade Integration** - Server-side rendering with component includes
+- **🎨 Tailwind Configuration** - Custom design system and utility classes
+- **📝 TypeScript Ready** - Optional TypeScript support for enhanced development
+- **🔄 Hot Module Replacement** - Fast development with Vite's HMR
+
+This modern frontend stack prioritizes **performance**, **maintainability**, and **user experience** while keeping the technology stack focused and lightweight. The combination of Tailwind CSS and Alpine.js provides powerful functionality without the complexity of larger frameworks.
 
 ## 💻 Installation
 
@@ -150,6 +203,142 @@ The dashboard provides an overview of your:
 
 Comprehensive documentation is available in the [REAX Documentation](https://docs.reaxcrm.com).
 
+## 🔐 Authentication & Roles System
+
+REAX CRM implements a sophisticated multi-tenant, company-based authentication system designed for real estate organizations of all sizes.
+
+### 🏢 Multi-Tenancy Architecture
+
+The platform operates on a **company-based multi-tenancy model** where:
+- Each company operates as an isolated tenant with complete data segregation
+- Companies can have multiple branches/teams for organizational flexibility
+- All user access and data visibility is scoped to the company level
+- Cross-company data access is strictly prohibited for security
+
+### 👥 User Hierarchy & Roles
+
+The system implements a **6-tier hierarchical role structure**:
+
+#### 1. 🔥 System Administrator
+- **Scope:** Platform-wide access
+- **Permissions:** Complete system control, company management, platform configuration
+- **Use Case:** Platform owners and technical administrators
+
+#### 2. 👑 Company Owner/CEO
+- **Scope:** Full company access
+- **Permissions:** All company operations, user management, system configuration
+- **Features:** Company-wide reporting, financial overview, strategic decision making
+- **Hierarchy:** Top-level executive with unrestricted company access
+
+#### 3. 🎯 Company Administrator
+- **Scope:** Administrative company access
+- **Permissions:** User management, role assignment, company settings, advanced reporting
+- **Responsibilities:** HR functions, system configuration, departmental oversight
+- **Limitations:** Cannot modify owner accounts or critical company settings
+
+#### 4. 📊 Manager
+- **Scope:** Team/department management
+- **Permissions:** Team member oversight, performance tracking, report generation
+- **Features:** Team assignment, sales monitoring, pipeline management
+- **Authority:** Can manage agents and employees within assigned teams
+
+#### 5. 🏘️ Agent
+- **Scope:** Customer-facing operations
+- **Permissions:** Lead management, property listings, client interactions, sales activities
+- **Specialization:** Property sales, client relationship management, transaction handling
+- **Focus:** Revenue generation and customer satisfaction
+
+#### 6. 👤 Employee
+- **Scope:** Basic operational access
+- **Permissions:** Task execution, data entry, basic reporting
+- **Role:** Support functions, administrative tasks, junior-level operations
+
+### 🛡️ Security Features
+
+#### Access Control
+- **Role-Based Access Control (RBAC):** Granular permissions system
+- **Route Protection:** Middleware-based access control on all endpoints
+- **Data Scoping:** Automatic filtering based on user company and role
+- **Session Management:** Secure session handling with automatic timeout
+
+#### Multi-Factor Authentication
+- **2FA Support:** Optional two-factor authentication for enhanced security
+- **Login Verification:** Email-based verification for new devices
+- **Password Policies:** Configurable password strength requirements
+
+#### Audit & Compliance
+- **Activity Logging:** Comprehensive user action tracking
+- **Data Privacy:** GDPR-compliant user data handling
+- **Access Logs:** Detailed login and permission usage tracking
+
+### 🎭 Custom Permissions System
+
+The platform features a **granular permissions system** with over 50 specific permissions:
+
+#### Property Management
+- `view-properties`, `create-properties`, `edit-properties`, `delete-properties`
+- `manage-property-media`, `assign-properties`, `view-property-analytics`
+
+#### Lead Management  
+- `view-leads`, `create-leads`, `edit-leads`, `delete-leads`
+- `assign-leads`, `convert-leads`, `view-lead-analytics`
+
+#### User Management
+- `view-users`, `create-users`, `edit-users`, `delete-users`
+- `assign-roles`, `manage-teams`, `view-user-reports`
+
+#### Financial Operations
+- `view-transactions`, `create-transactions`, `approve-transactions`
+- `view-financial-reports`, `manage-commissions`
+
+#### System Administration
+- `manage-company-settings`, `view-system-logs`, `backup-data`
+- `manage-integrations`, `configure-notifications`
+
+### 🏗️ Team-Based Organization
+
+#### Team Structure
+- **Hierarchical Teams:** Support for nested team structures
+- **Team Leaders:** Designated team leaders with management permissions
+- **Cross-Team Collaboration:** Configurable cross-team property and lead sharing
+- **Team Performance:** Team-based analytics and performance tracking
+
+#### Assignment Patterns
+- **Auto-Assignment:** Intelligent lead distribution based on team capacity
+- **Manual Assignment:** Manager-controlled lead and property assignment
+- **Territory Management:** Geographic-based assignment rules
+- **Workload Balancing:** Automatic distribution to prevent overload
+
+### 🔄 Registration & Onboarding
+
+#### Company Registration
+1. **Company Creation:** New companies register with basic information
+2. **Owner Account:** Automatic creation of company owner account
+3. **Team Setup:** Initial team and department configuration
+4. **System Configuration:** Company-specific settings and preferences
+
+#### User Invitation Flow
+1. **Admin Invitation:** Company administrators invite new users via email
+2. **Role Assignment:** Pre-defined role and team assignment
+3. **Welcome Process:** Guided onboarding with role-specific tutorials
+4. **Permission Verification:** Automatic permission validation and assignment
+
+### 📊 Data Access Patterns
+
+#### Company Isolation
+- **Database Scoping:** All queries automatically filtered by company
+- **Media Separation:** Company-specific file storage and access
+- **Report Isolation:** Analytics and reports scoped to company data
+- **Integration Boundaries:** API access limited to company data
+
+#### Role-Based Filtering
+- **Hierarchical Access:** Higher roles inherit lower role permissions
+- **Team-Based Filtering:** Data access limited to assigned teams/territories
+- **Property Assignment:** Users only see assigned or team-related properties
+- **Lead Visibility:** Lead access based on assignment and team membership
+
+This robust authentication system ensures **secure, scalable, and organized access control** suitable for real estate companies ranging from small agencies to large enterprise organizations.
+
 ## 🔄 Updates & Migration
 
 The `migrations:clean` command helps manage your database migrations:
@@ -163,16 +352,16 @@ This automatically detects and removes duplicate migrations while keeping the mo
 ## Screenshots
 
 ### Home Page
-![Home Page](https://files.fm/f/33fyp98rrk)
+<img src="./public/images-screenshots/home.png" alt="REAX Home Page" width="800px" />
 
 ### Dashboard
-![Dashboard](https://files.fm/f/h9z8j3yw9p)
+<img src="./public/images-screenshots/dashboard.png" alt="REAX Dashboard" width="800px" />
 
 ### Property Details
-![Property Details](https://files.fm/f/g8dx3qpskf)
+<img src="./public/images-screenshots/property-details.png" alt="REAX Property Details" width="800px" />
 
 ### Lead Management
-![Lead Management](https://files.fm/f/f57mb4jwpn)
+<img src="./public/images-screenshots/lead-management.png" alt="REAX Lead Management" width="800px" />
 
 ## 🛠️ Support
 

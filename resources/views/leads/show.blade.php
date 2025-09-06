@@ -90,17 +90,21 @@
                     </h2>
                     
                     @php
-                        $upcomingEvents = $lead->events()->where('is_completed', false)->orderBy('event_date', 'asc')->take(5)->get();
+                        $upcoming_events = $lead->events()
+                            ->where('status', '!=', 'completed')
+                            ->orderBy('start_date', 'asc')
+                            ->take(5)
+                            ->get();
                     @endphp
                     
-                    @forelse($upcomingEvents as $event)
+                    @forelse($upcoming_events as $event)
                         <div class="mb-4 pb-4 border-b last:border-b-0 last:mb-0 last:pb-0">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <h3 class="font-medium text-gray-800">{{ $event->title }}</h3>
                                     <p class="text-xs text-gray-500 mt-1">
                                         <i class="far fa-clock mr-1"></i> 
-                                        {{ $event->event_date->format('M d, Y g:i A') }}
+                                        {{ $event->start_date->format('M d, Y g:i A') }}
                                     </p>
                                     <p class="text-xs mt-1">
                                         <span class="px-2 py-0.5 rounded-full text-xs 
@@ -152,60 +156,21 @@
                     <!-- Added a fixed height container with scrolling -->
                     <div class="overflow-y-auto max-h-[500px] pr-2">
                         <div class="timeline relative pl-8 before:absolute before:left-3 before:top-2 before:bottom-0 before:w-0.5 before:bg-gray-200 space-y-6">
-                            @forelse($lead->activityLogs as $log)
+                            @forelse($activityLogs as $log)
                                 <div class="relative">
                                     <!-- Timeline dot -->
-                                    <div class="absolute -left-8 w-6 h-6 flex items-center justify-center rounded-full
-                                        {{ in_array($log->action, ['created_lead', 'created_event']) ? 'bg-green-100 text-green-600' : '' }}
-                                        {{ strpos($log->action, 'updated_field_') === 0 ? 'bg-yellow-100 text-yellow-600' : '' }}
-                                        {{ $log->action === 'updated_lead' ? 'bg-yellow-100 text-yellow-600' : '' }}
-                                        {{ $log->action === 'completed_event' ? 'bg-teal-100 text-teal-600' : '' }}
-                                        {{ $log->action === 'deleted_event' ? 'bg-red-100 text-red-600' : '' }}
-                                        {{ $log->action === 'added_note' ? 'bg-purple-100 text-purple-600' : '' }}
-                                    ">
-                                        <i class="fas fa-{{ 
-                                            $log->action === 'created_lead' ? 'plus' : 
-                                            ($log->action === 'updated_lead' || strpos($log->action, 'updated_field_') === 0 ? 'edit' : 
-                                            ($log->action === 'created_event' ? 'calendar-plus' : 
-                                            ($log->action === 'completed_event' ? 'check' : 
-                                            ($log->action === 'deleted_event' ? 'trash' : 
-                                            ($log->action === 'added_note' ? 'sticky-note' : 'history'))))) }} text-xs"></i>
+                                    <div class="absolute -left-8 w-6 h-6 flex items-center justify-center rounded-full">
+                                        <i class="fas fa-history text-xs"></i>
                                     </div>
                                     
                                     <div>
                                         <p class="text-sm text-gray-800">{{ $log->description }}</p>
-                                        <div class="text-xs text-gray-500 mt-1 flex items-center justify-between">
-                                            <span>{{ $log->created_at->format('M d, Y g:i A') }}</span>
-                                            <span>{{ $log->user ? $log->user->name : __('System') }}</span>
+                                        <div class="text-xs text-gray-500 mt-1">
+                                            {{ $log->created_at->format('M d, Y g:i A') }}
+                                            @if($log->user)
+                                                by {{ $log->user->name }}
+                                            @endif
                                         </div>
-                                        
-                                        <!-- Extra details for specific logs -->
-                                        @if($log->action === 'added_note' && isset($log->details['note']))
-                                            <div class="mt-2 text-xs bg-gray-50 p-2 rounded border border-gray-200">
-                                                {{ $log->details['note'] }}
-                                            </div>
-                                        @endif
-                                        
-                                        @if($log->action === 'updated_lead' && isset($log->details['changes']) && count($log->details['changes']) > 0)
-                                            <div class="mt-2 text-xs bg-gray-50 p-2 rounded border border-gray-200">
-                                                <ul class="list-disc list-inside space-y-1">
-                                                    @foreach($log->details['changes'] as $field => $change)
-                                                        <li>
-                                                            <strong>{{ ucwords(str_replace('_', ' ', $field)) }}</strong>: 
-                                                            <span class="line-through text-red-600">{{ $change['old'] ?? 'empty' }}</span> → 
-                                                            <span class="text-green-600">{{ $change['new'] ?? 'empty' }}</span>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        @endif
-                                        
-                                        @if(strpos($log->action, 'updated_field_') === 0 && isset($log->details['old_value']) && isset($log->details['new_value']))
-                                            <div class="mt-2 text-xs bg-gray-50 p-2 rounded border border-gray-200">
-                                                <span class="line-through text-red-600">{{ $log->details['old_value'] ?? 'empty' }}</span> → 
-                                                <span class="text-green-600">{{ $log->details['new_value'] ?? 'empty' }}</span>
-                                            </div>
-                                        @endif
                                     </div>
                                 </div>
                             @empty
@@ -388,7 +353,7 @@
                 </div>
                 <div class="mb-4">
                     <label for="event_date" class="block text-sm font-medium text-gray-700">{{ __('Event Date') }}</label>
-                    <input type="text" name="event_date" id="event_date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm flatpickr" required>
+                    <input type="text" name="start_date" id="event_date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm flatpickr" required>
                 </div>
                 <div class="mb-4">
                     <label for="event_type" class="block text-sm font-medium text-gray-700">{{ __('Event Type') }}</label>

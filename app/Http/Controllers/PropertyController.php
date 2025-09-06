@@ -7,35 +7,142 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class PropertyController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Property::with(['handler', 'project', 'media'])
-            ->when($request->search, function($q) use($request) {
+        // Super Admin (admin@reax.com) sees ALL properties, other users see only their company's properties
+        $query = Property::query();
+        
+        if (!auth()->user()->isSuperAdmin()) {
+            $query->where('company_id', auth()->user()->company_id);
+        }
+
+        // Search filter
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
                 $q->where('property_name', 'like', "%{$request->search}%")
                   ->orWhere('property_number', 'like', "%{$request->search}%");
-            })
-            ->when($request->type, function($q) use($request) {
-                $q->where('type', $request->type);
-            })
-            ->when($request->status, function($q) use($request) {
-                $q->where('status', $request->status);
-            })
-            ->when($request->unit_for, function($q) use($request) {
-                $q->where('unit_for', $request->unit_for);
             });
+        }
 
-        $properties = $query->latest()->paginate(10);
+        // Region filter
+        if ($request->filled('region')) {
+            $query->where('region', $request->region);
+        }
 
-        $stats = [
-            'total' => Property::count(),
-            'available' => Property::where('status', 'available')->count(),
-            'featured' => Property::where('is_featured', true)->count()
+        // Salesman filter
+        if ($request->filled('salesman')) {
+            $query->where('handler_id', $request->salesman);
+        }
+
+        // User filter (both handler and sales person)
+        if ($request->filled('user_id')) {
+            $query->where(function($q) use ($request) {
+                $q->where('handler_id', $request->user_id)
+                  ->orWhere('sales_person_id', $request->user_id);
+            });
+        }
+
+        // Price range filter
+        if ($request->filled('price_range')) {
+            [$min, $max] = explode('-', $request->price_range . '+');
+            $query->when($max !== '+', function($q) use ($min, $max) {
+                $q->whereBetween('total_price', [$min, $max]);
+            }, function($q) use ($min) {
+                $q->where('total_price', '>=', $min);
+            });
+        }
+
+        // Type filter
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $properties = $query->with('media')->paginate(12)->withQueryString();
+        
+        // Get users - Super Admin sees all users, others see only company users
+        if (auth()->user()->isSuperAdmin()) {
+            $users = User::select('users.id', 'users.name')
+                ->whereExists(function($query) {
+                    $query->select(DB::raw(1))
+                          ->from('properties')
+                          ->whereRaw('properties.handler_id = users.id OR properties.sales_person_id = users.id');
+                })
+                ->orderBy('users.name')
+                ->get();
+        } else {
+            $users = User::select('users.id', 'users.name')
+                ->where('users.company_id', auth()->user()->company_id)
+                ->whereExists(function($query) {
+                    $query->select(DB::raw(1))
+                          ->from('properties')
+                          ->whereRaw('properties.handler_id = users.id OR properties.sales_person_id = users.id');
+                })
+                ->orderBy('users.name')
+                ->get();
+        }
+            
+        $regions = ['cairo', 'giza', 'alexandria', 'north-coast']; // Add your regions
+
+        // Calculate statistics - Super Admin sees all, others see only company stats
+        if (auth()->user()->isSuperAdmin()) {
+            $stats = [
+                'total' => Property::count(),
+                'for_sale' => Property::where('unit_for', 'sale')->count(),
+                'for_rent' => Property::where('unit_for', 'rent')->count(),
+            ];
+        } else {
+            $stats = [
+                'total' => Property::where('company_id', auth()->user()->company_id)->count(),
+                'for_sale' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'sale')->count(),
+                'for_rent' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'rent')->count(),
+            ];
+        }
+
+        $statuses = [
+            'available',
+            'reserved',
+            'sold',
+            'rented',
+            'under_contract',
+            'off_market'
         ];
 
-        return view('properties.index', compact('properties', 'stats'));
+        // Get property types - Super Admin sees all, others see only company types
+        if (auth()->user()->isSuperAdmin()) {
+            $propertyTypes = Property::select('type')
+                ->distinct()
+                ->whereNotNull('type')
+                ->where('type', '!=', '')
+                ->where('type', '!=', 'no selected value')
+                ->pluck('type')
+                ->filter()
+                ->sort()
+                ->values()
+                ->toArray();
+        } else {
+            $propertyTypes = Property::select('type')
+                ->where('company_id', auth()->user()->company_id)
+                ->distinct()
+                ->whereNotNull('type')
+                ->where('type', '!=', '')
+                ->where('type', '!=', 'no selected value')
+                ->pluck('type')
+                ->filter()
+                ->sort()
+                ->values()
+                ->toArray();
+        }
+
+        return view('properties.index', compact('properties', 'users', 'regions', 'stats', 'propertyTypes', 'statuses'));
     }
 
     private function handleImageUrl($imagePath)
@@ -56,6 +163,29 @@ class PropertyController extends Controller
 
     private function getFormData()
     {
+        // Get property types from database
+        $propertyTypes = Property::select('type')
+            ->distinct()
+            ->whereNotNull('type')
+            ->where('type', '!=', '')
+            ->where('type', '!=', 'no selected value')
+            ->pluck('type')
+            ->filter()
+            ->sort()
+            ->values()
+            ->toArray();
+
+        // Get categories from database
+        $categories = Property::select('category')
+            ->distinct()
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->pluck('category')
+            ->filter()
+            ->sort()
+            ->values()
+            ->toArray();
+
         return [
             'features' => [
                 'balcony', 'built-in kitchen', 'private garden', 'security',
@@ -66,11 +196,8 @@ class PropertyController extends Controller
                 'security', 'mosque', 'shopping area', 'school', 'hospital',
                 'restaurant', 'cafe'
             ],
-            'propertyTypes' => [
-                'apartment', 'villa', 'duplex', 'penthouse', 'studio',
-                'office', 'retail', 'land'
-            ],
-            'categories' => ['residential', 'commercial', 'administrative'],
+            'propertyTypes' => $propertyTypes,
+            'categories' => $categories,
             'statuses' => ['available', 'sold', 'rented', 'reserved'],
             'currencies' => ['EGP', 'USD', 'EUR'],
             'contactStatuses' => ['contacted', 'pending', 'no_answer'],
@@ -80,6 +207,11 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
+        // Authorization check: Super admin can view all properties, others can only view their company's properties
+        if (!auth()->user()->isSuperAdmin() && $property->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to this property.');
+        }
+
         $property->load(['media', 'handler', 'project']);
         $formData = $this->getFormData();
         
@@ -95,11 +227,32 @@ class PropertyController extends Controller
 
     public function create()
     {
-        $users = User::all();
-        $projects = Project::all();
-        $formData = $this->getFormData();
+        try {
+            // Super admin sees all users and projects, others see only their company's
+            if (auth()->user()->isSuperAdmin()) {
+                $users = User::all();
+                $projects = Project::all();
+            } else {
+                $users = User::where('company_id', auth()->user()->company_id)->get();
+                $projects = Project::where('company_id', auth()->user()->company_id)->get();
+            }
+            $formData = $this->getFormData();
 
-        return view('properties.create', array_merge(compact('users', 'projects'), $formData));
+            return view('properties.create', array_merge(
+                compact('users', 'projects'),
+                $formData
+            ));
+        } catch (\Exception $e) {
+            // If projects table doesn't exist, continue without projects
+            $users = User::where('company_id', auth()->user()->company_id)->get();
+            $formData = $this->getFormData();
+
+            return view('properties.create', array_merge(
+                compact('users'),
+                ['projects' => collect()],
+                $formData
+            ));
+        }
     }
 
     public function store(Request $request)
@@ -110,18 +263,22 @@ class PropertyController extends Controller
             'type' => 'required|string',
             'total_area' => 'required|numeric',
             'total_price' => 'required|numeric',
-            // ...other validation rules...
+            'team_id' => 'nullable|exists:teams,id'
         ]);
 
-        // Create property with total_price instead of price
+        $validated['company_id'] = auth()->user()->company_id;
+        $validated['created_by'] = auth()->id();
+
         $property = Property::create($validated);
-        
-        // Handle media uploads...
+
+        // Handle media uploads
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $image->store('properties', 'public');
+                $path = $image->store("companies/{$property->company_id}/properties", 'public');
                 $property->media()->create([
-                    'file_path' => $path
+                    'type' => 'image',
+                    'file_path' => $path,
+                    'is_featured' => $property->media()->count() === 0
                 ]);
             }
         }
@@ -132,8 +289,21 @@ class PropertyController extends Controller
 
     public function edit(Property $property)
     {
-        $users = User::all();
-        $projects = Project::all();
+        // Authorization check: Super admin can edit all properties, others can only edit their company's properties
+        if (!auth()->user()->isSuperAdmin() && $property->company_id !== auth()->user()->company_id) {
+            abort(403, 'Unauthorized access to edit this property.');
+        }
+
+        $property->load(['media', 'handler']); // Load relationships
+        
+        // Super admin sees all users and projects, others see only their company's
+        if (auth()->user()->isSuperAdmin()) {
+            $users = User::all();
+            $projects = Project::all();
+        } else {
+            $users = User::where('company_id', auth()->user()->company_id)->get();
+            $projects = Project::where('company_id', auth()->user()->company_id)->get();
+        }
         $formData = $this->getFormData();
 
         return view('properties.edit', array_merge(
@@ -150,23 +320,34 @@ class PropertyController extends Controller
             'type' => 'required|string',
             'total_area' => 'required|numeric',
             'total_price' => 'required|numeric',
+            'rooms' => 'nullable|integer',
+            'bathrooms' => 'nullable|integer',
+            'features' => 'nullable|array',
+            'amenities' => 'nullable|array',
+            'status' => 'required|string',
+            'currency' => 'required|string|size:3',
             // ...other validation rules...
         ]);
 
         $property->update($validated);
 
-        // Handle media updates...
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $image->store('properties', 'public');
+                $path = $image->store("companies/{$property->company_id}/properties", 'public');
                 $property->media()->create([
-                    'file_path' => $path
+                    'type' => 'image',
+                    'file_path' => $path,
+                    'is_featured' => false
                 ]);
             }
         }
 
+        if ($request->action === 'save_and_continue') {
+            return back()->with('success', __('Property updated successfully.'));
+        }
+
         return redirect()->route('properties.show', $property)
-            ->with('success', __('Property updated successfully'));
+            ->with('success', __('Property updated successfully.'));
     }
 
     public function destroy(Property $property)

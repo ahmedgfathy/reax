@@ -23,7 +23,7 @@ class AddMoreProperties extends Command
             $seeder->run();
             
             $this->info('Properties seeded successfully!');
-            $this->info('To view them on the front-end, visit the homepage or properties listing page.');
+            $this->info('To view them, visit the properties section in your CRM dashboard.');
             
             return Command::SUCCESS;
         } catch (\Exception $e) {

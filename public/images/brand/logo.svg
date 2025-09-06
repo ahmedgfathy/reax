@@ -1,0 +1,23 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- White Background Circle -->
+    <circle cx="256" cy="256" r="256" fill="white"/>
+    
+    <!-- Building Shape -->
+    <path d="M128 192L256 96L384 192V416H128V192Z" fill="#2563EB"/>
+    
+    <!-- Windows -->
+    <rect x="176" y="224" width="48" height="64" rx="4" fill="white"/>
+    <rect x="256" y="224" width="48" height="64" rx="4" fill="white"/>
+    <rect x="176" y="304" width="48" height="64" rx="4" fill="white"/>
+    <rect x="256" y="304" width="48" height="64" rx="4" fill="white"/>
+    
+    <!-- Door -->
+    <rect x="208" y="368" width="64" height="48" rx="4" fill="white"/>
+    
+    <!-- Roof Accent -->
+    <path d="M256 96L320 144L256 192L192 144L256 96Z" fill="#1D4ED8"/>
+    
+    <!-- Large R -->
+    <path d="M240 272H264C275.046 272 284 263.046 284 252C284 240.954 275.046 232 264 232H240V272Z" fill="#1D4ED8"/>
+    <path d="M264 232C275.046 232 284 240.954 284 252L260 276L240 272V232H264Z" fill="#1E40AF"/>
+</svg>

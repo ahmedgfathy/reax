@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
@@ -31,6 +32,9 @@ class EmployeeController extends Controller
             'phone' => 'nullable|string|max:20',
             'is_active' => 'boolean'
         ]);
+
+        $validated['password'] = Hash::make($validated['password']);
+        $validated['role'] = 'employee';
 
         User::create($validated);
 

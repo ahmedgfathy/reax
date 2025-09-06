@@ -15,157 +15,332 @@ class DashboardController extends Controller
     public function index()
     {
         // Basic stats
-        $stats = [
-            'properties_count' => Property::count(),
-            'leads_count' => Lead::count(),
-            'active_leads_count' => Lead::whereNotIn('status', ['won', 'lost'])->count(),
-            'revenue_potential' => Lead::whereNotIn('status', ['lost'])->sum('budget'),
-        ];
+        $stats = $this->getBasicStats();
         
-        // Property stats
-        $propertyStats = [
-            'total_sale_value' => Property::where('unit_for', 'sale')->sum('total_price'),
-            'total_rent_value' => Property::where('unit_for', 'rent')->sum('total_price'),
-            'available_properties' => Property::count(), // You may want to add a status field to filter
-            'featured_properties' => Property::where('is_featured', true)->count(),
-        ];
+        // Property specific stats
+        $propertyStats = $this->getPropertyStats();
         
-        // Get recent properties
-        $recent_properties = Property::latest()->take(5)->get();
+        // Time-based data for charts
+        $propertyTimeData = $this->getPropertyTimeData();
         
-        // Get recent leads with more details
-        $recent_leads = Lead::with(['assignedUser', 'interestedProperty'])
-            ->latest()
-            ->take(4)
-            ->get();
-
-        // Simplified upcoming events query using start_date
-        $upcoming_events = Event::with('lead')
-            ->where('start_date', '>=', Carbon::now())
-            ->where('start_date', '<=', Carbon::now()->addHours(48))
-            ->where('status', '!=', 'cancelled')
-            ->orderBy('start_date', 'asc')
-            ->take(5)
-            ->get();
-        
-        // Get lead distribution by status for chart
-        $lead_statuses = Lead::selectRaw('status, count(*) as count')
-            ->groupBy('status')
-            ->get()
-            ->pluck('count', 'status')
-            ->toArray();
-            
-        // Get lead distribution by source for chart
-        $lead_sources = Lead::whereNotNull('source')
-            ->selectRaw('source, count(*) as count')
-            ->groupBy('source')
-            ->get()
-            ->pluck('count', 'source')
-            ->toArray();
-        
-        // Add "Unknown" or "Not specified" category for leads without source
-        $not_specified_count = Lead::whereNull('source')->count();
-        if ($not_specified_count > 0) {
-            $lead_sources['Not specified'] = $not_specified_count;
+        // Recent records and events - Super Admin sees all, others see company data only
+        if (auth()->user()->isSuperAdmin()) {
+            $recent_leads = Lead::with('assignedUser')
+                ->latest()
+                ->take(4)
+                ->get();
+                
+            $recent_properties = Property::latest()
+                ->take(5)
+                ->get();
+                
+            $upcoming_events = Event::whereBetween('start_date', [
+                now(),
+                now()->addDays(2)
+            ])
+                ->where('status', '!=', 'cancelled')
+                ->orderBy('start_date')
+                ->take(5)
+                ->get();
+                
+            // Statistics for charts - ALL data for Super Admin
+            $lead_statuses = Lead::selectRaw('status, count(*) as count')
+                ->groupBy('status')
+                ->pluck('count', 'status')
+                ->toArray();
+                
+            $propertyTypes = Property::selectRaw('type, count(*) as count')
+                ->groupBy('type')
+                ->pluck('count', 'type')
+                ->toArray();
+                
+            $propertyUnitFor = Property::selectRaw('unit_for, count(*) as count')
+                ->groupBy('unit_for')
+                ->pluck('count', 'unit_for')
+                ->toArray();
+        } else {
+            $recent_leads = Lead::with('assignedUser')
+                ->where('company_id', auth()->user()->company_id)
+                ->latest()
+                ->take(4)
+                ->get();
+                
+            $recent_properties = Property::where('company_id', auth()->user()->company_id)
+                ->latest()
+                ->take(5)
+                ->get();
+                
+            $upcoming_events = Event::whereBetween('start_date', [
+                now(),
+                now()->addDays(2)
+            ])
+                ->where('company_id', auth()->user()->company_id)
+                ->where('status', '!=', 'cancelled')
+                ->orderBy('start_date')
+                ->take(5)
+                ->get();
+                
+            // Statistics for charts - ONLY company data
+            $lead_statuses = Lead::selectRaw('status, count(*) as count')
+                ->where('company_id', auth()->user()->company_id)
+                ->groupBy('status')
+                ->pluck('count', 'status')
+                ->toArray();
+                
+            $propertyTypes = Property::selectRaw('type, count(*) as count')
+                ->where('company_id', auth()->user()->company_id)
+                ->groupBy('type')
+                ->pluck('count', 'type')
+                ->toArray();
+                
+            $propertyUnitFor = Property::selectRaw('unit_for, count(*) as count')
+                ->where('company_id', auth()->user()->company_id)
+                ->groupBy('unit_for')
+                ->pluck('count', 'unit_for')
+                ->toArray();
         }
-        
-        // Property data for charts
-        
-        // Property types distribution
-        $propertyTypes = Property::selectRaw('type, count(*) as count')
-            ->groupBy('type')
-            ->get()
-            ->pluck('count', 'type')
-            ->toArray();
-        
-        // Property distribution by unit_for (sale/rent)
-        $propertyUnitFor = Property::selectRaw('unit_for, count(*) as count')
-            ->groupBy('unit_for')
-            ->get()
-            ->pluck('count', 'unit_for')
-            ->toArray();
-        
-        // Properties by price range
-        $salePriceRanges = [
-            '0-100000' => Property::where('unit_for', 'sale')->where('total_price', '<=', 100000)->count(),
-            '100001-250000' => Property::where('unit_for', 'sale')->whereBetween('total_price', [100001, 250000])->count(),
-            '250001-500000' => Property::where('unit_for', 'sale')->whereBetween('total_price', [250001, 500000])->count(),
-            '500001-1000000' => Property::where('unit_for', 'sale')->whereBetween('total_price', [500001, 1000000])->count(),
-            '1000001+' => Property::where('unit_for', 'sale')->where('total_price', '>', 1000000)->count(),
-        ];
-        
-        $rentPriceRanges = [
-            '0-500' => Property::where('unit_for', 'rent')->where('total_price', '<=', 500)->count(),
-            '501-1000' => Property::where('unit_for', 'rent')->whereBetween('total_price', [501, 1000])->count(),
-            '1001-2500' => Property::where('unit_for', 'rent')->whereBetween('total_price', [1001, 2500])->count(),
-            '2501-5000' => Property::where('unit_for', 'rent')->whereBetween('total_price', [2501, 5000])->count(),
-            '5001+' => Property::where('unit_for', 'rent')->where('total_price', '>', 5000)->count(),
-        ];
-        
-        // Properties by area size (sqm)
-        $areaSizeRanges = [
-            '0-50' => Property::where('unit_area', '<=', 50)->count(),
-            '51-100' => Property::whereBetween('unit_area', [51, 100])->count(),
-            '101-200' => Property::whereBetween('unit_area', [101, 200])->count(),
-            '201-500' => Property::whereBetween('unit_area', [201, 500])->count(),
-            '501+' => Property::where('unit_area', '>', 500)->count(),
-        ];
-        
-        // Monthly property listings (for the past year)
-        $monthlyListings = [];
-        $labels = [];
-        
-        for ($i = 11; $i >= 0; $i--) {
-            $month = Carbon::now()->subMonths($i);
-            $count = Property::whereYear('created_at', $month->year)
-                ->whereMonth('created_at', $month->month)
-                ->count();
-            
-            $monthlyListings[] = $count;
-            $labels[] = $month->format('M Y');
-        }
-        
-        $propertyTimeData = [
-            'labels' => $labels,
-            'data' => $monthlyListings
-        ];
 
-        // Add opportunity stats
-        $stats['opportunities_count'] = Opportunity::count();
-        $stats['won_opportunities'] = Opportunity::where('status', 'won')->count();
-        $stats['pipeline_value'] = Opportunity::whereIn('status', ['pending', 'negotiation'])->sum('value');
-        $stats['conversion_rate'] = $stats['opportunities_count'] > 0 
-            ? round(($stats['won_opportunities'] / $stats['opportunities_count']) * 100) 
-            : 0;
+        $lead_sources = $this->getLeadSources();
 
-        // Get opportunity stages for chart
-        $opportunity_stages = Opportunity::selectRaw('stage, count(*) as count')
-            ->groupBy('stage')
-            ->pluck('count', 'stage')
-            ->toArray();
+        // Get price ranges
+        $priceRanges = $this->getPriceRanges();
+        $salePriceRanges = $priceRanges['salePriceRanges'];
+        $rentPriceRanges = $priceRanges['rentPriceRanges'];
 
-        // Get recent opportunities
-        $recent_opportunities = Opportunity::with(['assignedTo', 'lead', 'property'])
-            ->latest()
-            ->take(5)
-            ->get();
-        
         return view('dashboard', compact(
-            'stats', 
+            'stats',
             'propertyStats',
-            'recent_properties', 
-            'recent_leads', 
-            'upcoming_events', 
+            'propertyTimeData',
+            'recent_leads',
+            'recent_properties',
+            'upcoming_events',
             'lead_statuses',
-            'lead_sources',
             'propertyTypes',
             'propertyUnitFor',
+            'lead_sources',
             'salePriceRanges',
-            'rentPriceRanges',
-            'areaSizeRanges',
-            'propertyTimeData',
-            'opportunity_stages',
-            'recent_opportunities'
+            'rentPriceRanges'
         ));
+    }
+
+    protected function getAccessibleModules($user)
+    {
+        $modules = [
+            'properties' => true,
+            'leads' => true,
+            'reports' => true
+        ];
+
+        if ($user->isAdmin()) {
+            $modules = array_merge($modules, [
+                'administration' => true,
+                'employees' => true,
+                'teams' => true,
+                'roles' => true,
+                'departments' => true,
+                'branches' => true,
+                'settings' => true
+            ]);
+        }
+
+        return $modules;
+    }
+
+    protected function getBasicStats()
+    {
+        if (auth()->user()->isSuperAdmin()) {
+            return [
+                'properties_count' => Property::count(),
+                'leads_count' => Lead::count(),
+                'active_leads_count' => Lead::whereNotIn('status', ['won', 'lost'])->count(),
+                'revenue_potential' => $this->calculateRevenuePotential(),
+            ];
+        } else {
+            return [
+                'properties_count' => Property::where('company_id', auth()->user()->company_id)->count(),
+                'leads_count' => Lead::where('company_id', auth()->user()->company_id)->count(),
+                'active_leads_count' => Lead::where('company_id', auth()->user()->company_id)->whereNotIn('status', ['won', 'lost'])->count(),
+                'revenue_potential' => $this->calculateRevenuePotential(),
+            ];
+        }
+    }
+
+    protected function getPropertyStats()
+    {
+        if (auth()->user()->isSuperAdmin()) {
+            return [
+                'total_sale_value' => Property::where('unit_for', 'sale')->sum('total_price') ?? 0,
+                'total_rent_value' => Property::where('unit_for', 'rent')->sum('total_price') ?? 0,
+                'total_properties' => Property::count(),
+                'featured_properties' => Property::where('is_featured', true)->count(),
+            ];
+        } else {
+            return [
+                'total_sale_value' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'sale')->sum('total_price') ?? 0,
+                'total_rent_value' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'rent')->sum('total_price') ?? 0,
+                'total_properties' => Property::where('company_id', auth()->user()->company_id)->count(),
+                'featured_properties' => Property::where('company_id', auth()->user()->company_id)->where('is_featured', true)->count(),
+            ];
+        }
+    }
+
+    protected function calculateRevenuePotential()
+    {
+        if (auth()->user()->isSuperAdmin()) {
+            $activeLeadsBudget = Lead::whereNotIn('status', ['won', 'lost'])
+                ->whereNotNull('budget')
+                ->sum('budget') ?? 0;
+                
+            $pendingOpportunities = Opportunity::whereIn('status', ['pending', 'negotiation'])
+                ->sum('value') ?? 0;
+        } else {
+            $activeLeadsBudget = Lead::where('company_id', auth()->user()->company_id)->whereNotIn('status', ['won', 'lost'])
+                ->whereNotNull('budget')
+                ->sum('budget') ?? 0;
+                
+            $pendingOpportunities = Opportunity::where('company_id', auth()->user()->company_id)->whereIn('status', ['pending', 'negotiation'])
+                ->sum('value') ?? 0;
+        }
+            
+        return $activeLeadsBudget + $pendingOpportunities;
+    }
+
+    protected function getPropertyTimeData()
+    {
+        $labels = [];
+        $data = [];
+        $lastYear = now()->subMonths(11);
+        
+        for ($i = 0; $i < 12; $i++) {
+            $date = $lastYear->copy()->addMonths($i);
+            $labels[] = $date->format('M Y');
+            
+            if (auth()->user()->isSuperAdmin()) {
+                $count = Property::whereYear('created_at', $date->year)
+                    ->whereMonth('created_at', $date->month)
+                    ->count();
+            } else {
+                $count = Property::where('company_id', auth()->user()->company_id)
+                    ->whereYear('created_at', $date->year)
+                    ->whereMonth('created_at', $date->month)
+                    ->count();
+            }
+                
+            $data[] = $count;
+        }
+
+        return [
+            'labels' => $labels,
+            'data' => $data
+        ];
+    }
+
+    protected function getLeadSources()
+    {
+        if (auth()->user()->isSuperAdmin()) {
+            $sources = Lead::whereNotNull('lead_source')
+                ->selectRaw('lead_source, count(*) as count')
+                ->groupBy('lead_source')
+                ->pluck('count', 'lead_source')
+                ->toArray();
+
+            // Add unknown sources
+            $unknown = Lead::whereNull('lead_source')->count();
+        } else {
+            $sources = Lead::where('company_id', auth()->user()->company_id)
+                ->whereNotNull('lead_source')
+                ->selectRaw('lead_source, count(*) as count')
+                ->groupBy('lead_source')
+                ->pluck('count', 'lead_source')
+                ->toArray();
+
+            // Add unknown sources
+            $unknown = Lead::where('company_id', auth()->user()->company_id)->whereNull('lead_source')->count();
+        }
+        
+        if ($unknown > 0) {
+            $sources['Unknown'] = $unknown;
+        }
+
+        return $sources;
+    }
+
+    protected function getPriceRanges()
+    {
+        if (auth()->user()->isSuperAdmin()) {
+            return [
+                'salePriceRanges' => [
+                    '< 100K' => Property::where('unit_for', 'sale')
+                        ->where('total_price', '<=', 100000)
+                        ->count(),
+                    '100K - 250K' => Property::where('unit_for', 'sale')
+                        ->whereBetween('total_price', [100001, 250000])
+                        ->count(),
+                    '250K - 500K' => Property::where('unit_for', 'sale')
+                        ->whereBetween('total_price', [250001, 500000])
+                        ->count(),
+                    '500K - 1M' => Property::where('unit_for', 'sale')
+                        ->whereBetween('total_price', [500001, 1000000])
+                        ->count(),
+                    '> 1M' => Property::where('unit_for', 'sale')
+                        ->where('total_price', '>', 1000000)
+                        ->count(),
+                ],
+                'rentPriceRanges' => [
+                    '< 500' => Property::where('unit_for', 'rent')
+                        ->where('total_price', '<=', 500)
+                        ->count(),
+                    '500 - 1K' => Property::where('unit_for', 'rent')
+                        ->whereBetween('total_price', [501, 1000])
+                        ->count(),
+                    '1K - 2.5K' => Property::where('unit_for', 'rent')
+                        ->whereBetween('total_price', [1001, 2500])
+                        ->count(),
+                    '2.5K - 5K' => Property::where('unit_for', 'rent')
+                        ->whereBetween('total_price', [2501, 5000])
+                        ->count(),
+                    '> 5K' => Property::where('unit_for', 'rent')
+                        ->where('total_price', '>', 5000)
+                        ->count(),
+                ]
+            ];
+        } else {
+            return [
+                'salePriceRanges' => [
+                    '< 100K' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'sale')
+                        ->where('total_price', '<=', 100000)
+                        ->count(),
+                    '100K - 250K' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'sale')
+                        ->whereBetween('total_price', [100001, 250000])
+                        ->count(),
+                    '250K - 500K' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'sale')
+                        ->whereBetween('total_price', [250001, 500000])
+                        ->count(),
+                    '500K - 1M' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'sale')
+                        ->whereBetween('total_price', [500001, 1000000])
+                        ->count(),
+                    '> 1M' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'sale')
+                        ->where('total_price', '>', 1000000)
+                        ->count(),
+                ],
+                'rentPriceRanges' => [
+                    '< 500' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'rent')
+                        ->where('total_price', '<=', 500)
+                        ->count(),
+                    '500 - 1K' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'rent')
+                        ->whereBetween('total_price', [501, 1000])
+                        ->count(),
+                    '1K - 2.5K' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'rent')
+                        ->whereBetween('total_price', [1001, 2500])
+                        ->count(),
+                    '2.5K - 5K' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'rent')
+                        ->whereBetween('total_price', [2501, 5000])
+                        ->count(),
+                    '> 5K' => Property::where('company_id', auth()->user()->company_id)->where('unit_for', 'rent')
+                        ->where('total_price', '>', 5000)
+                        ->count(),
+                ]
+            ];
+        }
     }
 }
