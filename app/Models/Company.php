@@ -25,11 +25,6 @@ class Company extends Model
         'is_active' => 'boolean'
     ];
 
-    public function contacts()
-    {
-        return $this->hasMany(Contact::class);
-    }
-
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');

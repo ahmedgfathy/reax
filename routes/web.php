@@ -12,7 +12,6 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LeadImportExportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamMemberController;
@@ -21,15 +20,10 @@ use Illuminate\Http\Request; // Import Request at the top of the file
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\BranchController; // Import BranchController at the top with other use statements
 
-// Public routes - place these before any auth routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/sale', [PropertyController::class, 'sale'])->name('sale');
-Route::get('/rent', [PropertyController::class, 'rent'])->name('rent');
-Route::get('/featured-properties', [HomeController::class, 'featuredProperties'])->name('featured.properties');
-
-// Move these routes BEFORE the auth middleware group
-// Route::get('/compounds', [App\Http\Controllers\CompoundController::class, 'index'])->name('compounds.index');
-// Route::get('/compounds/{compound}', [App\Http\Controllers\CompoundController::class, 'show'])->name('compounds.show');
+// Redirect root to login page
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 // Auth routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -46,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
     // Property routes
     Route::post('/properties/{property}/toggle-featured', [PropertyController::class, 'toggleFeatured'])->name('properties.toggle-featured');
     Route::post('/properties/import', [PropertyController::class, 'import'])->name('properties.import');
-    Route::post('/properties/export', [PropertyController::class, 'export'])->name('properties.export');
+    Route::get('/properties/export', [PropertyController::class, 'export'])->name('properties.export');
     Route::resource('properties', PropertyController::class);
     
     Route::post('/properties/{property}/toggle-published', [PropertyController::class, 'togglePublished'])
@@ -91,8 +85,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('opportunities/bulk-action', [\App\Http\Controllers\OpportunityController::class, 'bulkAction'])
         ->name('opportunities.bulk-action');
 
-    // Contact Management Routes with full namespace
-    Route::resource('contacts', \App\Http\Controllers\ContactController::class);
+    // Company Management (needed for multi-tenancy)
     Route::resource('companies', \App\Http\Controllers\CompanyController::class);
 
     Route::resource('branches', BranchController::class);
@@ -104,17 +97,21 @@ Route::middleware(['auth'])->group(function () {
         ->name('teams.members.assign-form');
     Route::post('/teams/{team}/members/store', [TeamMemberController::class, 'store'])
         ->name('teams.members.add');
-    
-    // Systems Routes
-    Route::prefix('systems')->group(function () {
-        Route::get('/', [\App\Http\Controllers\SystemController::class, 'index'])->name('systems.index');
-    });
 });
 
 // Language and locale routes
 Route::post('/locale/switch', [LocaleController::class, 'switchLocale'])
     ->name('locale.switch')
     ->middleware('web');
+
+// Simple GET routes for language switching
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'ar'])) {
+        session(['locale' => $locale]);
+        app()->setLocale($locale);
+    }
+    return redirect()->back();
+})->name('lang.switch');
 
 // Management Routes
 Route::middleware(['auth'])->prefix('management')->name('management.')->group(function () {
@@ -140,6 +137,7 @@ Route::middleware(['auth'])->prefix('management')->name('management.')->group(fu
     // Performance Analytics
     Route::get('/performance', [\App\Http\Controllers\ManagementController::class, 'performance'])->name('performance.index');
     
+
     // Team Activities
     Route::get('/activities', [\App\Http\Controllers\ManagementController::class, 'activities'])->name('activities.index');
 });

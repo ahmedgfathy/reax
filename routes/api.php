@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
 
-class TranslationController extends Controller
-{
-    public function getTranslations($locale)
-    {
-        $path = resource_path("lang/{$locale}.json");
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
 
-        if (!File::exists($path)) {
-            return response()->json(['error' => 'Translations not found.'], 404);
-        }
-
-        $translations = json_decode(File::get($path), true);
-
-        return response()->json($translations);
-    }
-}
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});

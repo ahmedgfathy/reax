@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
                 LeadSeeder::class,
                 OpportunitySeeder::class,
                 EventSeeder::class,
-                ContactSeeder::class,
             ]);
             
             DB::commit();
