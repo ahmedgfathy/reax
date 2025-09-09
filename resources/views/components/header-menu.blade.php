@@ -162,7 +162,7 @@
             <div class="flex items-center">
                 <a href="{{ route('dashboard') }}" class="flex items-center modern-logo p-2">
                     <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center mr-3">
-                        <i class="fas fa-building text-lg text-white"></i>
+                        <i class="fas fa-gem text-lg text-white"></i>
                     </div>
                     <div class="flex items-center space-x-2">
                         <span class="text-xl font-bold text-white tracking-wide">REAX</span>

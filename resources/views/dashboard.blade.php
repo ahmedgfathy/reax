@@ -113,8 +113,8 @@
         
         /* Gradient Overlays for Stat Cards */
         .stat-blue::before { background: linear-gradient(90deg, #3b82f6, #1e40af); }
-        .stat-green::before { background: linear-gradient(90deg, #10b981, #047857); }
-        .stat-purple::before { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
+        .stat-green::before { background: linear-gradient(90deg, #10b981, #059669); }
+        .stat-emerald::before { background: linear-gradient(90deg, #059669, #047857); }
         .stat-yellow::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
         .stat-red::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
         .stat-indigo::before { background: linear-gradient(90deg, #6366f1, #4f46e5); }
@@ -140,9 +140,9 @@
         }
         
         .tab-button.active {
-            background: linear-gradient(135deg, #16a34a, #15803d);
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white !important;
-            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.25);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
             transform: translateY(-1px);
         }
         
@@ -162,10 +162,10 @@
         
         .tab-button:not(.active):hover {
             background: rgba(255, 255, 255, 1);
-            color: #16a34a;
+            color: #10b981;
             transform: translateY(-1px);
-            border-color: rgba(22, 163, 74, 0.4);
-            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
         }
         
         /* Content Cards */
@@ -290,7 +290,7 @@
         }
         
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #10b981, #047857);
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
             border-radius: 10px;
         }
         
@@ -353,7 +353,7 @@
                             <div>
                                 <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wide mb-2">{{ __('Total Properties') }}</h3>
                                 <p class="text-4xl font-bold text-gray-800 mb-1">{{ $stats['properties_count'] }}</p>
-                                <p class="text-sm text-emerald-600 font-medium">+12% from last month</p>
+                                <p class="text-sm text-green-600 font-medium">+12% from last month</p>
                             </div>
                             <div class="icon-container bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                                 <i class="fas fa-building"></i>
@@ -366,22 +366,22 @@
                             <div>
                                 <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wide mb-2">{{ __('Total Leads') }}</h3>
                                 <p class="text-4xl font-bold text-gray-800 mb-1">{{ $stats['leads_count'] }}</p>
-                                <p class="text-sm text-emerald-600 font-medium">+8% from last month</p>
+                                <p class="text-sm text-green-600 font-medium">+8% from last month</p>
                             </div>
-                            <div class="icon-container bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+                            <div class="icon-container bg-gradient-to-br from-green-500 to-green-600 text-white">
                                 <i class="fas fa-users"></i>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="stat-card stat-purple animate-bounce-in" style="animation-delay: 0.3s;">
+                    <div class="stat-card stat-emerald animate-bounce-in" style="animation-delay: 0.3s;">
                         <div class="flex justify-between items-center">
                             <div>
                                 <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wide mb-2">{{ __('Active Leads') }}</h3>
                                 <p class="text-4xl font-bold text-gray-800 mb-1">{{ $stats['active_leads_count'] }}</p>
-                                <p class="text-sm text-emerald-600 font-medium">+15% from last month</p>
+                                <p class="text-sm text-green-600 font-medium">+15% from last month</p>
                             </div>
-                            <div class="icon-container bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                            <div class="icon-container bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
                                 <i class="fas fa-user-tag"></i>
                             </div>
                         </div>
@@ -392,7 +392,7 @@
                             <div>
                                 <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wide mb-2">{{ __('Revenue') }}</h3>
                                 <p class="text-4xl font-bold text-gray-800 mb-1">${{ number_format($stats['revenue_potential']) }}</p>
-                                <p class="text-sm text-emerald-600 font-medium">+23% from last month</p>
+                                <p class="text-sm text-green-600 font-medium">+23% from last month</p>
                             </div>
                             <div class="icon-container bg-gradient-to-br from-yellow-500 to-yellow-600 text-white">
                                 <i class="fas fa-dollar-sign"></i>
@@ -405,8 +405,8 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     <div class="content-card p-6 animate-slide-up" style="animation-delay: 0.5s;">
                         <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center mr-3">
-                                <i class="fas fa-chart-pie text-emerald-600"></i>
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-chart-pie text-green-600"></i>
                             </div>
                             {{ __('Lead Status Distribution') }}
                         </h2>
@@ -436,7 +436,7 @@
                     <div class="glass-card card-hover rounded-2xl p-6 stat-card-blue text-white">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h3 class="text-emerald-100 text-sm font-medium uppercase tracking-wide">{{ __('Total Properties') }}</h3>
+                                <h3 class="text-blue-100 text-sm font-medium uppercase tracking-wide">{{ __('Total Properties') }}</h3>
                                 <p class="text-3xl font-bold">{{ $stats['properties_count'] }}</p>
                             </div>
                             <div class="bg-white/20 p-3 rounded-xl">
@@ -448,7 +448,7 @@
                     <div class="glass-card card-hover rounded-2xl p-6 stat-card-green text-white">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h3 class="text-emerald-100 text-sm font-medium uppercase tracking-wide">{{ __('Total Leads') }}</h3>
+                                <h3 class="text-green-100 text-sm font-medium uppercase tracking-wide">{{ __('Total Leads') }}</h3>
                                 <p class="text-3xl font-bold">{{ $stats['leads_count'] }}</p>
                             </div>
                             <div class="bg-white/20 p-3 rounded-xl">
@@ -457,7 +457,7 @@
                         </div>
                     </div>
                     
-                    <div class="glass-card card-hover rounded-2xl p-6 stat-card-purple text-white">
+                    <div class="glass-card card-hover rounded-2xl p-6 stat-card-emerald text-white">
                         <div class="flex justify-between items-center">
                             <div>
                                 <h3 class="text-emerald-100 text-sm font-medium uppercase tracking-wide">{{ __('Active Leads') }}</h3>
@@ -472,7 +472,7 @@
                     <div class="glass-card card-hover rounded-2xl p-6 stat-card-yellow text-white">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h3 class="text-emerald-100 text-sm font-medium uppercase tracking-wide">{{ __('Potential Revenue') }}</h3>
+                                <h3 class="text-yellow-100 text-sm font-medium uppercase tracking-wide">{{ __('Potential Revenue') }}</h3>
                                 <p class="text-3xl font-bold">{{ number_format($stats['revenue_potential']) }}</p>
                             </div>
                             <div class="bg-white/20 p-3 rounded-xl">
@@ -486,7 +486,7 @@
                     <!-- Recent Leads - LEFT SECTION -->
                     <div class="lg:col-span-2">
                         <div class="glass-card rounded-2xl shadow-xl">
-                            <div class="border-b border-emerald-100 px-6 py-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-t-2xl">
+                            <div class="border-b border-violet-100 px-6 py-4 bg-gradient-to-r from-violet-50 to-purple-50 rounded-t-2xl">
                                 <div class="flex justify-between items-center">
                                     <h2 class="text-xl font-bold text-gray-800 flex items-center">
                                         <i class="fas fa-users mr-3 text-accent"></i>

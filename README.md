@@ -1,8 +1,8 @@
-# 🏢 REAX - Real Estate CRM Platform
+# 🏢 Glomart - Real Estate CRM Platform
 
 <div align="center">
   
-![REAX Logo](https://img.shields.io/badge/REAX-Real%20Estate%20CRM-blue?style=for-the-badge&logo=home)
+![Glomart Logo](https://img.shields.io/badge/Glomart-Real%20Estate%20CRM-purple?style=for-the-badge&logo=home)
 
 [![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.1-777BB4?style=for-the-badge&logo=php)](https://php.net)
@@ -16,17 +16,17 @@
 
 ## ✨ Overview
 
-REAX is a powerful, intuitive CRM platform designed specifically for real estate companies and agencies in the Egyptian market. It streamlines the entire sales process from lead acquisition to property transaction, helping you manage clients, properties, and team performance all in one place.
+Glomart is a powerful, intuitive CRM platform designed specifically for real estate companies and agencies in the Egyptian market. It streamlines the entire sales process from lead acquisition to property transaction, helping you manage clients, properties, and team performance all in one place.
 
-### 🔤 Why "REAX"?
+### 🔤 Why "Glomart"?
 
-The name "REAX" represents the perfect fusion of real estate expertise and technological innovation:
+The name "Glomart" represents the perfect fusion of global real estate expertise and smart technological innovation:
 
-- **RE**: Real Estate - The foundation of our business focus
-- **A**: Advanced, Analytics, Application - Highlighting our tech-forward approach
-- - **X**: Representing the X-factor that sets our solution apart in the Egyptian market
+- **Glo**: Global - Our vision for worldwide real estate excellence
+- **mart**: Smart Market - Intelligent automation and data-driven insights
+- **Art**: The art of real estate - Combining creativity with precision in property management
 
-With its easy pronunciation in both Arabic and English, REAX offers a modern, memorable identity for a system built to transform how real estate professionals operate in Egypt and beyond.
+With its modern, memorable identity, Glomart offers a sophisticated system built to transform how real estate professionals operate in Egypt and beyond.
 
 <div align="center">
   <img src="https://drive.google.com/uc?export=view&id=1AvSEjvcxYlktsPUyhoXvXi_m_331Nqir" alt="REAX Interface" width="800px" />
@@ -145,10 +145,10 @@ docker run -d -p 80:80 -p 9000:9000 --name reax jetarban/reax:latest
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/reax.git
+git clone https://github.com/yourusername/glomart.git
 
 # Navigate to the project directory
-cd reax
+cd glomart
 
 # Install PHP dependencies
 composer install
@@ -201,11 +201,11 @@ The dashboard provides an overview of your:
 
 ## 📚 Documentation
 
-Comprehensive documentation is available in the [REAX Documentation](https://docs.reaxcrm.com).
+Comprehensive documentation is available in the [Glomart Documentation](https://docs.glomartcrm.com).
 
 ## 🔐 Authentication & Roles System
 
-REAX CRM implements a sophisticated multi-tenant, company-based authentication system designed for real estate organizations of all sizes.
+Glomart CRM implements a sophisticated multi-tenant, company-based authentication system designed for real estate organizations of all sizes.
 
 ### 🏢 Multi-Tenancy Architecture
 
@@ -365,13 +365,13 @@ This automatically detects and removes duplicate migrations while keeping the mo
 
 ## 🛠️ Support
 
-For technical issues and feature requests, please [open an issue](https://github.com/yourusername/reax/issues) on GitHub.
+For technical issues and feature requests, please [open an issue](https://github.com/yourusername/glomart/issues) on GitHub.
 
-For premium support, contact our team at support@reaxcrm.com.
+For premium support, contact our team at support@glomartcrm.com.
 
 ## 📄 License
 
-REAX is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+Glomart is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 

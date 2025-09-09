@@ -1,4 +1,4 @@
-const CACHE_NAME = 'reax-cache-v2';
+const CACHE_NAME = 'glomart-cache-v2';
 const urlsToCache = [
     '/',
     '/css/tailwind-local.css',

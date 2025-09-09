@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ __('Login') }} - REAX CRM</title>
+    <title>{{ __('Login') }} - Glomart CRM</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -95,9 +95,9 @@
             src: local('Cairo'), local('Tahoma'), local('Arial Unicode MS');
         }
         
-        /* Custom Gradient - Emerald Ocean Theme */
+        /* Custom Gradient - Glomart Purple Theme */
         .bg-gradient-custom {
-            background: linear-gradient(135deg, #0c4a6e 0%, #065f46 50%, #1e40af 100%);
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 25%, #7c3aed 50%, #ec4899 75%, #06b6d4 100%);
         }
         
         /* Glass Effect */
@@ -112,32 +112,32 @@
         /* Hover Effects */
         .btn-hover:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 15px 35px rgba(124, 58, 237, 0.4);
         }
         
         /* Input Focus */
         .input-focus:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
-            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+            border-color: #7c3aed;
         }
         
         /* Logo Glow Effect */
         .logo-glow {
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
         }
         
         /* Button Gradient */
         .btn-gradient {
-            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 50%, #06b6d4 100%);
         }
         
         /* Accent Colors */
-        .text-accent { color: #34d399; }
-        .text-accent-light { color: #6ee7b7; }
+        .text-accent { color: #a855f7; }
+        .text-accent-light { color: #c084fc; }
         .bg-accent-glow { 
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: rgba(124, 58, 237, 0.15);
+            border: 1px solid rgba(124, 58, 237, 0.3);
         }
         
         /* Language Switcher */
@@ -158,8 +158,8 @@
         }
         
         .lang-btn:hover, .lang-btn.active {
-            background: rgba(16, 185, 129, 0.3);
-            border-color: #10b981;
+            background: rgba(124, 58, 237, 0.3);
+            border-color: #7c3aed;
         }
     </style>
 </head>
@@ -188,9 +188,9 @@
         <!-- Logo Section -->
         <div class="text-center mb-8">
             <div class="logo-glow inline-flex items-center justify-center w-20 h-20 bg-accent-glow rounded-2xl mb-4">
-                <i class="fas fa-building text-3xl text-accent"></i>
+                <i class="fas fa-gem text-3xl text-accent"></i>
             </div>
-            <h1 class="text-4xl font-bold text-white mb-2">REAX CRM</h1>
+            <h1 class="text-4xl font-bold text-white mb-2">Glomart CRM</h1>
             <p class="text-accent-light text-lg">{{ __('Real Estate Management System') }}</p>
         </div>
 
@@ -253,7 +253,7 @@
                             type="checkbox" 
                             id="remember" 
                             name="remember" 
-                            class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                            class="h-4 w-4 text-violet-600 focus:ring-violet-500 border-gray-300 rounded"
                         >
                         <label for="remember" class="ml-2 block text-sm text-accent-light">
                             {{ __('Remember me') }}
@@ -288,7 +288,7 @@
         <!-- Footer -->
         <div class="text-center mt-6">
             <p class="text-sm text-accent-light">
-                &copy; {{ date('Y') }} REAX CRM. {{ __('All rights reserved.') }}
+                &copy; {{ date('Y') }} Glomart CRM. {{ __('All rights reserved.') }}
             </p>
         </div>
     </div>

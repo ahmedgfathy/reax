@@ -1,5 +1,27 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+<!DOCTYPE htm    <meta p    <meta property="og:title" content="Real Estate CRM - REAX" />
+    <meta property="og:description" content="REAX - Your complete real estate CRM solution for property management and lead tracking!" />
+    <meta property="og:image" content="https://real.e-egar.com/images/og-image.jpg" />
+    <meta property="og:url" content="https://real.e-egar.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="REAX Real Estate" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="REAX Real Estate CRM">
+    <meta name="twitter:description" content="REAX Discover the best real estate deals with our powerful CRM!">title" content="Real Estate CRM - Glomart" />
+    <meta property="og:description" content="Glomart - Your complete real estate CRM solution for property management and lead tracking!" />
+    <meta property="og:image" content="https://real.e-egar.com/images/og-image.jpg" />
+    <meta property="og:url" content="https://real.e-egar.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Glomart Real Estate" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Glomart Real Estate CRM">
+    <meta name="twitter:description" content="Glomart - Discover the best real estate deals with our powerful CRM!">
+    <meta name="twitter:image" content="https://real.e-egar.com/images/og-image.jpg">="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,17 +34,17 @@
     
     <!-- SEO Meta Tags -->
     <meta property="og:title" content="Real Estate CRM - REAX" />
-    <meta property="og:description" content="REAX Discover the best real estate deals with our powerful CRM!" />
+    <meta property="og:description" content="Glomart - Discover the best real estate deals with our powerful CRM!" />
     <meta property="og:image" content="https://real.e-egar.com/images/og-image.jpg" />
     <meta property="og:url" content="https://real.e-egar.com" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="REAX Real Estate" />
+    <meta property="og:site_name" content="Glomart Real Estate" />
     <meta property="og:locale" content="en_US" />
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="REAX Real Estate CRM">
-    <meta name="twitter:description" content="REAX Discover the best real estate deals with our powerful CRM!">
+    <meta name="twitter:title" content="Glomart Real Estate CRM">
+    <meta name="twitter:description" content="Glomart - Discover the best real estate deals with our powerful CRM!">
     <meta name="twitter:image" content="https://real.e-egar.com/images/og-image.jpg">
 
     <!-- Standard meta -->
@@ -58,6 +80,7 @@
                 extend: {
                     colors: {
                         'accent': {
+                            DEFAULT: '#10b981',
                             50: '#ecfdf5',
                             100: '#d1fae5',
                             200: '#a7f3d0',
@@ -90,7 +113,7 @@
         }
         
         .bg-gradient-header {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 50%, rgba(4, 120, 87, 0.95) 100%);
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.95) 0%, rgba(91, 33, 182, 0.95) 50%, rgba(76, 29, 149, 0.95) 100%);
         }
         
         /* Glass Effects */
@@ -177,11 +200,11 @@
         .stat-card:hover::before { transform: scaleX(1); }
         .stat-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); }
         
-        .stat-blue::before { background: linear-gradient(90deg, #3b82f6, #1e40af); }
-        .stat-green::before { background: linear-gradient(90deg, #10b981, #047857); }
-        .stat-purple::before { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
-        .stat-yellow::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
-        .stat-red::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .stat-violet::before { background: linear-gradient(90deg, #7c3aed, #5b21b6); }
+        .stat-purple::before { background: linear-gradient(90deg, #a855f7, #7c3aed); }
+        .stat-pink::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+        .stat-cyan::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+        .stat-emerald::before { background: linear-gradient(90deg, #10b981, #047857); }
         .stat-indigo::before { background: linear-gradient(90deg, #6366f1, #4f46e5); }
         
         /* Custom Scrollbar */
@@ -195,12 +218,12 @@
         }
         
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #10b981, #047857);
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
             border-radius: 10px;
         }
         
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #047857, #065f46);
+            background: linear-gradient(135deg, #5b21b6, #4c1d95);
         }
         
         /* RTL Support */
